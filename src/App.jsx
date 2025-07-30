@@ -3,6 +3,7 @@ import './App.css';
 import { Suspense, lazy } from 'react';
 
 import AppRouters from './routes/AppRouter';
+import FullScreenLogoLoader from './components/loaders/FullScreenLogoLoader';
 
 // Example of lazy-loaded component
 // const Card = lazy(() => import('./Card'));

@@ -1,1 +1,200 @@
+/* =========================================
+   ✅ IMPORT TAILWIND FIRST
+========================================= */
 @import 'tailwindcss';
+
+/* =========================================
+   ✅ BRAND COLORS AS CSS VARIABLES
+========================================= */
+:root {
+    --codedrift-pink: #ee4f7e;
+    --codedrift-blue: #4cb7e5;
+    --codedrift-indigo: #3949ab;
+    --codedrift-indigo-dark: #2c387e;
+}
+
+/* =========================================
+   ✅ EXISTING LOADER ANIMATION
+========================================= */
+@keyframes logoFadeScale {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2.5);
+    }
+}
+
+.logo-loader-animation {
+    animation: logoFadeScale 2s ease-in-out forwards;
+    max-width: 200px;
+    height: auto;
+}
+
+/* =========================================
+   ✅ CONTAINER COMPONENT
+========================================= */
+@layer components {
+    .container {
+        @apply mx-auto px-2 sm:px-4 lg:px-6 xl:px-32;
+    }
+}
+
+/* =========================================
+   ✅ CUSTOM TAILWIND UTILITIES
+========================================= */
+@layer utilities {
+
+    /* ✅ Text Colors */
+    .text-codedrift-pink {
+        color: var(--codedrift-pink);
+    }
+
+    .text-codedrift-blue {
+        color: var(--codedrift-blue);
+    }
+
+    .text-codedrift-indigo {
+        color: var(--codedrift-indigo);
+    }
+
+    /* ✅ Hover Text */
+    .hover\:text-codedrift-pink:hover {
+        color: var(--codedrift-pink);
+    }
+
+    .hover\:text-codedrift-blue:hover {
+        color: var(--codedrift-blue);
+    }
+
+    .hover\:text-codedrift-indigo:hover {
+        color: var(--codedrift-indigo);
+    }
+
+    /* ✅ Border Colors */
+    .border-codedrift-pink {
+        border-color: var(--codedrift-pink);
+    }
+
+    .border-codedrift-blue {
+        border-color: var(--codedrift-blue);
+    }
+
+    .border-codedrift-indigo {
+        border-color: var(--codedrift-indigo);
+    }
+
+    /* ✅ Hover Border */
+    .hover\:border-codedrift-pink:hover {
+        border-color: var(--codedrift-pink);
+    }
+
+    .hover\:border-codedrift-blue:hover {
+        border-color: var(--codedrift-blue);
+    }
+
+    .hover\:border-codedrift-indigo:hover {
+        border-color: var(--codedrift-indigo);
+    }
+
+    /* ✅ Background Colors */
+    .bg-codedrift-pink {
+        background-color: var(--codedrift-pink);
+    }
+
+    .bg-codedrift-blue {
+        background-color: var(--codedrift-blue);
+    }
+
+    .bg-codedrift-indigo {
+        background-color: var(--codedrift-indigo);
+    }
+
+    /* ✅ Hover Backgrounds */
+    .hover\:bg-codedrift-pink:hover {
+        background-color: var(--codedrift-pink);
+    }
+
+    .hover\:bg-codedrift-blue:hover {
+        background-color: var(--codedrift-blue);
+    }
+
+    .hover\:bg-codedrift-indigo:hover {
+        background-color: var(--codedrift-indigo);
+    }
+
+    .hover\:bg-codedrift-indigo-dark:hover {
+        background-color: var(--codedrift-indigo-dark);
+    }
+
+    /* ✅ Gradient Utility */
+    .bg-codedrift-gradient {
+        background: linear-gradient(135deg, var(--codedrift-pink) 0%, var(--codedrift-blue) 100%);
+    }
+
+    .hover\:bg-codedrift-gradient:hover {
+        background: linear-gradient(135deg, var(--codedrift-pink) 0%, var(--codedrift-blue) 100%);
+    }
+}
+
+/* =========================================
+   ✅ MOVING GRADIENT ANIMATION
+========================================= */
+@keyframes gradient-move {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.codedrift-gradient {
+    background: linear-gradient(90deg,
+            var(--codedrift-pink),
+            var(--codedrift-blue),
+            var(--codedrift-indigo));
+    background-size: 200% 200%;
+}
+
+.codedrift-gradient-animate {
+    animation: gradient-move 5s ease infinite;
+}
+
+/* =========================================
+   ✅ FROSTED GLASS UTILITY
+========================================= */
+.codedrift-glass {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 1rem;
+}
+
+/* =========================================
+   ✅ NAVBAR GRADIENT BAR
+========================================= */
+@keyframes gradient-x {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 4s ease infinite;
+}

@@ -1,0 +1,120 @@
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { courseList } from "../../data/coursesList";
+import { Calendar, ArrowLeft, Award } from "lucide-react";
+
+// ✅ Map course ID to background hero images (replace with your real assets)
+const courseHeroImages = {
+    1: "https://cdn.pixabay.com/photo/2015/06/24/15/45/code-820275_1280.jpg", // MERN
+    2: "https://cdn.pixabay.com/photo/2017/06/08/19/09/programming-2389236_1280.jpg", // React
+    3: "https://cdn.pixabay.com/photo/2020/06/23/20/43/programming-5336392_1280.jpg", // Java
+    4: "https://cdn.pixabay.com/photo/2017/08/30/01/05/python-2697880_1280.jpg", // Python
+    5: "https://cdn.pixabay.com/photo/2017/05/11/08/36/dot-net-2300420_1280.jpg", // .NET
+    6: "https://cdn.pixabay.com/photo/2015/09/05/22/46/php-925468_1280.jpg", // PHP
+};
+
+const CoursePage = () => {
+    const { courseId } = useParams();
+    const [course, setCourse] = useState(null);
+
+    useEffect(() => {
+        if (courseId) {
+            const filteredCourse = courseList.find(
+                (c) => c.id === parseInt(courseId)
+            );
+            setCourse(filteredCourse || null);
+        }
+    }, [courseId]);
+
+    if (!course) {
+        return (
+            <div className="max-w-4xl mx-auto text-center py-20">
+                <h2 className="text-2xl font-bold text-gray-700">Course not found</h2>
+                <Link
+                    to="/courses"
+                    className="mt-4 inline-block bg-codedrift-pink text-white px-6 py-3 rounded-full shadow-md hover:bg-codedrift-indigo-dark transition"
+                >
+                    <ArrowLeft className="inline w-4 h-4 mr-2" /> Back to All Courses
+                </Link>
+            </div>
+        );
+    }
+
+    return (
+        <div className="relative min-h-dvh bg-gray-50">
+            {/* ✅ Subtle Animated Background Pattern */}
+            <div
+                className="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.05] animate-pulse"
+                style={{ backgroundSize: "300px 300px" }}
+            ></div>
+
+            <div className="relative z-10">
+                {/* ✅ Hero Block (Now Proper Section) */}
+                <section className="relative h-[50vh] md:h-[65vh] flex items-center justify-center text-center rounded-b-[3rem] shadow-2xl overflow-hidden">
+                    <img
+                        src={courseHeroImages[course.id] || courseHeroImages[1]}
+                        alt={course.name}
+                        className="absolute inset-0 w-full h-full object-cover scale-105 hover:scale-110 transition-transform duration-[2500ms]"
+                    />
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#ee4f7e33] via-[#4cb7e533] to-transparent"></div>
+
+                    <div className="relative z-10 max-w-3xl mx-auto px-6 text-white">
+                        <h1 className="text-4xl md:text-6xl font-extrabold drop-shadow-lg tracking-tight">
+                            {course.name}
+                        </h1>
+                        <p className="mt-4 text-gray-200 max-w-xl mx-auto text-lg leading-relaxed drop-shadow">
+                            {course.description}
+                        </p>
+                        <div className="flex justify-center gap-8 mt-8">
+                            <div className="flex items-center gap-2 text-gray-100 bg-white/40 px-3 py-2 rounded-full backdrop-blur-md shadow-md">
+                                <Calendar className="w-5 h-5 text-codedrift-pink" />
+                                <span className="text-sm font-medium">{course.duration}</span>
+                            </div>
+                            {course.syllabus_available && (
+                                <div className="flex items-center gap-2 text-gray-100 bg-white/40 px-3 py-2 rounded-full backdrop-blur-md shadow-md">
+                                    <Award className="w-5 h-5 text-codedrift-blue" />
+                                    <span className="text-sm font-medium">
+                                        Professional Certificate
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </section>
+
+                {/* ✅ Floating Course Image */}
+                <div className="flex justify-center -mt-20 mb-14">
+                    <img
+                        src={`/images/${course.image}`}
+                        alt={course.name}
+                        className="rounded-3xl shadow-2xl max-w-md w-full border-4 border-white hover:scale-105 transition-transform duration-500 hover:shadow-pink-200"
+                    />
+                </div>
+
+                {/* ✅ Glassmorphic Details */}
+                <div className="max-w-5xl mx-auto px-4">
+                    <article
+                        className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-xl p-8 md:p-12 leading-relaxed
+                prose max-w-none prose-p:leading-relaxed prose-li:leading-relaxed
+                prose-headings:text-codedrift-indigo prose-strong:text-gray-900 hover:shadow-2xl hover:scale-[1.01] transition-all duration-500"
+                        dangerouslySetInnerHTML={{ __html: course.course_info_html }}
+                    />
+                </div>
+
+                {/* ✅ CTA */}
+                <div className="mt-16 text-center pb-20">
+                    <Link
+                        to="/courses"
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-[#ee4f7e] to-[#4cb7e5] text-white font-semibold px-10 py-4 rounded-full shadow-lg hover:shadow-2xl hover:scale-110 transition-all"
+                    >
+                        <ArrowLeft className="w-4 h-4" /> Back to All Courses
+                    </Link>
+                </div>
+            </div>
+        </div>
+
+    );
+};
+
+export default CoursePage;

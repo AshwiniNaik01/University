@@ -9,11 +9,12 @@ import App from './App';
  */
 export function render(url, options) {
     return renderToPipeableStream(
-        <StrictMode>
+        // <StrictMode>
             <StaticRouter location={url}>
                 <App />
             </StaticRouter>
-        </StrictMode>,
+        // </StrictMode>
+        ,
         options
     );
 }
