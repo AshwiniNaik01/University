@@ -49,7 +49,7 @@ exports.handler = async (event) => {
         </head>
         <body>
           <div id="app">${appHtml}</div>
-          <script type="module" src="/assets/index.js"></script>
+          <script type="module" src="/assets/index.js"></script>      
         </body>
       </html>
     `

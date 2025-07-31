@@ -20,6 +20,7 @@ import MentorPage from '../pages/mentors/MentorPage';
 import PageNotFound from '../pages/errors/PageNotFound';
 import TestimonialsPage from '../pages/testimonials/TestimonialsPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
+import MentorsPage from '../pages/mentors/MentorsPage';
 
 const AppRouters = () => (
     <Routes>
@@ -51,6 +52,7 @@ const AppRouters = () => (
             <Route path="/feedback" element={<FeedbackPage />} />
 
             <Route path='/mentors'>
+                <Route path='' element={<MentorsPage/>}/>
                 <Route path='m/:mentorId' element={<MentorPage />} />
             </Route>
 

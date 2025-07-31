@@ -144,7 +144,7 @@ const CoursePage = () => {
     useEffect(() => {
         setShowEnrollStrip(!inView)
     }, [inView])
- 
+
 
     if (!course) {
         return (
@@ -349,9 +349,12 @@ const CoursePage = () => {
                     <div className="mt-16 text-center pb-20">
                         <Button
                             as="link"
-                            to="/courses"
+                            to="/courses#courses-list"
                         >
-                            <ArrowLeft className="w-4 h-4" /> Explore Courses
+                            <ArrowLeft className="size-4" />
+                            <span className="ml-2">
+                                Explore Courses
+                            </span>
                         </Button>
                     </div>
                 </div>

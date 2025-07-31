@@ -1,4 +1,5 @@
 import { GraduationCap } from 'lucide-react'
+import { Button } from '../utility/Button'
 
 const EnrollStrip = ({ course, handleEnrollCourse }) => {
 
@@ -24,16 +25,17 @@ const EnrollStrip = ({ course, handleEnrollCourse }) => {
                         </p>
 
                         {/* Right: Enroll Button */}
-                        <button
+                        <Button
                             onClick={handleEnrollCourse}
-                            className="relative bg-codedrift-pink hover:bg-codedrift-indigo-dark text-white font-semibold text-sm sm:text-base px-6 py-1 rounded-full shadow-md transition-all group">
+                            // className="relative bg-codedrift-pink hover:bg-codedrift-indigo-dark text-white font-semibold text-sm sm:text-base px-6 py-1 rounded-full shadow-md transition-all group"
+                            >
                             Enroll
                             <span className="hidden sm:inline">
-                                {" "} Now
+                                &nbsp;Now
                             </span>
                             {/* subtle glow ring */}
                             <span className="absolute inset-0 rounded-full ring-2 ring-transparent group-hover:ring-codedrift-blue/30 transition duration-300"></span>
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

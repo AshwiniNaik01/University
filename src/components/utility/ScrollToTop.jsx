@@ -39,12 +39,12 @@ const ScrollToTop = () => {
             <button
                 onClick={handleClick}
                 title="Back to Top"
-                className={`transition-all duration-300 transform ${showButton
-                    ? 'opacity-100 scale-100 pointer-events-auto'
-                    : 'opacity-0 scale-90 pointer-events-none'
+                className={`transition-all duration-300 transform cursor-pointer ${showButton
+                    ? 'opacity-100 scale-100'
+                    : 'opacity-0 scale-90'
                     } bg-white text-codedrift-indigo border border-gray-600 p-3 rounded-full shadow-lg animate-pulse`}
             >
-                <ArrowUp className="w-5 h-5" />
+                <ArrowUp className="size-5" />
             </button>
 
         </div>
