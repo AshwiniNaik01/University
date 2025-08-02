@@ -90,7 +90,7 @@ const Navbar = () => {
                                     Login
                                 </Button>
 
-                                <Button as="link" to="/register" variant="pink" size="md" className="px-4 py-2">
+                                <Button as="link" to="/auth/register" variant="pink" size="md" className="px-4 py-2">
                                     Register
                                 </Button>
                             </div>
