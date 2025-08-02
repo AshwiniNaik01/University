@@ -84,13 +84,16 @@ const Navbar = () => {
                                 </NavLink>
                             ))}
 
-                            <Button onClick={handleOpenLoginModal} variant="blue" size="md" className="px-4 py-2">
-                                Login
-                            </Button>
 
-                            <Button as="link" to="register" variant="indigo" size="md" className="px-4 py-2">
-                                Register
-                            </Button>
+                            <div className="flex items-center gap-6">
+                                <Button onClick={handleOpenLoginModal} variant="indigo" size="md" className="px-4 py-2">
+                                    Login
+                                </Button>
+
+                                <Button as="link" to="/auth/register" variant="pink" size="md" className="px-4 py-2">
+                                    Register
+                                </Button>
+                            </div>
                         </div>
 
                         {/* ✅ Mobile Right Side (Courses + Hamburger) */}
@@ -168,11 +171,11 @@ const Navbar = () => {
                                     </NavLink>
                                 ))}
 
-                                <Button onClick={handleOpenLoginModal} variant="blue" size="md" className="px-8 py-2 w-fit">
+                                <Button onClick={handleOpenLoginModal} variant="indigo" size="md" className="px-8 py-2 w-fit">
                                     Login
                                 </Button>
 
-                                <Button as="link" to="register" variant="indigo" size="md" className="px-8 py-2 w-fit">
+                                <Button as="link" to="register" variant="blue" size="md" className="px-8 py-2 w-fit">
                                     Register
                                 </Button>
                             </div>

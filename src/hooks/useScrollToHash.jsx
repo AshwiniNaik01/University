@@ -19,7 +19,7 @@ import { useLocation } from "react-router-dom";
  */
 const useScrollToHash = () => {
     const location = useLocation();
-    const NAVBAR_OFFSET = 80; // Adjust based on your header height
+    const NAVBAR_OFFSET = 70; // Adjust based on your header height
 
     useEffect(() => {
         if (!location.hash) return;

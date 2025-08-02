@@ -79,7 +79,7 @@ const CoursesPage = () => {
                                     <span>
                                         Explore Courses
                                     </span>
-                                    <ChevronDown className="w-5 h-5 text-codedrift-pink group-hover:text-codedrift-indigo animate-bounce" />
+                                    <ChevronDown className="size-5 text-codedrift-pink group-hover:text-codedrift-indigo animate-bounce" />
                                 </div>
                             </Button>
 

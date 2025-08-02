@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { noImageAvailableFallback } from "../../access-assets/fallbackImages";
 
 const Image = ({
     src = "",
@@ -6,17 +7,18 @@ const Image = ({
     className = "",
     width,
     height,
-    fallback = "/fallback-image.png",
+    fallback,
+    loading = 'lazy',
     ...rest
 }) => {
     // ✅ Use the same initial render on server & client
-    const initialSrc = src || fallback;
-    const [imgSrc, setImgSrc] = useState(initialSrc);
+    
+    const [imgSrc, setImgSrc] = useState(src);
 
     // ✅ Update only when the `src` changes on the client
     useEffect(() => {
-        setImgSrc(src || fallback);
-    }, [src, fallback]);
+        setImgSrc(src);
+    }, [src]);
 
     return (
         <img
@@ -25,8 +27,8 @@ const Image = ({
             className={`object-contain ${className}`}
             width={width}
             height={height}
-            loading="lazy"
-            onError={() => setImgSrc(fallback)}
+            loading={loading}
+            onError={() => setImgSrc(fallback || noImageAvailableFallback)}
             {...rest}
         />
     );

@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Quote, Linkedin } from "lucide-react";
+import { Quote, Linkedin, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import Image from "../utility/Image";
+import { noUserFoundFallback } from "../../access-assets/fallbackImages";
 
 const Testimonial = ({ testimonial }) => {
     return (
@@ -27,6 +28,7 @@ const Testimonial = ({ testimonial }) => {
                 <Image
                     src={testimonial.image}
                     alt={testimonial.name}
+                    fallback={noUserFoundFallback}
                     className="w-16 h-16 object-cover rounded-full border-4 border-codedrift-indigo shadow-md -mt-12 mb-4"
                 />
 
@@ -47,6 +49,14 @@ const Testimonial = ({ testimonial }) => {
             <p className="text-gray-700 text-sm italic mb-3 leading-relaxed max-w-xs">
                 “{testimonial.quote}”
             </p>
+
+            {/* ⭐ Single Star + Rating */}
+            {(
+                <div className="mb-2 flex items-center gap-1 text-sm text-gray-700 font-medium">
+                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                    <span>{4.8 || testimonial.rating.toFixed(1)} / 5</span>
+                </div>
+            )}
 
             {/* Name and Role */}
             <div className="mb-1">
