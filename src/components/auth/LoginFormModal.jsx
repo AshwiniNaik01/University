@@ -1,190 +1,227 @@
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import { Modal } from "../utility/Modal"
-import { codedriftLogoImage } from "../../access-assets/images"
-import { Eye, EyeOff } from "lucide-react"
-import { Button } from "../utility/Button"
+import { useState, useEffect } from "react";
+import { Modal } from "../utility/Modal";
+import { codedriftLogoImage } from "../../access-assets/images";
+import { Button } from "../utility/Button";
 import Image from "../utility/Image";
-import { useLocation } from "react-router"
-
+import { sendOtp, verifyOtp } from "./loginApi";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { toast } from "react-toastify";
 
 const LoginFormModal = ({ open, setOpen }) => {
+  const [referenceId, setReferenceId] = useState(null);
+  const [mode, setMode] = useState("default"); // default → input mobile, otp → enter otp
+  const [loading, setLoading] = useState(false);
 
-    // const location = useLocation()
-
-    // // ✅ Close modal on route change
-    // useEffect(() => {
-    //     if (open) {
-    //         setOpen(false)
-    //     }
-    // }, [location.pathname])
-
-    // < 'default' | 'otp' >
-    const [mode, setMode] = useState('default')
-    const [showPassword, setShowPassword] = useState(false)
-
-    const handleLoginWithPassword = (e) => {
-        e.preventDefault()
-        alert('Logged in with Password!')
-        setOpen(false)
+  // ✅ Clear fields when modal closes
+  useEffect(() => {
+    if (!open) {
+      formik.resetForm();
+      otpFormik.resetForm();
+      setReferenceId(null);
+      setMode("default");
+      setLoading(false);
     }
+  }, [open]);
 
-    const handleSendOTP = (e) => {
-        e.preventDefault()
-        // Simulate sending OTP
-        setTimeout(() => {
-            setMode('otp')
-        }, 300)
-    }
+  // Yup Schemas
+  const mobileSchema = Yup.object({
+    mobileNo: Yup.string()
+      .matches(/^[0-9]{10}$/, "Mobile number must be 10 digits")
+      .required("Mobile number is required"),
+  });
 
-    const handleLoginWithOTP = (e) => {
-        e.preventDefault()
-        alert('Logged in with OTP!')
-        setOpen(false)
-    }
+  const otpSchema = Yup.object({
+    otp: Yup.string()
+      .matches(/^[0-9]{6}$/, "OTP must be 6 digits")
+      .required("OTP is required"),
+  });
 
-    return (
-        <Modal isOpen={open} onClose={() => setOpen(false)} variant="sm" scrollableBody={false}>
-            <Modal.Body>
-                {/* Logo */}
-                <div className="flex justify-center mb-4">
-                    <Image src={codedriftLogoImage} alt="CodeDrift Logo" className="w-16 h-16 rounded-full shadow-md" />
-                </div>
+  // Mobile Form
+  const formik = useFormik({
+    initialValues: { mobileNo: "" },
+    validationSchema: mobileSchema,
+    onSubmit: async (values) => {
+      try {
+        setLoading(true);
+        const res = await sendOtp(values.mobileNo);
+        if (res.success) {
+          setReferenceId(res.data.reference_id);
+          setMode("otp");
+          toast.success(res.message || "OTP sent successfully");
+        } else {
+          toast.error(res.success || "Failed to send OTP");
+        }
+      } catch (err) {
+        toast.error(err.message || "Failed to send OTP");
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
 
-                {/* Heading */}
-                <div className="text-center mb-4">
-                    <h2 className="text-xl font-bold text-gray-800">Login to CodeDrift</h2>
-                    <p className="text-sm text-gray-500">
-                        {mode === 'default' ? 'Use your email or mobile with password' : 'Enter the OTP sent to your number'}
-                    </p>
-                </div>
+  // OTP Form
+  const otpFormik = useFormik({
+    initialValues: { otp: "" },
+    validationSchema: otpSchema,
+    onSubmit: async (values) => {
+      try {
+        setLoading(true);
+        const res = await verifyOtp(referenceId, values.otp);
+        if (res.success) {
+          toast.success(res.message || "Login successful");
+          setOpen(false); // close modal
+        } else {
+          toast.error(res.success || "Invalid OTP");
+        }
+      } catch (err) {
+        toast.error(err.message || "Failed to verify OTP");
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
 
-                {/* FORM START */}
-                {mode === 'default' && (
-                    <form onSubmit={handleLoginWithPassword} className="space-y-4">
-                        {/* Email/Mobile */}
-                        <div>
-                            <label className="block text-gray-700 text-sm mb-1">
-                                Mobile or Email <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Enter mobile or email"
-                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
-                                maxLength={40}
-                                required
-                            />
-                        </div>
+  return (
+    <Modal
+      isOpen={open}
+      onClose={() => setOpen(false)}
+      variant="sm"
+      scrollableBody={false}
+    >
+      <Modal.Body>
+        {/* Logo */}
+        <div className="flex justify-center mb-4">
+          <Image
+            src={codedriftLogoImage}
+            alt="CodeDrift Logo"
+            className="w-16 h-16 rounded-full shadow-md"
+          />
+        </div>
 
-                        {/* Password */}
-                        <div className="relative">
-                            <label className="block text-gray-700 text-sm mb-1">
-                                Password <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                placeholder="Enter password"
-                                className="w-full px-4 py-2.5 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
-                                maxLength={20}
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword((prev) => !prev)}
-                                className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
-                                aria-label="Toggle password visibility"
-                            >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
-                        </div>
+        {/* Heading */}
+        <div className="text-center mb-4">
+          <h2 className="text-xl font-bold text-gray-800">
+            Login to CodeDrift
+          </h2>
+          <p className="text-sm text-gray-500">
+            {mode === "default"
+              ? "Enter your mobile number to receive an OTP"
+              : "Enter the OTP sent to your number"}
+          </p>
+        </div>
 
-                        {/* Action Buttons */}
-                        <div className="space-y-2 pt-2">
-                            <Button type="submit" variant="pink" size="md" className="w-full">
-                                Login
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="md"
-                                className="w-full text-codedrift-indigo border-codedrift-indigo"
-                                onClick={handleSendOTP}
-                            >
-                                Login with OTP
-                            </Button>
-                        </div>
+        {/* FORM START */}
+        {mode === "default" && (
+          <form onSubmit={formik.handleSubmit} className="space-y-4">
+            {/* Mobile Input */}
+            <div>
+              <label className="block text-gray-700 text-sm mb-1">
+                Mobile Number <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="mobileNo"
+                value={formik.values.mobileNo}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder="Enter mobile number"
+                className={`w-full px-4 py-2.5 rounded-lg border ${
+                  formik.touched.mobileNo && formik.errors.mobileNo
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } focus:ring-2 focus:ring-codedrift-pink outline-none`}
+                maxLength={10}
+              />
+              {formik.touched.mobileNo && formik.errors.mobileNo && (
+                <p className="text-red-500 text-xs mt-1">
+                  {formik.errors.mobileNo}
+                </p>
+              )}
+            </div>
 
-                        {/* Links */}
-                        <div className="flex justify-between text-sm pt-2">
-                            <Link to="/auth/forgot-password" className="text-codedrift-indigo hover:underline">
-                                Forgot Password?
-                            </Link>
-                            <Link to="/auth/register" className="text-codedrift-pink hover:underline">
-                                Sign Up
-                            </Link>
-                        </div>
-                    </form>
-                )}
+            {/* Send OTP Button */}
+            <Button
+              type="submit"
+              variant="pink"
+              size="md"
+              className="w-full"
+              disabled={loading}
+            >
+              {loading ? "Sending OTP..." : "Send OTP"}
+            </Button>
+          </form>
+        )}
 
-                {/* OTP FLOW */}
-                {mode === 'otp' && (
-                    <form onSubmit={handleLoginWithOTP} className="space-y-4">
-                        {/* Email/Mobile - preserved for context (disabled) */}
-                        <div>
-                            <label className="block text-gray-700 text-sm mb-1">
-                                Mobile or Email
-                            </label>
-                            <input
-                                type="text"
-                                className="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-500 border border-gray-200"
-                            />
-                        </div>
+        {/* OTP FLOW */}
+        {mode === "otp" && (
+          <form onSubmit={otpFormik.handleSubmit} className="space-y-4">
+            {/* Mobile (readonly) */}
+            <div>
+              <label className="block text-gray-700 text-sm mb-1">Mobile</label>
+              <input
+                type="text"
+                value={formik.values.mobileNo}
+                readOnly
+                className="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-500 border border-gray-200"
+              />
+            </div>
 
-                        {/* OTP Input */}
-                        <div>
-                            <label className="block text-gray-700 text-sm mb-1">
-                                OTP <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Enter OTP"
-                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
-                                maxLength={6}
-                                required
-                            />
-                        </div>
+            {/* OTP Input */}
+            <div>
+              <label className="block text-gray-700 text-sm mb-1">
+                OTP <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="otp"
+                value={otpFormik.values.otp}
+                onChange={otpFormik.handleChange}
+                onBlur={otpFormik.handleBlur}
+                placeholder="Enter OTP"
+                className={`w-full px-4 py-2.5 rounded-lg border ${
+                  otpFormik.touched.otp && otpFormik.errors.otp
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } focus:ring-2 focus:ring-codedrift-pink outline-none`}
+                maxLength={6}
+              />
+              {otpFormik.touched.otp && otpFormik.errors.otp && (
+                <p className="text-red-500 text-xs mt-1">
+                  {otpFormik.errors.otp}
+                </p>
+              )}
+            </div>
 
-                        {/* OTP Actions */}
-                        <div className="space-y-2 pt-2">
-                            <Button type="submit" variant="pink" size="md" className="w-full">
-                                Login with OTP
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="md"
-                                className="w-full text-codedrift-indigo border-codedrift-indigo"
-                                onClick={() => setMode('default')}
-                            >
-                                Use Password Instead
-                            </Button>
-                        </div>
+            {/* OTP Actions */}
+            <div className="space-y-2 pt-2">
+              <Button
+                type="submit"
+                variant="pink"
+                size="md"
+                className="w-full"
+                disabled={loading}
+              >
+                {loading ? "Verifying..." : "Login with OTP"}
+              </Button>
+              {/* <Button
+                type="button"
+                variant="outline"
+                size="md"
+                className="w-full text-codedrift-indigo border-codedrift-indigo"
+                onClick={() => {
+                  setMode("default");
+                  otpFormik.resetForm();
+                }}
+              >
+                Resend OTP
+              </Button> */}
+            </div>
+          </form>
+        )}
+      </Modal.Body>
+    </Modal>
+  );
+};
 
-                        {/* Links */}
-                        <div className="flex justify-between text-sm pt-2">
-                            <Link to="/forgot-password" className="text-codedrift-indigo hover:underline">
-                                Trouble Logging In?
-                            </Link>
-                            <Link to="/auth/register" className="text-codedrift-pink hover:underline">
-                                Sign Up
-                            </Link>
-                        </div>
-                    </form>
-                )}
-            </Modal.Body>
-        </Modal>
-    )
-}
-
-
-export default LoginFormModal
+export default LoginFormModal;

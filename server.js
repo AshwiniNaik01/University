@@ -123,6 +123,9 @@ const ABORT_DELAY = 10000;
 const apiUrl = process.env.VITE_APP_API_BASE_URL;
 console.log('✅ Loaded API Base URL from .env:', apiUrl);
 
+console.log("SSR Backend API URL (Node):", process.env.VITE_APP_API_BASE_URL);
+console.log("Server-only secret:", process.env.SSR_SECRET);
+
 // Cached production assets
 const templateHtml = isProduction
   ? await fs.readFile('./dist/client/index.html', 'utf-8')

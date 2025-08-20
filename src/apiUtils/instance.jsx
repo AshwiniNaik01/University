@@ -6,19 +6,19 @@ import axios from "axios";
  * @type {import('axios').AxiosInstance}
  *
  * @description
- * - Automatically sets base URL for all API requests.
+ * - Automatically sets base URL for all API requests from .env
  * - Adds common headers such as `Content-Type` and Authorization (if needed).
- * - Can be extended to include interceptors for error handling or auth tokens.
+ * - Can be extended with interceptors for error handling or auth tokens.
  */
-const instance = axios.create({
-    baseURL: process.env.VITE_APP_API_BASE_URL, // ✅ Replace with your actual base API URL
-    timeout: 10000,                     // ✅ 10 seconds timeout
-    headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        // Authorization: `Bearer ${token}`  // 🔐 Optional: dynamically add token via interceptor
-    },
-    withCredentials: true,              // ✅ Sends cookies if dealing with authentication
+
+const api = axios.create({
+  baseURL: `${import.meta.env.VITE_APP_API_BASE_URL}/api`,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+  withCredentials: true,
 });
 
-export { instance };
+export { api };

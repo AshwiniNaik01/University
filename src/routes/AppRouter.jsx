@@ -15,12 +15,18 @@ import RefundPolicyPage from '../pages/policies/RefundPolicyPage';
 import TermsConditionsPage from '../pages/policies/TermsConditionsPage';
 import CoursePage from '../pages/courses/CoursePage';
 import BookListingPage from '../pages/contact/BookListingPage';
-import BookDetailsPage from '../pages/contact/BookDetailsPage';
+// import BookDetailsPage from '../pages/contact/BookDetailsPage';
 import MentorPage from '../pages/mentors/MentorPage';
 import PageNotFound from '../pages/errors/PageNotFound';
 import TestimonialsPage from '../pages/testimonials/TestimonialsPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import MentorsPage from '../pages/mentors/MentorsPage';
+import EventDetailsPage from '../components/programs/EventDetailsPage';
+import WebinarDetailsPage from '../components/programs/WebinarDetailsPage';
+import WorkshopDetails from '../components/programs/WorkshopDetails';
+import InternshipDetailsPage from '../components/programs/InternshipDetailsPage';
+// import EventDetailsPage from '../pages/contact/EventDetailsPage';
+// import WebinarDetailsPage from '../pages/contact/WebinarDetailsPage';
 
 const AppRouters = () => (
     <Routes>
@@ -40,8 +46,17 @@ const AppRouters = () => (
             <Route path='/book'>
                 <Route index element={<BookDemoPage />} /> {/* or BookCategoryPage */}
                 <Route path=':categorySlug' element={<BookListingPage />} />
-                <Route path=':categorySlug/:itemId' element={<BookDetailsPage />} />
+                {/* <Route path=':categorySlug/:itemId' element={<BookDetailsPage />} /> */}
+                <Route path=":categorySlug/:eventId" element={<EventDetailsPage />} />
+            {/* workshop details */}
+  <Route path="workshop/:eventId" element={<WorkshopDetails />} />
+
             </Route>
+                 <Route path="/webinar/:webinarId" element={<WebinarDetailsPage />} />
+                 <Route path="/internship-session/:sessionId" element={<InternshipDetailsPage />} />
+
+                 {/* <Route path="/internship/:sessionId" element={<InternshipDetailsPage />} /> */}
+
 
 
             <Route path='/auth'>
