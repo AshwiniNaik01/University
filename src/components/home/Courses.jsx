@@ -117,7 +117,7 @@ const Courses = () => {
 
           {/* Course Cards */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
-            {courses.map((course, i) => (
+            {courses.slice(0, 3).map((course, i) => (
               <motion.div
                 key={i}
                 className="bg-white/30 p-8 rounded-2xl border border-gray-100 shadow-md hover:shadow-2xl transition relative overflow-hidden backdrop-blur"
