@@ -28,6 +28,7 @@ import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getCookie } from "../../apiUtils/cookieUtils"; // 👈 import
 
 const EnrollFormModal = ({ open, setOpen, course }) => {
   const enrollSchema = Yup.object().shape({
@@ -78,14 +79,18 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
                 .filter(Boolean)
                 .join(" ");
 
+ const studentId = getCookie("studentId"); // 👈 get studentId from cookie
+
+
               try {
                 const response = await api.post("/enrollments/enroll", {
+                   studentId, // 👈 Include in payload
                   fullName,
                   mobileNo: values.mobileNo,
                   email: values.email,
                   collegeName: values.collegeName,
                   selectedProgram: course?.title || "Unknown Program",
-                  enrolledCourses: course?._id,
+                  course: course?._id,
                 });
 
                 if (response.data.success) {

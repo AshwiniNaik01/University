@@ -87,7 +87,7 @@ const InternshipDetailsPage = () => {
           initial={{ y: 60, opacity: 0, scale: 0.95 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-white/95 backdrop-blur-3xl rounded-4xl p-14 mb-20 shadow-2xl border-2 border-white/30 relative overflow-hidden group hover:shadow-3xl transition-all duration-700"
+          className="bg-white/95 backdrop-blur-3xl rounded-4xl p-10 mb-20 shadow-2xl border-2 border-white/30 relative overflow-hidden group hover:shadow-3xl transition-all duration-700"
         >
           {/* Enhanced Neon Border */}
           <div className="absolute inset-0 rounded-4xl bg-gradient-to-r from-indigo-500/30 via-purple-500/30 to-pink-500/30 opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>

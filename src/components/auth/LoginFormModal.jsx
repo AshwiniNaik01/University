@@ -7,6 +7,8 @@ import { sendOtp, verifyOtp } from "./loginApi";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
+import { setCookie } from "../../apiUtils/cookieUtils";
+
 
 const LoginFormModal = ({ open, setOpen }) => {
   const [referenceId, setReferenceId] = useState(null);
@@ -61,26 +63,57 @@ const LoginFormModal = ({ open, setOpen }) => {
   });
 
   // OTP Form
+  // const otpFormik = useFormik({
+  //   initialValues: { otp: "" },
+  //   validationSchema: otpSchema,
+  //   onSubmit: async (values) => {
+  //     try {
+  //       setLoading(true);
+  //       const res = await verifyOtp(referenceId, values.otp);
+  //       if (res.success) {
+  //         toast.success(res.message || "Login successful");
+  //         setOpen(false); // close modal
+  //       } else {
+  //         toast.error(res.success || "Invalid OTP");
+  //       }
+  //     } catch (err) {
+  //       toast.error(err.message || "Failed to verify OTP");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   },
+  // });
+
   const otpFormik = useFormik({
-    initialValues: { otp: "" },
-    validationSchema: otpSchema,
-    onSubmit: async (values) => {
-      try {
-        setLoading(true);
-        const res = await verifyOtp(referenceId, values.otp);
-        if (res.success) {
-          toast.success(res.message || "Login successful");
-          setOpen(false); // close modal
-        } else {
-          toast.error(res.success || "Invalid OTP");
-        }
-      } catch (err) {
-        toast.error(err.message || "Failed to verify OTP");
-      } finally {
-        setLoading(false);
+  initialValues: { otp: "" },
+  validationSchema: otpSchema,
+  onSubmit: async (values) => {
+    try {
+      setLoading(true);
+      const res = await verifyOtp(referenceId, values.otp);
+
+      if (res.success && res.data) {
+        const { studentId, mobileNo } = res.data;
+
+       setCookie('studentId', res.data.studentId);
+       console.log("Student Id",studentId);
+setCookie('mobileNo', res.data.mobileNo);
+        // ✅ Optional: Store both in one cookie as JSON
+        // Cookies.set("studentData", JSON.stringify({ studentId, mobileNo }), { expires: 7 });
+
+        toast.success(res.message || "Login successful");
+        setOpen(false); // close modal
+      } else {
+        toast.error(res.message || "Invalid OTP");
       }
-    },
-  });
+    } catch (err) {
+      toast.error(err.message || "Failed to verify OTP");
+    } finally {
+      setLoading(false);
+    }
+  },
+});
+
 
   return (
     <Modal
