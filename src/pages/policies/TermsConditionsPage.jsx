@@ -10,7 +10,7 @@ const TermsConditionsPage = () => {
           Terms & Conditions
         </h1>
         <p className="max-w-3xl mx-auto text-gray-600 text-lg">
-          Welcome to <span className="text-codedrift-pink font-semibold">Code Drift Academy</span>!  
+          Welcome to <span className="text-codedrift-pink font-semibold">Code Drift</span>!  
           These Terms and Conditions govern the use of our services, including enrolling in and completing online courses.
         </p>
       </section>
@@ -23,7 +23,7 @@ const TermsConditionsPage = () => {
               1. Introduction
             </h2>
             <p>
-              The Terms and Conditions ("Agreement") govern the use of educational services provided by Code Drift Academy 
+              The Terms and Conditions ("Agreement") govern the use of educational services provided by Code Drift 
               for online software courses. By enrolling in or using our services, applicants agree to comply with these terms.
             </p>
           </div>
@@ -50,7 +50,7 @@ const TermsConditionsPage = () => {
               <li>No age limits! Whether you’re 18 or 80, if you’re excited about programming, we want you on board!</li>
               <li>Just bring your curiosity and a passion for learning — no need for technical knowledge upfront.</li>
               <li>
-                At Code Drift Academy, we believe learning programming should be fun, creative, and all about the journey!
+                At Code Drift, we believe learning programming should be fun, creative, and all about the journey!
               </li>
             </ul>
           </div>
@@ -62,7 +62,7 @@ const TermsConditionsPage = () => {
             <p>When enrolling in a course, applicants must:</p>
             <ul className="list-disc pl-6 space-y-2 mt-2">
               <li>Complete the registration process, including payment if applicable.</li>
-              <li>Agree to the course schedule and any deadlines set by the academy.</li>
+              <li>Agree to the course schedule and any deadlines set by the class.</li>
               <li>Ensure they have access to necessary tools and technologies (e.g., internet access, a computer with required software, etc.).</li>
             </ul>
           </div>
@@ -75,7 +75,7 @@ const TermsConditionsPage = () => {
               <li>Engaging in fraudulent or deceptive practices, such as sharing credentials or misrepresenting qualifications.</li>
               <li>Attempting to gain unauthorized access to course materials, assessments, or accounts.</li>
               <li>Sharing or distributing course materials without permission.</li>
-              <li>Engaging in any activity that violates intellectual property laws or academy policies.</li>
+              <li>Engaging in any activity that violates intellectual property laws or policies.</li>
             </ul>
           </div>
 
@@ -126,7 +126,7 @@ const TermsConditionsPage = () => {
               10. Termination
             </h2>
             <p>
-              Code Drift Academy reserves the right to suspend or terminate your access if you violate these Terms, including engaging 
+              Code Drift reserves the right to suspend or terminate your access if you violate these Terms, including engaging 
               in prohibited activities or failing to comply with payment requirements.
             </p>
           </div>
@@ -136,7 +136,7 @@ const TermsConditionsPage = () => {
               11. Disclaimer of Liability
             </h2>
             <p>
-              Code Drift Academy does not guarantee employment or specific career outcomes. Success depends on individual efforts, 
+              Code Drift does not guarantee employment or specific career outcomes. Success depends on individual efforts, 
               external factors, and industry conditions.
             </p>
           </div>

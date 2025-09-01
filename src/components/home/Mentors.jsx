@@ -52,20 +52,20 @@ export default function Mentors() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
               {mentorsList.slice(0, 3).map((mentor) => (
-                <Link to={`mentors/m/${mentor._id}`} key={mentor._id}>
-                  <Mentor
-                    mentor={{
-                      img: `${DIR.TRAINER_PROFILE_PHOTO}${
-                        mentor.profilePhotoTrainer || "default-avatar.png"
-                      }`,
-                      name: mentor.fullName,
-                      title: mentor.highestQualification,
-                      bio: mentor.summary,
-                      linkedin: mentor.linkedin || "#",
-                      id: mentor._id,
-                    }}
-                  />
-                </Link>
+                <Mentor
+                  key={mentor._id}
+                  mentor={{
+                    img: `${DIR.TRAINER_PROFILE_PHOTO}${
+                      mentor.profilePhotoTrainer || "default-avatar.png"
+                    }`,
+                    name: mentor.fullName,
+                    title: mentor.highestQualification,
+                    bio: mentor.summary,
+                    linkedin: mentor.linkedin || "#",
+                    id: mentor._id,
+                    link: `mentors/m/${mentor._id}`, // pass the link as a prop
+                  }}
+                />
               ))}
             </div>
           )}

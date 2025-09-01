@@ -46,7 +46,7 @@ const TestimonialsPage = () => {
             <span className="absolute left-1/2 -bottom-1 w-2/3 h-1 bg-codedrift-gradient rounded-full transform -translate-x-1/2"></span>
           </h2>
           <p className="text-gray-600 max-w-xl mx-auto">
-            See what our learners say about their experience with Code Drift Academy.
+            See what our learners say about their experience with Code Drift.
           </p>
         </div>
 

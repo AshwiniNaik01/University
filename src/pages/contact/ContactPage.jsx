@@ -1,3 +1,283 @@
+// import { useState } from "react";
+// import { MapPin, Mail, Phone, Clock } from "lucide-react";
+// import { Button } from "../../components/utility/Button";
+// import { sendContactMessage } from "./contactApi";
+// import { toast } from "react-toastify";
+// import { useFormik } from "formik";
+// import * as Yup from "yup";
+// import { FaLinkedin, FaFacebookF, FaWhatsapp, FaInstagram } from 'react-icons/fa';
+
+
+// // ✅ Validation schema
+// const validationSchema = Yup.object({
+//   name: Yup.string()
+//     .min(3, "Name must be at least 3 characters")
+//     .required("Name is required"),
+//   email: Yup.string().email("Invalid email").required("Email is required"),
+//   phone: Yup.string()
+//     .matches(/^[0-9]{10}$/, "Phone must be 10 digits")
+//     .required("Phone is required"),
+//   message: Yup.string()
+//     .min(10, "Message must be at least 10 characters")
+//     .required("Message is required"),
+// });
+
+// const ContactPage = () => {
+//   const [loading, setLoading] = useState(false);
+
+//   const formik = useFormik({
+//     initialValues: { name: "", email: "", phone: "", message: "" },
+//     validationSchema,
+//     onSubmit: async (values, { resetForm, setErrors }) => {
+//       setLoading(true);
+//       try {
+//         const result = await sendContactMessage(values);
+
+//         if (result?.success === false && result?.errors) {
+//           // ✅ Backend field-level errors
+//           setErrors(result.errors);
+//         } else {
+//           toast.success(result?.message || "Message sent successfully!");
+//           resetForm();
+//         }
+//       } catch (err) {
+//         toast.error(err?.message || "Failed to send message");
+//       } finally {
+//         setLoading(false);
+//       }
+//     },
+//   });
+
+//   return (
+//     <footer className="py-16 px-4 bg-white">
+//       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
+//         {/* Contact Information */}
+//         {/* <div className="order-2 md:order-1">
+//           <h2 className="text-3xl font-bold text-codedrift-indigo mb-4">
+//             Let’s Connect
+//           </h2>
+//           <p className="text-gray-700 leading-relaxed mb-6">
+//             Fill out the form, and we’ll get back to you shortly.
+//           </p>
+//           <div className="space-y-4 text-gray-600">
+//             <p className="flex items-start gap-3">
+//               <MapPin className="w-5 h-5 text-codedrift-pink flex-shrink-0" />
+//               <span>
+//                 <strong>Locate Us:</strong>
+//                 <br />
+//                 Office No 10, Ramrajya 1, Near Bhonsala Military School,
+//                 College Road, Nashik - 422005
+//               </span>
+//             </p>
+//             <p className="flex items-center gap-3">
+//               <Mail className="w-5 h-5 text-codedrift-blue flex-shrink-0" />
+//               <span>
+//                 <strong>Email:</strong> admin@codedrift.co
+//               </span>
+//             </p>
+//             <p className="flex items-start gap-3">
+//               <Phone className="w-5 h-5 text-codedrift-indigo flex-shrink-0" />
+//               <span>
+//                 <strong>Phone:</strong>
+//                 <br />+91 8430101013 <br />+91 7591010101 <br />+91 8378010108
+//               </span>
+//             </p>
+//             <p className="flex items-center gap-3">
+//               <Clock className="w-5 h-5 text-codedrift-pink flex-shrink-0" />
+//               <span>
+//                 <strong>Working Hours:</strong> Mon – Sat, 9AM – 6PM
+//               </span>
+//             </p>
+//           </div>
+//         </div> */}
+
+
+//         <div className="order-2 md:order-1 space-y-8">
+//   <div>
+//     <h2 className="text-3xl font-bold text-codedrift-indigo mb-4">
+//       Let’s Connect
+//     </h2>
+//     <p className="text-gray-700 leading-relaxed mb-6">
+//       Fill out the form, and we’ll get back to you shortly.
+//     </p>
+//     <div className="space-y-4 text-gray-600">
+//       <p className="flex items-start gap-3">
+//         <MapPin className="w-5 h-5 text-codedrift-pink flex-shrink-0" />
+//         <span>
+//           <strong>Locate Us:</strong>
+//           <br />
+//           Office No 10, Ramrajya 1, Near Bhonsala Military School,
+//           College Road, Nashik - 422005
+//         </span>
+//       </p>
+//       <p className="flex items-center gap-3">
+//         <Mail className="w-5 h-5 text-codedrift-blue flex-shrink-0" />
+//         <span>
+//           <strong>Email:</strong> admin@codedrift.co
+//         </span>
+//       </p>
+//       <p className="flex items-start gap-3">
+//         <Phone className="w-5 h-5 text-codedrift-indigo flex-shrink-0" />
+//         <span>
+//           <strong>Phone:</strong>
+//           <br />+91 8430101013 <br />+91 7591010101 <br />+91 8378010108
+//         </span>
+//       </p>
+//       <p className="flex items-center gap-3">
+//         <Clock className="w-5 h-5 text-codedrift-pink flex-shrink-0" />
+//         <span>
+//           <strong>Working Hours:</strong> Mon – Sat, 9AM – 6PM
+//         </span>
+//       </p>
+//     </div>
+//   </div>
+
+//   {/* Add company description */}
+//   <div className="text-gray-700">
+//     <h3 className="text-xl font-semibold mb-2">About CodeDrift</h3>
+//     <p>
+//       CodeDrift is committed to providing quality training and
+//       innovative tech solutions. We empower learners and
+//       organizations with the latest skills and technology.
+//     </p>
+//   </div>
+
+//   {/* Add social links */}
+//   {/* <div>
+//     <h3 className="text-xl font-semibold mb-2">Follow Us</h3>
+//     <div className="flex gap-4 text-white">
+//       <a
+//         href="https://www.linkedin.com/company/codedrift"
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         className="p-3 rounded-full bg-[#0077b5] hover:bg-[#005582] transition-colors"
+//         aria-label="LinkedIn"
+//       >
+//         <FaLinkedin className="w-5 h-5" />
+//       </a>
+//       <a
+//         href="https://www.facebook.com/codedrift"
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         className="p-3 rounded-full bg-[#1877f2] hover:bg-[#0e58d7] transition-colors"
+//         aria-label="Facebook"
+//       >
+//         <FaFacebookF className="w-5 h-5" />
+//       </a>
+//       <a
+//         href="https://wa.me/yourwhatsappnumber"
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         className="p-3 rounded-full bg-[#25d366] hover:bg-[#1da851] transition-colors"
+//         aria-label="WhatsApp"
+//       >
+//         <FaWhatsapp className="w-5 h-5" />
+//       </a>
+//       <a
+//         href="https://instagram.com/codedrift"
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         className="p-3 rounded-full bg-[#e1306c] hover:bg-[#a22651] transition-colors"
+//         aria-label="Instagram"
+//       >
+//         <FaInstagram className="w-5 h-5" />
+//       </a>
+//     </div>
+//   </div> */}
+// </div>
+
+
+//         {/* Contact Form */}
+//         <div className="bg-gradient-to-r from-[#ee4f7e]/10 to-[#4cb7e5]/10 p-8 rounded-2xl shadow-md order-1 md:order-2">
+//           <form className="space-y-5" onSubmit={formik.handleSubmit}>
+//             {/* Name */}
+//             <div>
+//               <label className="block text-gray-700 text-sm mb-1">Name</label>
+//               <input
+//                 name="name"
+//                 value={formik.values.name}
+//                 onChange={formik.handleChange}
+//                 onBlur={formik.handleBlur}
+//                 type="text"
+//                 placeholder="Enter your name"
+//                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//               />
+//               {formik.touched.name && formik.errors.name && (
+//                 <p className="text-red-500 text-sm mt-1">{formik.errors.name}</p>
+//               )}
+//             </div>
+
+//             {/* Email */}
+//             <div>
+//               <label className="block text-gray-700 text-sm mb-1">Email</label>
+//               <input
+//                 name="email"
+//                 value={formik.values.email}
+//                 onChange={formik.handleChange}
+//                 onBlur={formik.handleBlur}
+//                 type="email"
+//                 placeholder="Enter your email"
+//                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//               />
+//               {formik.touched.email && formik.errors.email && (
+//                 <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
+//               )}
+//             </div>
+
+//             {/* Phone */}
+//             <div>
+//               <label className="block text-gray-700 text-sm mb-1">Phone</label>
+//               <input
+//                 name="phone"
+//                 value={formik.values.phone}
+//                 onChange={formik.handleChange}
+//                 onBlur={formik.handleBlur}
+//                 type="tel"
+//                 placeholder="Enter your phone number"
+//                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//               />
+//               {formik.touched.phone && formik.errors.phone && (
+//                 <p className="text-red-500 text-sm mt-1">{formik.errors.phone}</p>
+//               )}
+//             </div>
+
+//             {/* Message */}
+//             <div>
+//               <label className="block text-gray-700 text-sm mb-1">Message</label>
+//               <textarea
+//                 name="message"
+//                 value={formik.values.message}
+//                 onChange={formik.handleChange}
+//                 onBlur={formik.handleBlur}
+//                 rows="4"
+//                 placeholder="Write your message..."
+//                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//               ></textarea>
+//               {formik.touched.message && formik.errors.message && (
+//                 <p className="text-red-500 text-sm mt-1">{formik.errors.message}</p>
+//               )}
+//             </div>
+
+//             <Button
+//               size="md"
+//               type="submit"
+//               className="w-full"
+//               variant="pink"
+//               disabled={loading}
+//             >
+//               {loading ? "Sending..." : "Submit"}
+//             </Button>
+//           </form>
+//         </div>
+//       </div>
+//     </footer>
+//   );
+// };
+
+// export default ContactPage;
+
+
+
 import { useState } from "react";
 import { MapPin, Mail, Phone, Clock } from "lucide-react";
 import { Button } from "../../components/utility/Button";
@@ -5,16 +285,39 @@ import { sendContactMessage } from "./contactApi";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { FaLinkedin, FaFacebookF, FaWhatsapp, FaInstagram } from "react-icons/fa";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// ✅ Validation schema
+
+// Validation schema with Yup
 const validationSchema = Yup.object({
-  name: Yup.string()
-    .min(3, "Name must be at least 3 characters")
-    .required("Name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  phone: Yup.string()
-    .matches(/^[0-9]{10}$/, "Phone must be 10 digits")
-    .required("Phone is required"),
+name: Yup.string()
+  .min(3, "Name must be at least 3 characters")
+  .matches(/^[A-Za-z\s'-]+$/, "Name cannot contain numbers or special characters except spaces, apostrophes, and hyphens")
+  .required("Name is required"),
+
+  email: Yup.string()
+  .required("Email is required")
+  .matches(
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    "Please enter a valid email address"
+  ),
+phone: Yup.string()
+  .required("Phone is required")
+  .matches(/^[789]\d{9}$/, "Phone must be 10 digits and start with 7, 8, or 9")
+  .matches(/^[0-9]{10}$/, "Phone must be exactly 10 digits")
+  .test(
+    "not-repetitive",
+    "Phone number cannot be repetitive digits or common invalid numbers",
+    (value) => {
+      if (!value) return false;
+      if (/^(\d)\1{9}$/.test(value)) return false;
+      const invalids = ["1234567890", "0987654321", "1111111111", "2222222222"];
+      if (invalids.includes(value)) return false;
+      return true;
+    }
+  ),
   message: Yup.string()
     .min(10, "Message must be at least 10 characters")
     .required("Message is required"),
@@ -26,13 +329,14 @@ const ContactPage = () => {
   const formik = useFormik({
     initialValues: { name: "", email: "", phone: "", message: "" },
     validationSchema,
+    validateOnBlur: true,    // validate when leaving a field
+    validateOnChange: true, // optional: validate only on blur, not on each keystroke
     onSubmit: async (values, { resetForm, setErrors }) => {
       setLoading(true);
       try {
         const result = await sendContactMessage(values);
 
         if (result?.success === false && result?.errors) {
-          // ✅ Backend field-level errors
           setErrors(result.errors);
         } else {
           toast.success(result?.message || "Message sent successfully!");
@@ -47,116 +351,183 @@ const ContactPage = () => {
   });
 
   return (
+    <>
     <footer className="py-16 px-4 bg-white">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
-        {/* Contact Information */}
-        <div className="order-2 md:order-1">
-          <h2 className="text-3xl font-bold text-codedrift-indigo mb-4">
-            Let’s Connect
-          </h2>
-          <p className="text-gray-700 leading-relaxed mb-6">
-            Fill out the form, and we’ll get back to you shortly.
-          </p>
-          <div className="space-y-4 text-gray-600">
-            <p className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-codedrift-pink flex-shrink-0" />
-              <span>
-                <strong>Locate Us:</strong>
-                <br />
-                Office No 10, Ramrajya 1, Near Bhonsala Military School,
-                College Road, Nashik - 422005
-              </span>
+        <div className="order-2 md:order-1 space-y-8">
+          <div>
+            <h2 className="text-3xl font-bold text-codedrift-indigo mb-4">
+              Let’s Connect
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              Fill out the form, and we’ll get back to you shortly.
             </p>
-            <p className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-codedrift-blue flex-shrink-0" />
-              <span>
-                <strong>Email:</strong> admin@codedrift.co
-              </span>
-            </p>
-            <p className="flex items-start gap-3">
-              <Phone className="w-5 h-5 text-codedrift-indigo flex-shrink-0" />
-              <span>
-                <strong>Phone:</strong>
-                <br />+91 8430101013 <br />+91 7591010101 <br />+91 8378010108
-              </span>
-            </p>
-            <p className="flex items-center gap-3">
-              <Clock className="w-5 h-5 text-codedrift-pink flex-shrink-0" />
-              <span>
-                <strong>Working Hours:</strong> Mon – Sat, 9AM – 6PM
-              </span>
+            <div className="space-y-4 text-gray-600">
+              <p className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-codedrift-pink flex-shrink-0" />
+                <span>
+                  <strong>Locate Us:</strong>
+                  <br />
+                  Office No 10, Ramrajya 1, Near Bhonsala Military School,
+                  College Road, Nashik - 422005
+                </span>
+              </p>
+              <p className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-codedrift-blue flex-shrink-0" />
+                <span>
+                  <strong>Email:</strong> admin@codedrift.co
+                </span>
+              </p>
+              <p className="flex items-start gap-3">
+                <Phone className="w-5 h-5 text-codedrift-indigo flex-shrink-0" />
+                <span>
+                  <strong>Phone:</strong>
+                  <br />+91 8430101013 <br />+91 7591010101 <br />+91 8378010108
+                </span>
+              </p>
+              <p className="flex items-center gap-3">
+                <Clock className="w-5 h-5 text-codedrift-pink flex-shrink-0" />
+                <span>
+                  <strong>Working Hours:</strong> Mon – Sat, 9AM – 6PM
+                </span>
+              </p>
+            </div>
+          </div>
+
+          {/* Company description */}
+          <div className="text-gray-700">
+            <h3 className="text-xl font-semibold mb-2">About CodeDrift</h3>
+            <p>
+              CodeDrift is committed to providing quality training and
+              innovative tech solutions. We empower learners and
+              organizations with the latest skills and technology.
             </p>
           </div>
+
+          {/* Social Links (commented out) */}
+          {/* <div>
+            <h3 className="text-xl font-semibold mb-2">Follow Us</h3>
+            <div className="flex gap-4 text-white">
+              <a
+                href="https://www.linkedin.com/company/codedrift"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full bg-[#0077b5] hover:bg-[#005582] transition-colors"
+                aria-label="LinkedIn"
+              >
+                <FaLinkedin className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.facebook.com/codedrift"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full bg-[#1877f2] hover:bg-[#0e58d7] transition-colors"
+                aria-label="Facebook"
+              >
+                <FaFacebookF className="w-5 h-5" />
+              </a>
+              <a
+                href="https://wa.me/yourwhatsappnumber"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full bg-[#25d366] hover:bg-[#1da851] transition-colors"
+                aria-label="WhatsApp"
+              >
+                <FaWhatsapp className="w-5 h-5" />
+              </a>
+              <a
+                href="https://instagram.com/codedrift"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full bg-[#e1306c] hover:bg-[#a22651] transition-colors"
+                aria-label="Instagram"
+              >
+                <FaInstagram className="w-5 h-5" />
+              </a>
+            </div>
+          </div> */}
         </div>
 
         {/* Contact Form */}
         <div className="bg-gradient-to-r from-[#ee4f7e]/10 to-[#4cb7e5]/10 p-8 rounded-2xl shadow-md order-1 md:order-2">
-          <form className="space-y-5" onSubmit={formik.handleSubmit}>
+          <form className="space-y-5" onSubmit={formik.handleSubmit} noValidate>
             {/* Name */}
             <div>
-              <label className="block text-gray-700 text-sm mb-1">Name</label>
+              <label className="block text-gray-700 text-sm mb-1" htmlFor="name">Name</label>
               <input
+                id="name"
                 name="name"
-                value={formik.values.name}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 type="text"
                 placeholder="Enter your name"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                aria-invalid={formik.touched.name && formik.errors.name ? "true" : "false"}
+                aria-describedby="name-error"
               />
               {formik.touched.name && formik.errors.name && (
-                <p className="text-red-500 text-sm mt-1">{formik.errors.name}</p>
+                <p id="name-error" className="text-red-500 text-sm mt-1">{formik.errors.name}</p>
               )}
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-gray-700 text-sm mb-1">Email</label>
+              <label className="block text-gray-700 text-sm mb-1" htmlFor="email">Email</label>
               <input
+                id="email"
                 name="email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 type="email"
                 placeholder="Enter your email"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                aria-invalid={formik.touched.email && formik.errors.email ? "true" : "false"}
+                aria-describedby="email-error"
               />
               {formik.touched.email && formik.errors.email && (
-                <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
+                <p id="email-error" className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
               )}
             </div>
 
             {/* Phone */}
             <div>
-              <label className="block text-gray-700 text-sm mb-1">Phone</label>
+              <label className="block text-gray-700 text-sm mb-1" htmlFor="phone">Phone</label>
               <input
+                id="phone"
                 name="phone"
-                value={formik.values.phone}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 type="tel"
                 placeholder="Enter your phone number"
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+                value={formik.values.phone}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                aria-invalid={formik.touched.phone && formik.errors.phone ? "true" : "false"}
+                aria-describedby="phone-error"
               />
               {formik.touched.phone && formik.errors.phone && (
-                <p className="text-red-500 text-sm mt-1">{formik.errors.phone}</p>
+                <p id="phone-error" className="text-red-500 text-sm mt-1">{formik.errors.phone}</p>
               )}
             </div>
 
             {/* Message */}
             <div>
-              <label className="block text-gray-700 text-sm mb-1">Message</label>
+              <label className="block text-gray-700 text-sm mb-1" htmlFor="message">Message</label>
               <textarea
+                id="message"
                 name="message"
-                value={formik.values.message}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
                 rows="4"
                 placeholder="Write your message..."
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
-              ></textarea>
+                value={formik.values.message}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                aria-invalid={formik.touched.message && formik.errors.message ? "true" : "false"}
+                aria-describedby="message-error"
+              />
               {formik.touched.message && formik.errors.message && (
-                <p className="text-red-500 text-sm mt-1">{formik.errors.message}</p>
+                <p id="message-error" className="text-red-500 text-sm mt-1">{formik.errors.message}</p>
               )}
             </div>
 
@@ -173,6 +544,10 @@ const ContactPage = () => {
         </div>
       </div>
     </footer>
+
+      {/* Toast container for this page only */}
+    <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 };
 

@@ -115,7 +115,7 @@ import { Transform } from 'node:stream';
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production';
-const port = process.env.PORT || 5174;
+const port = process.env.PORT || 6174;
 const base = process.env.BASE || '/';
 const ABORT_DELAY = 10000;
 

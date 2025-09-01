@@ -30,20 +30,70 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getCookie } from "../../apiUtils/cookieUtils"; // 👈 import
 
+// import { useEffect } from 'react';
+// import { Formik, Form, Field, ErrorMessage } from 'formik';
+// import * as Yup from 'yup';
+// import { Modal, Button, ToastContainer, toast } from 'your-component-lib'; // adjust this import if needed
+// import { getCookie } from 'cookies-next'; // adjust or replace with your method
+// import api from 'your-api-lib'; // adjust based on your setup
+
 const EnrollFormModal = ({ open, setOpen, course }) => {
   const enrollSchema = Yup.object().shape({
-    firstName: Yup.string().required("First Name is required"),
-    middleName: Yup.string(),
-    lastName: Yup.string().required("Last Name is required"),
+    firstName: Yup.string()
+      .matches(/^[a-zA-Z\s'-]{2,30}$/, "First name is invalid")
+      .required("First Name is required"),
+
+    middleName: Yup.string()
+      .matches(/^[a-zA-Z\s'-]{0,30}$/, "Middle name is invalid")
+      .notRequired(),
+
+    lastName: Yup.string()
+      .matches(/^[a-zA-Z\s'-]{2,30}$/, "Last name is invalid")
+      .required("Last Name is required"),
+
     mobileNo: Yup.string()
       .required("Mobile Number is required")
-      .matches(/^\d{10}$/, "Mobile number must be 10 digits"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    collegeName: Yup.string().required("College Name is required"),
+      .matches(/^[789]\d{9}$/, "Phone must be 10 digits and start with 7, 8, or 9")
+      .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits")
+      .test(
+        "not-repetitive",
+        "Mobile number cannot be repetitive or invalid (e.g. 1234567890)",
+        (value) => {
+          if (!value) return false;
+
+          // Reject repetitive digits like 0000000000, 9999999999, etc.
+          if (/^(\d)\1{9}$/.test(value)) return false;
+
+          // Reject common fake/test numbers
+          const invalids = [
+            "1234567890",
+            "0987654321",
+            "1111111111",
+            "2222222222",
+          ];
+          if (invalids.includes(value)) return false;
+
+          return true;
+        }
+      ),
+
+    email: Yup.string()
+      .required("Email is required")
+      .matches(
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        "Please enter a valid email address"
+      ),
+
+   collegeName: Yup.string()
+  .trim()
+  .min(3, 'College name must be at least 3 characters')
+  .max(100, 'College name must be less than 100 characters')
+  .required('College Name is required'),
+
   });
 
   const handleClose = (resetForm) => {
-    resetForm(); // clear fields
+    resetForm(); // Clear the form fields
     setOpen(false);
   };
 
@@ -54,6 +104,8 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
         onClose={() => setOpen(false)}
         variant="lg"
         scrollableBody
+        closeOnEsc={false}
+        // closeOnOverlayClick={false}
       >
         <Modal.Header>
           Enroll for {course?.title || "Selected Course"}
@@ -72,23 +124,22 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             validationSchema={enrollSchema}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
               const fullName = [
-                values.firstName,
-                values.middleName,
-                values.lastName,
+                values.firstName.trim(),
+                values.middleName.trim(),
+                values.lastName.trim(),
               ]
                 .filter(Boolean)
                 .join(" ");
 
- const studentId = getCookie("studentId"); // 👈 get studentId from cookie
-
+              const studentId = getCookie("studentId");
 
               try {
                 const response = await api.post("/enrollments/enroll", {
-                   studentId, // 👈 Include in payload
+                  studentId,
                   fullName,
-                  mobileNo: values.mobileNo,
-                  email: values.email,
-                  collegeName: values.collegeName,
+                  mobileNo: values.mobileNo.trim(),
+                  email: values.email.trim(),
+                  collegeName: values.collegeName.trim(),
                   selectedProgram: course?.title || "Unknown Program",
                   course: course?._id,
                 });
@@ -103,8 +154,6 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
                 console.error("Enrollment error:", err);
                 const backendMessage =
                   err.response?.data?.message || "Something went wrong";
-
-                // Show backend error in toast
                 toast.error(backendMessage);
               } finally {
                 setSubmitting(false);
@@ -203,10 +252,189 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
           </Formik>
         </Modal.Body>
       </Modal>
-      <ToastContainer position="top-right" autoClose={4000} hideProgressBar />
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
     </>
   );
 };
+
+// export default EnrollFormModal;
+
+// const EnrollFormModal = ({ open, setOpen, course }) => {
+//   const enrollSchema = Yup.object().shape({
+//     firstName: Yup.string().required("First Name is required"),
+//     middleName: Yup.string(),
+//     lastName: Yup.string().required("Last Name is required"),
+//     mobileNo: Yup.string()
+//       .required("Mobile Number is required")
+//       .matches(/^\d{10}$/, "Mobile number must be 10 digits"),
+//     email: Yup.string().email("Invalid email").required("Email is required"),
+//     collegeName: Yup.string().required("College Name is required"),
+//   });
+
+//   const handleClose = (resetForm) => {
+//     resetForm(); // clear fields
+//     setOpen(false);
+//   };
+
+//   return (
+//     <>
+//       <Modal
+//         isOpen={open}
+//         onClose={() => setOpen(false)}
+//         variant="lg"
+//         scrollableBody
+//       >
+//         <Modal.Header>
+//           Enroll for {course?.title || "Selected Course"}
+//         </Modal.Header>
+
+//         <Modal.Body>
+//           <Formik
+//             initialValues={{
+//               firstName: "",
+//               middleName: "",
+//               lastName: "",
+//               mobileNo: "",
+//               email: "",
+//               collegeName: "",
+//             }}
+//             validationSchema={enrollSchema}
+//             onSubmit={async (values, { setSubmitting, resetForm }) => {
+//               const fullName = [
+//                 values.firstName,
+//                 values.middleName,
+//                 values.lastName,
+//               ]
+//                 .filter(Boolean)
+//                 .join(" ");
+
+//  const studentId = getCookie("studentId"); // 👈 get studentId from cookie
+
+//               try {
+//                 const response = await api.post("/enrollments/enroll", {
+//                    studentId, // 👈 Include in payload
+//                   fullName,
+//                   mobileNo: values.mobileNo,
+//                   email: values.email,
+//                   collegeName: values.collegeName,
+//                   selectedProgram: course?.title || "Unknown Program",
+//                   course: course?._id,
+//                 });
+
+//                 if (response.data.success) {
+//                   toast.success("Enrolled successfully!");
+//                   handleClose(resetForm);
+//                 } else {
+//                   toast.error(response.data.message || "Enrollment failed");
+//                 }
+//               } catch (err) {
+//                 console.error("Enrollment error:", err);
+//                 const backendMessage =
+//                   err.response?.data?.message || "Something went wrong";
+
+//                 // Show backend error in toast
+//                 toast.error(backendMessage);
+//               } finally {
+//                 setSubmitting(false);
+//               }
+//             }}
+//           >
+//             {({ isSubmitting }) => (
+//               <Form className="space-y-6">
+//                 {/* Name Fields */}
+//                 <div className="grid md:grid-cols-3 gap-4">
+//                   {["First", "Middle", "Last"].map((label) => {
+//                     const nameKey = `${label.toLowerCase()}Name`;
+//                     return (
+//                       <div key={nameKey}>
+//                         <label className="block text-gray-700 text-sm mb-1">
+//                           {label} Name{" "}
+//                           {label !== "Middle" && (
+//                             <span className="text-red-500">*</span>
+//                           )}
+//                         </label>
+//                         <Field
+//                           type="text"
+//                           name={nameKey}
+//                           placeholder={`Enter ${label.toLowerCase()} name`}
+//                           className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//                         />
+//                         <ErrorMessage
+//                           name={nameKey}
+//                           component="div"
+//                           className="text-red-500 text-xs mt-1"
+//                         />
+//                       </div>
+//                     );
+//                   })}
+//                 </div>
+
+//                 {/* Mobile & Email */}
+//                 <div className="grid md:grid-cols-2 gap-4">
+//                   {["mobileNo", "email"].map((field) => (
+//                     <div key={field}>
+//                       <label className="block text-gray-700 text-sm mb-1">
+//                         {field === "mobileNo" ? "Mobile" : "Email"}{" "}
+//                         <span className="text-red-500">*</span>
+//                       </label>
+//                       <Field
+//                         type={field === "email" ? "email" : "tel"}
+//                         name={field}
+//                         placeholder={
+//                           field === "email"
+//                             ? "Enter email address"
+//                             : "Enter mobile number"
+//                         }
+//                         className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//                       />
+//                       <ErrorMessage
+//                         name={field}
+//                         component="div"
+//                         className="text-red-500 text-xs mt-1"
+//                       />
+//                     </div>
+//                   ))}
+//                 </div>
+
+//                 {/* College Name */}
+//                 <div>
+//                   <label className="block text-gray-700 text-sm mb-1">
+//                     College Name <span className="text-red-500">*</span>
+//                   </label>
+//                   <Field
+//                     type="text"
+//                     name="collegeName"
+//                     placeholder="Enter college name"
+//                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//                   />
+//                   <ErrorMessage
+//                     name="collegeName"
+//                     component="div"
+//                     className="text-red-500 text-xs mt-1"
+//                   />
+//                 </div>
+
+//                 {/* Submit */}
+//                 <div className="pt-2">
+//                   <Button
+//                     type="submit"
+//                     variant="pink"
+//                     size="md"
+//                     className="w-full shadow-md"
+//                     disabled={isSubmitting}
+//                   >
+//                     {isSubmitting ? "Enrolling..." : "Enroll"}
+//                   </Button>
+//                 </div>
+//               </Form>
+//             )}
+//           </Formik>
+//         </Modal.Body>
+//       </Modal>
+//       <ToastContainer position="top-right" autoClose={4000} hideProgressBar />
+//     </>
+//   );
+// };
 
 // ✅ Hero background images (replace with real assets)
 const courseHeroImages = {
@@ -372,7 +600,7 @@ const CoursePage = () => {
                 {/* {course.name} */}
                 {course.title}
               </h1>
-              <p className="mt-4 text-gray-100 max-w-xl mx-auto text-lg leading-relaxed drop-shadow">
+              <p className="mt-4 text-gray-100 max-w-3xl mx-auto text-lg leading-relaxed drop-shadow">
                 {course.description}
               </p>
 

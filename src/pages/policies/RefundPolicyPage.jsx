@@ -9,7 +9,7 @@ const RefundPolicyPage = () => {
           Refund Policy
         </h1>
         <p className="max-w-2xl mx-auto text-gray-600 text-lg">
-          At <span className="text-codedrift-pink font-semibold">Code Drift Academy</span>,  
+          At <span className="text-codedrift-pink font-semibold">Code Drift</span>,  
           we strive to provide the best learning experience for all our students.  
           Please review our refund policy below.
         </p>
@@ -54,7 +54,7 @@ const RefundPolicyPage = () => {
               4. Course Cancellations
             </h2>
             <p>
-              In rare cases where Code Drift Academy is unable to offer a course as planned (e.g., due to unforeseen circumstances),  
+              In rare cases where Code Drift is unable to offer a course as planned (e.g., due to unforeseen circumstances),  
               we may offer a transfer to another course or a credit towards future courses, but no cash refunds will be issued.
             </p>
           </div>
@@ -77,7 +77,7 @@ const RefundPolicyPage = () => {
               6. Policy Updates
             </h2>
             <p>
-              Code Drift Academy reserves the right to update or modify this Refund Policy at any time.  
+              Code Drift reserves the right to update or modify this Refund Policy at any time.  
               Any changes will be posted on this page, and we encourage you to review the policy periodically.
             </p>
           </div>
