@@ -9,7 +9,7 @@ const PrivacyPolicyPage = () => {
           Privacy Policy
         </h1>
         <p className="max-w-2xl mx-auto text-gray-600 text-lg">
-          At <span className="text-codedrift-pink font-semibold">Code Drift Academy</span>,  
+          At <span className="text-codedrift-pink font-semibold">Code Drift</span>,  
           we are committed to protecting your privacy. This policy explains how we collect, use,  
           and safeguard your information when you use our services.
         </p>

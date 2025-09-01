@@ -48,7 +48,7 @@ const HomePage = () => {
                             </h2>
 
                             <p className="text-gray-600 mb-8">
-                                Join Code Drift Academy today and start building real-world projects, cracking coding contests, and landing opportunities.
+                                Join Code Drift today and start building real-world projects, cracking coding contests, and landing opportunities.
                             </p>
 
                             {/* CTA Buttons */}

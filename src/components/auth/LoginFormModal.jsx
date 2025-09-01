@@ -9,7 +9,6 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { setCookie } from "../../apiUtils/cookieUtils";
 
-
 const LoginFormModal = ({ open, setOpen }) => {
   const [referenceId, setReferenceId] = useState(null);
   const [mode, setMode] = useState("default"); // default → input mobile, otp → enter otp
@@ -85,35 +84,34 @@ const LoginFormModal = ({ open, setOpen }) => {
   // });
 
   const otpFormik = useFormik({
-  initialValues: { otp: "" },
-  validationSchema: otpSchema,
-  onSubmit: async (values) => {
-    try {
-      setLoading(true);
-      const res = await verifyOtp(referenceId, values.otp);
+    initialValues: { otp: "" },
+    validationSchema: otpSchema,
+    onSubmit: async (values) => {
+      try {
+        setLoading(true);
+        const res = await verifyOtp(referenceId, values.otp);
 
-      if (res.success && res.data) {
-        const { studentId, mobileNo } = res.data;
+        if (res.success && res.data) {
+          const { studentId, mobileNo } = res.data;
 
-       setCookie('studentId', res.data.studentId);
-       console.log("Student Id",studentId);
-setCookie('mobileNo', res.data.mobileNo);
-        // ✅ Optional: Store both in one cookie as JSON
-        // Cookies.set("studentData", JSON.stringify({ studentId, mobileNo }), { expires: 7 });
+          setCookie("studentId", res.data.studentId);
+          console.log("Student Id", studentId);
+          setCookie("mobileNo", res.data.mobileNo);
+          // ✅ Optional: Store both in one cookie as JSON
+          // Cookies.set("studentData", JSON.stringify({ studentId, mobileNo }), { expires: 7 });
 
-        toast.success(res.message || "Login successful");
-        setOpen(false); // close modal
-      } else {
-        toast.error(res.message || "Invalid OTP");
+          toast.success(res.message || "Login successful");
+          setOpen(false); // close modal
+        } else {
+          toast.error(res.message || "Invalid OTP");
+        }
+      } catch (err) {
+        toast.error(err.message || "Failed to verify OTP");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      toast.error(err.message || "Failed to verify OTP");
-    } finally {
-      setLoading(false);
-    }
-  },
-});
-
+    },
+  });
 
   return (
     <Modal
@@ -123,6 +121,16 @@ setCookie('mobileNo', res.data.mobileNo);
       scrollableBody={false}
     >
       <Modal.Body>
+        <div className="flex justify-end">
+          <button
+            onClick={() => setOpen(false)}
+            className="text-gray-500 hover:text-gray-700 text-2xl font-bold focus:outline-none"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
         {/* Logo */}
         <div className="flex justify-center mb-4">
           <Image
@@ -237,6 +245,18 @@ setCookie('mobileNo', res.data.mobileNo);
               >
                 {loading ? "Verifying..." : "Login with OTP"}
               </Button>
+
+              {/* Register Link */}
+              <div className="text-center text-sm ">
+                <span className="text-gray-600">New user?</span>{" "}
+                <a
+                  href="/register"
+                  className="text-codedrift-pink font-medium hover:underline"
+                >
+                  Register here
+                </a>
+              </div>
+
               {/* <Button
                 type="button"
                 variant="outline"
@@ -253,6 +273,18 @@ setCookie('mobileNo', res.data.mobileNo);
           </form>
         )}
       </Modal.Body>
+
+      <Modal.Footer>
+    <div className="w-full text-center text-sm">
+      <span className="text-gray-600">New user?</span>{" "}
+      <a
+        href="/auth/register"
+        className="text-codedrift-pink font-medium hover:underline"
+      >
+        Register here
+      </a>
+    </div>
+  </Modal.Footer>
     </Modal>
   );
 };

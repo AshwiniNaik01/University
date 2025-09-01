@@ -51,21 +51,23 @@ const MissionsVision = () => (
               </div>
               <h3 className="text-2xl font-bold text-gray-900">Our Mission</h3>
             </div>
-            <p className="text-gray-700 leading-relaxed mb-3">
-              We provide{" "}
-              <span className="font-semibold text-codedrift-indigo">
-                hands-on learning
-              </span>
-              ,{" "}
-              <span className="font-semibold text-codedrift-indigo">
-                flexible options
-              </span>
-              , and{" "}
-              <span className="font-semibold text-codedrift-indigo">
-                expert instruction
-              </span>{" "}
-              in MERN, Java FSD, Python, and more.
-            </p>
+           <p className="text-gray-700 leading-relaxed mb-3">
+  We provide{" "}
+  <span className="font-semibold text-codedrift-indigo">
+    hands-on learning
+  </span>
+  ,{" "}
+  <span className="font-semibold text-codedrift-indigo">
+    flexible options
+  </span>
+  , and{" "}
+  <span className="font-semibold text-codedrift-indigo">
+    expert instruction
+  </span>{" "}
+  in MERN, Java FSD, Python, C, C++, JavaScript, TypeScript, Python,
+  SQL and more.
+</p>
+
             <p className="text-gray-600">
               Whether you’re starting or advancing your career, we help you gain
               practical experience to thrive in today’s tech landscape.

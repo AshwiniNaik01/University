@@ -22,7 +22,7 @@ const RootLayout = () => {
         <>
             <ScrollToTop />
             <Navbar />
-            <main className="min-h-dvh">
+            <main className="min-h-fit">
                 <Outlet />
             </main>
             <Footer />
