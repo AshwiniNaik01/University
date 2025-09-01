@@ -1,0 +1,160 @@
+import React from "react";
+
+const BookDemoPage = () => {
+    return (
+        <div className="space-y-24">
+            {/* Hero Section */}
+            <section className="py-20 bg-gradient-to-r from-[#fdfbfb] to-[#ebedee] text-center">
+                <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                    Book My Demo
+                </h1>
+                <p className="max-w-2xl mx-auto text-gray-600 text-lg">
+                    Secure your spot for a <span className="text-codedrift-pink font-semibold">free live demo</span>
+                    session with our expert instructors. Learn, explore, and ask questions before you enroll!
+                </p>
+            </section>
+
+            {/* Booking Form Section */}
+            <section className="py-16 px-4 bg-white">
+                <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
+
+                    {/* Left Side: Info */}
+                    <div>
+                        <h2 className="text-3xl font-bold text-codedrift-indigo mb-4">
+                            Why Book a Demo?
+                        </h2>
+                        <p className="text-gray-700 leading-relaxed mb-4">
+                            Our demo sessions give you a sneak peek into how we teach at
+                            <span className="text-codedrift-pink font-semibold"> Code Drift Academy</span>.
+                            You’ll experience:
+                        </p>
+                        <ul className="space-y-2 text-gray-700">
+                            <li>✅ Hands-on teaching methods</li>
+                            <li>✅ Live interaction with expert instructors</li>
+                            <li>✅ Guidance on career and course selection</li>
+                            <li>✅ Q&A session for all your doubts</li>
+                        </ul>
+                    </div>
+
+                    {/* Right Side: Booking Form */}
+                    <div className="bg-gradient-to-r from-[#ee4f7e]/10 to-[#4cb7e5]/10 p-8 rounded-2xl shadow-md">
+                        <form className="space-y-5">
+                            {/* Name Fields */}
+                            <div className="grid md:grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-gray-700 text-sm mb-1">
+                                        First Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter first name"
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-700 text-sm mb-1">
+                                        Middle Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter middle name"
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-700 text-sm mb-1">
+                                        Last Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter last name"
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Contact Fields */}
+                            <div>
+                                <label className="block text-gray-700 text-sm mb-1">
+                                    Phone
+                                </label>
+                                <input
+                                    type="tel"
+                                    placeholder="Enter phone number"
+                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 text-sm mb-1">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    placeholder="Enter email"
+                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+                                />
+                            </div>
+
+                            {/* Demo For */}
+                            <div>
+                                <label className="block text-gray-700 text-sm mb-1">
+                                    Book My Demo For
+                                </label>
+                                <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none">
+                                    <option>MERN Stack JavaScript</option>
+                                    <option>Python Full Stack</option>
+                                    <option>Java FSD</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+
+                            {/* Time Slot */}
+                            <div>
+                                <label className="block text-gray-700 text-sm mb-1">
+                                    Time Slot
+                                </label>
+                                <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none">
+                                    <option>10:00 AM - 11:00 AM</option>
+                                    <option>2:00 PM - 3:00 PM</option>
+                                    <option>6:00 PM - 7:00 PM</option>
+                                </select>
+                            </div>
+
+                            {/* I'm a */}
+                            <div>
+                                <label className="block text-gray-700 text-sm mb-1">
+                                    I’m a
+                                </label>
+                                <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none">
+                                    <option>Student</option>
+                                    <option>Working Professional</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+
+                            {/* Buttons */}
+                            <div className="flex gap-4">
+                                <button
+                                    type="submit"
+                                    className="w-full bg-codedrift-pink text-white font-medium px-6 py-3 rounded-full shadow-md hover:bg-codedrift-indigo-dark transition"
+                                >
+                                    Book Your Seat
+                                </button>
+                                <button
+                                    type="reset"
+                                    className="w-full bg-white text-codedrift-indigo border border-codedrift-indigo px-6 py-3 rounded-full hover:bg-codedrift-blue/10 transition"
+                                >
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    );
+};
+
+export default BookDemoPage;

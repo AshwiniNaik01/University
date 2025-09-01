@@ -1,0 +1,46 @@
+{
+    "name": "react-ssr",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "node server",
+        "build": "npm run build:client && npm run build:server",
+        "build:client": "vite build --outDir dist/client",
+        "build:server": "vite build --ssr src/entry-server.jsx --outDir dist/server",
+        "preview": "cross-env NODE_ENV=production node server"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^4.1.11",
+        "axios": "^1.11.0",
+        "clsx": "^2.1.1",
+        "compression": "^1.8.0",
+        "dotenv": "^17.2.0",
+        "express": "^5.1.0",
+        "formik": "^2.4.6",
+        "framer-motion": "^12.23.6",
+        "js-cookie": "^3.0.5",
+        "lucide-react": "^0.525.0",
+        "react": "^19.1.0",
+        "react-code-blocks": "^0.1.6",
+        "react-dom": "^19.1.0",
+        "react-icons": "^5.5.0",
+        "react-intersection-observer": "^9.16.0",
+        "react-loading-skeleton": "^3.5.0",
+        "react-router": "^7.6.3",
+        "react-router-dom": "^6.14.2",
+        "react-router-hash-link": "^2.4.3",
+        "react-simple-typewriter": "^5.0.1",
+        "react-toastify": "^11.0.5",
+        "sirv": "^3.0.1",
+        "tailwind-merge": "^3.3.1",
+        "tailwind-scrollbar-hide": "^4.0.0",
+        "tailwindcss": "^4.1.11",
+        "yup": "^1.7.0"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-react": "^4.6.0",
+        "cross-env": "^7.0.3",
+        "vite": "^7.0.0"
+    }
+}

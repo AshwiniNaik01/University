@@ -1,0 +1,45 @@
+✅ Page Background Color Theme (Max 4 Colors)
+Purpose	Color Name	Usage
+Base Background	Off-White (light gray or soft white)	Use for most page backgrounds (e.g., #F8FAFC, #FAFAFA) — keeps things clean and breathable
+Highlight Section	Light Blue (very soft sky)	Use for callout blocks, "Why Us", testimonials, or “Explore Courses”
+Dark Section	Charcoal / Navy Blue	Use for hero sections, footer, or contrast blocks — gives authority and focus
+Accent Background	Soft Yellow / Beige	Use sparingly for CTA banners, demo callouts, or pricing highlights — draws attention gently
+
+🧠 How to Apply (Example Use Per Page)
+🏠 Home Page:
+Hero → Navy Blue
+
+"Why Choose Us" → Light Blue
+
+CTA → Soft Yellow
+
+Rest → Off-White
+
+📘 Courses Page:
+Background → Off-White
+
+Course Cards section → Light Blue
+
+📞 Contact/Register Pages:
+Main background → Off-White
+
+Form block → White or Light Blue card
+
+🎯 Bonus Tips
+Avoid too many bold colors in the background — keep those for buttons and icons.
+
+Use dark sections only where you want deep focus or contrast.
+
+If you're ever unsure, fall back to Off-White + Navy + Light Blue — it's a safe trio.
+
+Let me know if you'd like me to generate a Tailwind className layout using this color flow on a sample page!
+
+
+
+
+
+
+
+
+
+Ask ChatGPT

@@ -1,0 +1,3 @@
+const toast = {};
+
+export { toast };
