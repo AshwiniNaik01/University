@@ -1,10 +1,10 @@
-import { Brain, CircuitBoard, Code, Cpu, Database } from "lucide-react";
-import { Link } from "react-router-dom";
-import { codingIllustrationImage } from "../../access-assets/images";
-import MissionsVision from "../../components/about/MissionsVision";
-import Values from "../../components/about/Values";
-import { Button } from "../../components/utility/Button";
-import Image from "../../components/utility/Image";
+import { Brain, CircuitBoard, Code, Cpu, Database } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { codingIllustrationImage } from '../../access-assets/images';
+import MissionsVision from '../../components/about/MissionsVision';
+import Values from '../../components/about/Values';
+import { Button } from '../../components/utility/Button';
+import Image from '../../components/utility/Image';
 
 const AboutPage = () => {
     return (
@@ -14,8 +14,7 @@ const AboutPage = () => {
                 {/* Background Pattern */}
                 <div
                     className="absolute inset-0 opacity-[0.06] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat"
-                    style={{ backgroundSize: "300px 300px" }}
-                ></div>
+                    style={{ backgroundSize: '300px 300px' }}></div>
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#ee4f7e0d] via-[#4cb7e50d] to-transparent"></div>
 
@@ -25,8 +24,8 @@ const AboutPage = () => {
                         About <span className="text-codedrift-pink">Code Drift</span>
                     </h1>
                     <p className="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed">
-                        Empowering developers through immersive, project-based learning.
-                        Master 🔥 <span className="text-codedrift-blue font-semibold">MERN</span>,
+                        Empowering developers through immersive, project-based learning. Master 🔥{' '}
+                        <span className="text-codedrift-blue font-semibold">MERN</span>,
                         <span className="text-codedrift-blue font-semibold"> Java FSD</span>, and
                         <span className="text-codedrift-blue font-semibold"> Python</span> with
                         hands-on guidance from industry experts.
@@ -35,26 +34,32 @@ const AboutPage = () => {
                     {/* Feature Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
                         <div className="p-6 bg-white/70 backdrop-blur-lg rounded-xl shadow hover:shadow-lg transition">
-                            <h3 className="text-codedrift-pink text-lg font-semibold mb-2">💡 Hands-On Projects</h3>
-                            <p className="text-gray-700 text-sm">Learn by building real-world apps & simulations.</p>
+                            <h3 className="text-codedrift-pink text-lg font-semibold mb-2">
+                                💡 Hands-On Projects
+                            </h3>
+                            <p className="text-gray-700 text-sm">
+                                Learn by building real-world apps & simulations.
+                            </p>
                         </div>
                         <div className="p-6 bg-white/70 backdrop-blur-lg rounded-xl shadow hover:shadow-lg transition">
-                            <h3 className="text-codedrift-blue text-lg font-semibold mb-2">🎯 Expert Mentors</h3>
-                            <p className="text-gray-700 text-sm">Learn directly from seasoned software professionals.</p>
+                            <h3 className="text-codedrift-blue text-lg font-semibold mb-2">
+                                🎯 Expert Mentors
+                            </h3>
+                            <p className="text-gray-700 text-sm">
+                                Learn directly from seasoned software professionals.
+                            </p>
                         </div>
                         <div className="p-6 bg-white/70 backdrop-blur-lg rounded-xl shadow hover:shadow-lg transition">
-                            <h3 className="text-codedrift-indigo text-lg font-semibold mb-2">🌐 Flexible Learning</h3>
+                            <h3 className="text-codedrift-indigo text-lg font-semibold mb-2">
+                                🌐 Flexible Learning
+                            </h3>
                             <p className="text-gray-700 text-sm">
                                 Join live online, self-paced, or classroom sessions.
                             </p>
                         </div>
                     </div>
 
-                    <Button
-                        as="link"
-                        to="/courses"
-                        variant="gradient"
-                    >
+                    <Button as="link" to="/courses" variant="gradient">
                         Explore Our Courses
                     </Button>
                 </div>
@@ -94,14 +99,13 @@ const AboutPage = () => {
                     </h2>
                     <p className="text-gray-200 max-w-2xl mx-auto mb-8 leading-relaxed text-base sm:text-lg md:text-xl">
                         Take the next step in your career, whether you're a beginner or looking to
-                        advance your skills. Learn industry-relevant tech with expert mentorship
-                        and hands-on projects.
+                        advance your skills. Learn industry-relevant tech with expert mentorship and
+                        hands-on projects.
                     </p>
 
                     <Link
                         to="/courses"
-                        className="inline-block bg-codedrift-pink text-white font-medium px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-md hover:bg-codedrift-indigo-dark transition"
-                    >
+                        className="inline-block bg-codedrift-pink text-white font-medium px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-md hover:bg-codedrift-indigo-dark transition">
                         Explore Your Courses
                     </Link>
                 </div>

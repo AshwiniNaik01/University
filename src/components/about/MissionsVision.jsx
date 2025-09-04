@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Target, Rocket } from 'lucide-react';
 import React from 'react';
+import { RevealOnView } from '../../pages/general/RevealOnView';
 
 const slideFromRight = {
     hidden: { opacity: 0, x: 100 },
@@ -62,9 +63,8 @@ const MissionsVision = () => {
                 <div className="container">
                     <div className="relative grid md:grid-cols-2 gap-10 px-4 z-10">
                         {/* Mission Card */}
-                        <motion.div
-                            className="relative rounded-2xl p-[2px] codedrift-gradient codedrift-gradient-animate shadow-lg hover:shadow-2xl transition overflow-hidden"
-                            {...motionPropsRight}>
+
+                        <RevealOnView from="right">
                             {/* ✅ Frosted Overlay Layer (same for both cards) */}
                             <div className="absolute inset-0 bg-white/30 backdrop-blur-sm rounded-2xl z-[1]"></div>
 
@@ -98,12 +98,10 @@ const MissionsVision = () => {
                                     gain practical experience to thrive in today’s tech landscape.
                                 </p>
                             </div>
-                        </motion.div>
+                        </RevealOnView>
 
                         {/* Vision Card */}
-                        <motion.div
-                            className="relative rounded-2xl p-[2px] codedrift-gradient codedrift-gradient-animate shadow-lg hover:shadow-2xl transition overflow-hidden"
-                            {...motionPropsLeft}>
+                        <RevealOnView from="left">
                             {/* ✅ Frosted Overlay Layer (same for both cards) */}
                             <div className="absolute inset-0 bg-white/30 backdrop-blur-sm rounded-2xl z-[1]"></div>
 
@@ -128,7 +126,7 @@ const MissionsVision = () => {
                                     future innovators to build impactful, future-ready solutions.
                                 </p>
                             </div>
-                        </motion.div>
+                        </RevealOnView>
                     </div>
                 </div>
             </section>
