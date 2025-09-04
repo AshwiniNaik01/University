@@ -1,11 +1,10 @@
-import React from "react";
+import { Brain, CircuitBoard, Code, Cpu, Database } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Code, Cpu, Database, CircuitBoard, Brain } from "lucide-react";
-import Image from "../../components/utility/Image";
-import { aboutBgImage, codingIllustrationImage } from "../../access-assets/images";
+import { codingIllustrationImage } from "../../access-assets/images";
 import MissionsVision from "../../components/about/MissionsVision";
 import Values from "../../components/about/Values";
 import { Button } from "../../components/utility/Button";
+import Image from "../../components/utility/Image";
 
 const AboutPage = () => {
     return (
