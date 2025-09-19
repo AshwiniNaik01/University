@@ -109,29 +109,29 @@ const Footer = () => {
               Policies
             </h3>
             <ul className="space-y-2 text-gray-600 text-sm">
-              <li>
+              {/* <li>
                 <Link
                   to="/policies/terms-conditions"
                   className="hover:text-codedrift-pink transition-all"
                 >
                   Terms & Conditions
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   to="/policies/refund"
                   className="hover:text-codedrift-pink transition-all"
                 >
-                  Refund Policy
+                  Policy and Refund Guidelines
                 </Link>
               </li>
               <li>
-                <Link
+                {/* <Link
                   to="/policies/privacy"
                   className="hover:text-codedrift-pink transition-all"
                 >
                   Privacy Policy
-                </Link>
+                </Link> */}
               </li>
             </ul>
           </div>

@@ -10,13 +10,28 @@ import FullScreenLogoLoader from './components/loaders/FullScreenLogoLoader';
 // Example of lazy-loaded component
 // const Card = lazy(() => import('./Card'));
 
-function App() {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <AppRouters />
-             <ToastContainer position="top-right" autoClose={3000} />
-        </Suspense>
-    );
-}
+// function App() {
+//     return (
+//         <Suspense fallback={<div>Loading...</div>}>
+//             <AppRouters />
+//              <ToastContainer position="top-right" autoClose={3000} />
+//         </Suspense>
+//     );
+// }
 
+
+
+
+function App() {
+  return (
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <AppRouters />
+      </Suspense>
+
+      {/* ✅ ToastContainer must be outside Suspense and mounted only once */}
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
+  );
+}
 export default App;
