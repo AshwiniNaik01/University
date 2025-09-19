@@ -51,7 +51,7 @@ const LoginFormModal = ({ open, setOpen }) => {
           setMode("otp");
           toast.success(res.message || "OTP sent successfully");
         } else {
-          toast.error(res.success || "Failed to send OTP");
+          toast.error(res.message || "Failed to send OTP");
         }
       } catch (err) {
         toast.error(err.message || "Failed to send OTP");
@@ -247,7 +247,7 @@ const LoginFormModal = ({ open, setOpen }) => {
               </Button>
 
               {/* Register Link */}
-              <div className="text-center text-sm ">
+              {/* <div className="text-center text-sm ">
                 <span className="text-gray-600">New user?</span>{" "}
                 <a
                   href="/register"
@@ -255,7 +255,7 @@ const LoginFormModal = ({ open, setOpen }) => {
                 >
                   Register here
                 </a>
-              </div>
+              </div> */}
 
               {/* <Button
                 type="button"

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const TermsConditionsPage = () => {
   return (
-    <div className="space-y-24">
+    <div className="space-y-10">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-[#fdfbfb] to-[#ebedee] text-center">
+      <section className="py-7 bg-gradient-to-r from-[#fdfbfb] to-[#ebedee] text-center">
         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
           Terms & Conditions
         </h1>

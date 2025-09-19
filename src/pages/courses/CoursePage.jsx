@@ -140,8 +140,8 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
                   mobileNo: values.mobileNo.trim(),
                   email: values.email.trim(),
                   collegeName: values.collegeName.trim(),
-                  selectedProgram: course?.title || "Unknown Program",
-                  course: course?._id,
+                  selectedProgram: course?.title,
+                  enrolledCourses: [course?._id], // <-- Ensure it's sent as an array
                 });
 
                 if (response.data.success) {
