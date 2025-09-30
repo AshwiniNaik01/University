@@ -104,6 +104,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
 
   // Helper function
   const getBaseUrl = () => {
+    
     switch (import.meta.env.VITE_ENV) {
       case "development":
         return "http://localhost:6194";
