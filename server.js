@@ -1,4 +1,6 @@
+
 import dotenv from "dotenv";
+
 dotenv.config(); // ✅ Load .env variables first
 
 import fs from "node:fs/promises";
@@ -15,13 +17,15 @@ const ABORT_DELAY = 10000;
 const apiUrl = process.env.VITE_APP_API_BASE_URL;
 console.log("✅ Loaded API Base URL from .env:", apiUrl);
 
-console.log("SSR Backend API URL (Node):", process.env.VITE_APP_API_BASE_URL);
-console.log("Server-only secret:", process.env.SSR_SECRET);
+console.log('SSR Backend API URL (Node):', process.env.VITE_APP_API_BASE_URL);
+console.log('Server-only secret:', process.env.SSR_SECRET);
 
 // Cached production assets
+
 const templateHtml = isProduction
   ? await fs.readFile("./dist/client/index.html", "utf-8")
   : "";
+
 
 // Create http server
 const app = express();
@@ -30,6 +34,7 @@ const app = express();
 /** @type {import('vite').ViteDevServer | undefined} */
 let vite;
 if (!isProduction) {
+
   const { createServer } = await import("vite");
   vite = await createServer({
     server: { middlewareMode: true },
@@ -103,9 +108,10 @@ app.use("*all", async (req, res) => {
     console.error(e.stack);
     res.status(500).end(e.stack);
   }
+
 });
 
 // Start http server
 app.listen(port, () => {
-  console.log(`🚀 Server started at http://localhost:${port}`);
+    console.log(`🚀 Server started at http://localhost:${port}`);
 });
