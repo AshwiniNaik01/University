@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Code, Cpu, Database, CircuitBoard, Brain } from "lucide-react";
@@ -74,6 +75,7 @@ const AboutPage = () => {
           </Button>
         </div>
 
+
         {/* Floating Icons */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <Code className="hidden md:block absolute top-10 left-1/4 w-16 h-16 text-codedrift-pink/20 animate-pulse" />
@@ -119,6 +121,7 @@ const AboutPage = () => {
           >
             Explore Your Courses
           </Link>
+
         </div>
       </section>
     </div>
