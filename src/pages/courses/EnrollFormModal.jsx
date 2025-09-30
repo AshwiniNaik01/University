@@ -104,11 +104,14 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
 
   // Helper function
   const getBaseUrl = () => {
+    
     switch (import.meta.env.VITE_ENV) {
       case "development":
-        return "http://localhost:6174";
+        return "http://localhost:6194";
+      case "uat":
+        return "https://uat-lms.codedrift.co";
       case "production":
-        return "https://learning.codedrift.co";
+        return "https://lms.codedrift.co";
       default:
         return window.location.origin;
     }
