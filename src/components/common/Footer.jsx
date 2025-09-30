@@ -3,14 +3,7 @@ import { Facebook, Twitter, Linkedin, Instagram, Youtube } from "lucide-react";
 import { Link } from "react-router-dom";
 import Image from "../utility/Image";
 import { codedriftLogoImage } from "../../access-assets/images";
-// import {
-//   FaFacebook,
-//   FaInstagram,
-//   FaLinkedinIn,
-//   FaYoutube,
-// } from "react-icons/fa";
-
-          import {
+import {
   FaFacebook,
   FaYoutube,
   FaLinkedinIn,
@@ -18,9 +11,6 @@ import { codedriftLogoImage } from "../../access-assets/images";
   FaWhatsapp,
   FaPhone,
 } from "react-icons/fa";
-// import { Link } from "react-router-dom"; // if not already imported
-
-
 
 const Footer = () => {
   return (
@@ -144,9 +134,7 @@ const Footer = () => {
               className="w-32 mb-4"
             />
             <p className="text-gray-600 text-sm leading-relaxed max-w-xs text-center md:text-left">
-              <strong className="text-gray-800 font-medium">
-                Code Drift
-              </strong>
+              <strong className="text-gray-800 font-medium">Code Drift</strong>
               <br />
               Your ultimate resource for coding and programming knowledge.
             </p>
@@ -159,101 +147,65 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
           {/* Social Media */}
-          {/* <div className="flex gap-4">
+          <div className="flex gap-4">
             {[
               {
-                href: "https://www.facebook.com/codedrift.co/",
-                icon: <FaFacebook size={18} />,
-              },
-              {
-                href: "https://www.youtube.com/@CodeDriftAcademy",
-                icon: <FaYoutube size={18} />,
+                href: "https://wa.me/91XXXXXXXXXX",
+                icon: <FaWhatsapp size={18} />,
               },
               {
                 href: "https://www.linkedin.com/company/codedrift/",
                 icon: <FaLinkedinIn size={18} />,
               },
               {
+                href: "https://www.youtube.com/@CodeDriftAcademy",
+                icon: <FaYoutube size={18} />,
+              },
+              {
+                href: "https://www.facebook.com/codedrift.co/",
+                icon: <FaFacebook size={18} />,
+              },
+              {
                 href: "https://www.instagram.com/codedrift.co/",
                 icon: <FaInstagram size={18} />,
               },
-            ].map((social, i) => (
-              <a
-                key={i}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-white shadow-md transition-all duration-300 hover:scale-110 
-                                hover:text-white hover:bg-[linear-gradient(135deg,#ee4f7e_0%,#4cb7e5_100%)]"
-              >
-                {social.icon}
-              </a>
-            ))}
-          </div> */}
-
-
-<div className="flex gap-4">
-  {[
-    {
-      href: "https://wa.me/91XXXXXXXXXX",
-      icon: <FaWhatsapp size={18} />,
-    },
-    {
-      href: "https://www.linkedin.com/company/codedrift/",
-      icon: <FaLinkedinIn size={18} />,
-    },
-    {
-      href: "https://www.youtube.com/@CodeDriftAcademy",
-      icon: <FaYoutube size={18} />,
-    },
-    {
-      href: "https://www.facebook.com/codedrift.co/",
-      icon: <FaFacebook size={18} />,
-    },
-    {
-      href: "https://www.instagram.com/codedrift.co/",
-      icon: <FaInstagram size={18} />,
-    },
-    {
-      internal: true,
-      to: "/contact",
-      icon: <FaPhone size={18} />,
-    },
-  ].map((social, i) =>
-    social.internal ? (
-      <Link
-        key={i}
-        to={social.to}
-        title="Contact Us"
-        className="p-2 rounded-full bg-white shadow-md transition-all duration-300 hover:scale-110 
+              {
+                internal: true,
+                to: "/contact",
+                icon: <FaPhone size={18} />,
+              },
+            ].map((social, i) =>
+              social.internal ? (
+                <Link
+                  key={i}
+                  to={social.to}
+                  title="Contact Us"
+                  className="p-2 rounded-full bg-white shadow-md transition-all duration-300 hover:scale-110 
                    hover:text-white hover:bg-[linear-gradient(135deg,#ee4f7e_0%,#4cb7e5_100%)]"
-      >
-        {social.icon}
-      </Link>
-    ) : (
-      <a
-        key={i}
-        href={social.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={social.href}
-        className="p-2 rounded-full bg-white shadow-md transition-all duration-300 hover:scale-110 
+                >
+                  {social.icon}
+                </Link>
+              ) : (
+                <a
+                  key={i}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={social.href}
+                  className="p-2 rounded-full bg-white shadow-md transition-all duration-300 hover:scale-110 
                    hover:text-white hover:bg-[linear-gradient(135deg,#ee4f7e_0%,#4cb7e5_100%)]"
-      >
-        {social.icon}
-      </a>
-    )
-  )}
-</div>
-
+                >
+                  {social.icon}
+                </a>
+              )
+            )}
+          </div>
 
           {/* Copyright */}
           <p className="text-gray-500">
             © {new Date().getFullYear()}{" "}
-            <span className="font-medium text-gray-700">
-              Code Drift
-            </span>
-            . All rights reserved.
+            <span className="font-medium text-gray-700">Code Drift</span>. All
+            rights reserved.
           </p>
         </div>
       </div>

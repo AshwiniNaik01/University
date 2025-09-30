@@ -9,12 +9,19 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { setCookie } from "../../apiUtils/cookieUtils";
 
+/**
+ * LoginFormModal Component
+ *
+ * Handles mobile-based OTP login with validation, API integration, and redirection.
+ * Auth token and other session values are stored in cookies for session persistence.
+ */
+
 const LoginFormModal = ({ open, setOpen }) => {
   const [referenceId, setReferenceId] = useState(null);
-  const [mode, setMode] = useState("default"); // default → input mobile, otp → enter otp
+  const [mode, setMode] = useState("default");
   const [loading, setLoading] = useState(false);
 
-  // ✅ Clear fields when modal closes
+  //  Reset form states when modal is closed.
   useEffect(() => {
     if (!open) {
       formik.resetForm();
@@ -25,7 +32,7 @@ const LoginFormModal = ({ open, setOpen }) => {
     }
   }, [open]);
 
-  // Yup Schemas
+  // Yup Schemas for validation
   const mobileSchema = Yup.object({
     mobileNo: Yup.string()
       .matches(/^[0-9]{10}$/, "Mobile number must be 10 digits")
@@ -38,7 +45,7 @@ const LoginFormModal = ({ open, setOpen }) => {
       .required("OTP is required"),
   });
 
-  // Mobile Form
+  // Formik handler for mobile input and sending OTP.
   const formik = useFormik({
     initialValues: { mobileNo: "" },
     validationSchema: mobileSchema,
@@ -61,28 +68,7 @@ const LoginFormModal = ({ open, setOpen }) => {
     },
   });
 
-  // OTP Form
-  // const otpFormik = useFormik({
-  //   initialValues: { otp: "" },
-  //   validationSchema: otpSchema,
-  //   onSubmit: async (values) => {
-  //     try {
-  //       setLoading(true);
-  //       const res = await verifyOtp(referenceId, values.otp);
-  //       if (res.success) {
-  //         toast.success(res.message || "Login successful");
-  //         setOpen(false); // close modal
-  //       } else {
-  //         toast.error(res.success || "Invalid OTP");
-  //       }
-  //     } catch (err) {
-  //       toast.error(err.message || "Failed to verify OTP");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   },
-  // });
-
+  //  Formik handler for OTP verification and login.
   const otpFormik = useFormik({
     initialValues: { otp: "" },
     validationSchema: otpSchema,
@@ -92,16 +78,40 @@ const LoginFormModal = ({ open, setOpen }) => {
         const res = await verifyOtp(referenceId, values.otp);
 
         if (res.success && res.data) {
-          const { studentId, mobileNo } = res.data;
+          // Destructure all required fields
+          const { studentId, mobileNo, courseId, role, token } = res.data;
 
-          setCookie("studentId", res.data.studentId);
-          console.log("Student Id", studentId);
-          setCookie("mobileNo", res.data.mobileNo);
-          // ✅ Optional: Store both in one cookie as JSON
-          // Cookies.set("studentData", JSON.stringify({ studentId, mobileNo }), { expires: 7 });
+          // Set cookies for all fields
+          setCookie("studentId", studentId);
+          setCookie("mobileNo", mobileNo);
+          setCookie("courseId", courseId);
+          setCookie("role", role);
+          setCookie("token", token); // ⚠️ Make sure this is secure if it's a JWT
 
           toast.success(res.message || "Login successful");
-          setOpen(false); // close modal
+          setOpen(false);
+
+          // Check env var - add this log:
+          // console.log("VITE_ENV:", import.meta.env.VITE_ENV);
+          // 🔁 Route user to dashboard depending on environment
+          let baseUrl = "";
+          switch (import.meta.env.VITE_ENV) {
+            case "development":
+              baseUrl = "http://localhost:6174";
+              break;
+            case "production":
+              baseUrl = "https://learning.codedrift.co";
+              break;
+            default:
+              baseUrl = window.location.origin;
+          }
+
+          // console.log("Redirecting to:", `${baseUrl}/student/dashboard`);
+
+          // Delay to allow toast/modal transition before redirection
+          setTimeout(() => {
+            window.location.href = `${baseUrl}/student/dashboard`;
+          }, 100);
         } else {
           toast.error(res.message || "Invalid OTP");
         }
@@ -121,6 +131,7 @@ const LoginFormModal = ({ open, setOpen }) => {
       scrollableBody={false}
     >
       <Modal.Body>
+        {/* Close Button */}
         <div className="flex justify-end">
           <button
             onClick={() => setOpen(false)}
@@ -152,10 +163,10 @@ const LoginFormModal = ({ open, setOpen }) => {
           </p>
         </div>
 
-        {/* FORM START */}
+        {/* === MOBILE FORM === */}
         {mode === "default" && (
           <form onSubmit={formik.handleSubmit} className="space-y-4">
-            {/* Mobile Input */}
+            {/* Mobile Number Input */}
             <div>
               <label className="block text-gray-700 text-sm mb-1">
                 Mobile Number <span className="text-red-500">*</span>
@@ -194,10 +205,10 @@ const LoginFormModal = ({ open, setOpen }) => {
           </form>
         )}
 
-        {/* OTP FLOW */}
+        {/* === OTP FORM === */}
         {mode === "otp" && (
           <form onSubmit={otpFormik.handleSubmit} className="space-y-4">
-            {/* Mobile (readonly) */}
+            {/* Read-only Mobile Field */}
             <div>
               <label className="block text-gray-700 text-sm mb-1">Mobile</label>
               <input
@@ -234,7 +245,7 @@ const LoginFormModal = ({ open, setOpen }) => {
               )}
             </div>
 
-            {/* OTP Actions */}
+            {/* Submit OTP Action Button */}
             <div className="space-y-2 pt-2">
               <Button
                 type="submit"
@@ -245,46 +256,23 @@ const LoginFormModal = ({ open, setOpen }) => {
               >
                 {loading ? "Verifying..." : "Login with OTP"}
               </Button>
-
-              {/* Register Link */}
-              {/* <div className="text-center text-sm ">
-                <span className="text-gray-600">New user?</span>{" "}
-                <a
-                  href="/register"
-                  className="text-codedrift-pink font-medium hover:underline"
-                >
-                  Register here
-                </a>
-              </div> */}
-
-              {/* <Button
-                type="button"
-                variant="outline"
-                size="md"
-                className="w-full text-codedrift-indigo border-codedrift-indigo"
-                onClick={() => {
-                  setMode("default");
-                  otpFormik.resetForm();
-                }}
-              >
-                Resend OTP
-              </Button> */}
             </div>
           </form>
         )}
       </Modal.Body>
 
+      {/* Modal Footer – Register CTA */}
       <Modal.Footer>
-    <div className="w-full text-center text-sm">
-      <span className="text-gray-600">New user?</span>{" "}
-      <a
-        href="/auth/register"
-        className="text-codedrift-pink font-medium hover:underline"
-      >
-        Register here
-      </a>
-    </div>
-  </Modal.Footer>
+        <div className="w-full text-center text-sm">
+          <span className="text-gray-600">New user?</span>{" "}
+          <a
+            href="/auth/register"
+            className="text-codedrift-pink font-medium hover:underline"
+          >
+            Register here
+          </a>
+        </div>
+      </Modal.Footer>
     </Modal>
   );
 };

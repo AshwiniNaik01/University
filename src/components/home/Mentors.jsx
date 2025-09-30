@@ -4,12 +4,21 @@ import Mentor from "../mentors/Mentor";
 import { DIR } from "../../config";
 import { Link } from "react-router-dom";
 import { Users } from "lucide-react";
-import { Button } from "../utility/Button"; // ✅ Adjust path if needed
+import { Button } from "../utility/Button";
+
+/**
+ * Mentors Component
+ * 
+ * Fetches and displays a list of mentors in a grid layout.
+ ===================================================================
+ * Provides a call-to-action button to navigate to the full mentors page.
+ */
 
 export default function Mentors() {
   const [mentorsList, setMentorsList] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Effect used to fetch mentors data once on component mount
   useEffect(() => {
     const fetchMentors = async () => {
       try {
@@ -28,7 +37,7 @@ export default function Mentors() {
 
   return (
     <section className="relative py-20 bg-gradient-to-br from-[#fdfbfb] to-[#ebedee] overflow-hidden">
-      {/* Decorative blurred shapes */}
+      {/* Decorative blurred shapes for visual interest */}
       <div className="absolute top-0 right-10 w-72 h-72 bg-codedrift-indigo opacity-10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-10 w-72 h-72 bg-codedrift-pink opacity-10 rounded-full blur-3xl"></div>
 
@@ -40,7 +49,7 @@ export default function Mentors() {
             <span className="absolute left-1/2 -bottom-2 w-2/3 h-1 bg-codedrift-gradient rounded-full transform -translate-x-1/2"></span>
           </h2>
 
-          {/* Subheading */}
+          {/* Subheading / description */}
           <p className="text-gray-600 mb-16 max-w-2xl mx-auto">
             Learn from experienced professionals who bring real-world expertise
             into every session.
@@ -51,6 +60,7 @@ export default function Mentors() {
             <p className="text-gray-500">Loading mentors...</p>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {/* Only display top 3 mentors for preview */}
               {mentorsList.slice(0, 3).map((mentor) => (
                 <Mentor
                   key={mentor._id}
@@ -63,7 +73,7 @@ export default function Mentors() {
                     bio: mentor.summary,
                     linkedin: mentor.linkedin || "#",
                     id: mentor._id,
-                    link: `mentors/m/${mentor._id}`, // pass the link as a prop
+                    link: `mentors/m/${mentor._id}`,
                   }}
                 />
               ))}
@@ -72,16 +82,6 @@ export default function Mentors() {
 
           {/* Show Experts Button */}
           <div className="mt-12 text-center">
-            {/* <Button as={Link} to="/mentors" variant="indigo" size="md" className="gap-2">
-              <Users className="w-5 h-5" />
-              Show Experts
-            </Button> */}
-
-            {/* <Link to="/mentors" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition">
-  <Users className="w-5 h-5" />
-  Show Experts
-</Link> */}
-
             <Button
               as="link"
               to="/mentors"

@@ -2,12 +2,19 @@ import { useEffect, useState } from "react";
 import { Button } from "../../components/utility/Button";
 import Testimonial from "../../components/common/Testimonial";
 import { fetchTestimonials } from "./testimonials";
-// import { fetchTestimonials } from "../../apiUtils/testimonials";
+
+/**
+ * TestimonialsPage Component
+ *
+ * Displays a grid of user testimonials with the ability to load more dynamically.
+ */
 
 const TestimonialsPage = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCount, setShowCount] = useState(6); // how many testimonials to show initially
+
+  // Fetch testimonials data from API when component mounts
 
   useEffect(() => {
     const loadTestimonials = async () => {
@@ -19,6 +26,8 @@ const TestimonialsPage = () => {
 
     loadTestimonials();
   }, []);
+
+  //  Handler to load more testimonials on button click
 
   const handleLoadMoreTestimonials = (e) => {
     e.preventDefault();
@@ -35,6 +44,7 @@ const TestimonialsPage = () => {
             "url('https://t3.ftcdn.net/jpg/05/52/64/84/360_F_552648480_ixeelxn2RPidJO1m0m6DI13aWvPZiliB.jpg')",
         }}
       ></div>
+      {/* Overlay Gradient to Improve Readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-[#eef1f5]"></div>
 
       {/* Foreground Content */}

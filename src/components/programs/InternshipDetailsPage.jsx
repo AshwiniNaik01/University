@@ -3,18 +3,40 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { api } from "../../apiUtils/instance";
 import { motion } from "framer-motion";
+import { fetchInternshipSessionById } from "./events";
+import {
+  FaCalendarAlt,
+  FaCertificate,
+  FaClock,
+  FaGraduationCap,
+  FaLaptop,
+  FaMapMarkerAlt,
+  FaMoneyBillWave,
+  FaRocket,
+  FaShieldAlt,
+  FaStar,
+  FaTools,
+  FaUsers,
+} from "react-icons/fa";
+
+/**
+ *
+ *  InternshipDetailsPage:
+ * ------------------------------------------------------------------------------------
+ * this page shows the detail information about each perticular internship by its id
+ */
 
 const InternshipDetailsPage = () => {
-  const { sessionId } = useParams();
+  const { sessionId } = useParams(); // fetch session id from params
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api
-      .get(`/internship-sessions/${sessionId}`)
+    setLoading(true);
+    fetchInternshipSessionById(sessionId)
       .then((response) => {
-        if (response.data.success) {
-          setSession(response.data.data);
+        if (response.success) {
+          setSession(response.data);
         }
       })
       .catch((err) => console.error("Error fetching session:", err))
@@ -222,8 +244,6 @@ const InternshipDetailsPage = () => {
             initial={{ x: 60, opacity: 0, scale: 0.95 }}
             animate={{ x: 0, opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-            //   className="bg-gradient-to-br from-amber-400/20 via-yellow-500/25 to-orange-500/20 backdrop-blur-2xl rounded-4xl p-10 shadow-2xl border-2 border-amber-400/40 relative overflow-hidden group hover:scale-[1.02] transition-all duration-500"
-
             className=" bg-white shadow-xl border border-yellow-100 via-yellow-500/20 to-orange-500/20 backdrop-blur-2xl rounded-3xl p-8  relative overflow-hidden group hover:scale-[1.02] transition-all duration-500"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffd700' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
@@ -509,5 +529,260 @@ const InternshipDetailsPage = () => {
     </div>
   );
 };
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-blue-200 to-pink-200 font-sans">
+//       {/* Header Section */}
+//       <div className="max-w-6xl mx-auto px-6 py-12">
+//         {/* Hero Section */}
+//         <motion.section
+//           initial={{ opacity: 0, y: 30 }}
+//           animate={{ opacity: 1, y: 0 }}
+//           transition={{ duration: 0.8 }}
+//           className="text-center mb-16"
+//         >
+//           <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+//             <FaStar className="text-yellow-500" />
+//             Premium Workshop
+//           </div>
+
+//           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+//             {title}
+//           </h1>
+
+//           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+//             {description}
+//           </p>
+//         </motion.section>
+
+//         {/* Main Content Grid */}
+//         <div className="grid lg:grid-cols-3 gap-8 mb-16">
+//           {/* Left Column - Workshop Details */}
+//           <div className="lg:col-span-2 space-y-8">
+//             {/* Overview Card */}
+//             <motion.div
+//               initial={{ opacity: 0, x: -30 }}
+//               animate={{ opacity: 1, x: 0 }}
+//               transition={{ delay: 0.2 }}
+//               className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100"
+//             >
+//               <div className="flex items-center gap-3 mb-6">
+//                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white">
+//                   <FaCalendarAlt className="text-xl" />
+//                 </div>
+//                 <h2 className="text-2xl font-bold text-gray-900">Workshop Details</h2>
+//               </div>
+
+//               <div className="grid md:grid-cols-2 gap-6">
+//                 <div className="space-y-4">
+//                   <DetailItem
+//                     icon={<FaCalendarAlt className="text-blue-500" />}
+//                     label="Start Date"
+//                     value={new Date(startDate).toLocaleDateString()}
+//                   />
+//                   <DetailItem
+//                     icon={<FaCalendarAlt className="text-green-500" />}
+//                     label="End Date"
+//                     value={new Date(endDate).toLocaleDateString()}
+//                   />
+//                   <DetailItem
+//                     icon={<FaClock className="text-purple-500" />}
+//                     label="Duration"
+//                     value={duration}
+//                   />
+//                 </div>
+//                 <div className="space-y-4">
+//                   <DetailItem
+//                     icon={<FaLaptop className="text-indigo-500" />}
+//                     label="Mode"
+//                     value={mode}
+//                   />
+//                   <DetailItem
+//                     icon={<FaMapMarkerAlt className="text-red-500" />}
+//                     label="Location"
+//                     value={location}
+//                   />
+//                   <DetailItem
+//                     icon={<FaUsers className="text-orange-500" />}
+//                     label="Capacity"
+//                     value={`${capacity} students`}
+//                   />
+//                 </div>
+//               </div>
+//             </motion.div>
+
+//             {/* Curriculum Section */}
+//             {topics.length > 0 && (
+//               <motion.div
+//                 initial={{ opacity: 0, y: 30 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 0.4 }}
+//                 className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100"
+//               >
+//                 <div className="flex items-center gap-3 mb-6">
+//                   <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center text-white">
+//                     <FaGraduationCap className="text-xl" />
+//                   </div>
+//                   <h2 className="text-2xl font-bold text-gray-900">Curriculum</h2>
+//                 </div>
+
+//                 <div className="grid md:grid-cols-2 gap-4">
+//                   {topics.map((topic, index) => (
+//                     <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors">
+//                       <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-bold">
+//                         {index + 1}
+//                       </span>
+//                       <span className="text-gray-700 font-medium">{topic}</span>
+//                     </div>
+//                   ))}
+//                 </div>
+//               </motion.div>
+//             )}
+//           </div>
+
+//           {/* Right Column - Pricing & Features */}
+//           <div className="space-y-8">
+//             {/* Pricing Card */}
+//             <motion.div
+//               initial={{ opacity: 0, x: 30 }}
+//               animate={{ opacity: 1, x: 0 }}
+//               transition={{ delay: 0.3 }}
+//               className="bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl shadow-xl p-8 text-white relative overflow-hidden"
+//             >
+//               <div className="absolute top-4 right-4">
+//                 <div className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-bold">
+//                   BEST VALUE
+//                 </div>
+//               </div>
+
+//               <div className="text-center mb-6">
+//                 <div className="flex items-center justify-center gap-2 mb-4">
+//                   <FaMoneyBillWave className="text-2xl text-yellow-300" />
+//                   <h3 className="text-2xl font-bold">Investment</h3>
+//                 </div>
+
+//                 <div className="mb-4">
+//                   <span className="text-4xl font-bold">₹{fees.amount}</span>
+//                   <span className="text-blue-200 ml-2">ONLY</span>
+//                 </div>
+
+//                 {certification && (
+//                   <div className="flex items-center justify-center gap-2 text-blue-200">
+//                     <FaCertificate className="text-yellow-300" />
+//                     <span>Certificate Included</span>
+//                   </div>
+//                 )}
+//               </div>
+
+//               <div className="space-y-3 mb-6">
+//                 <FeatureItem text="Hands-on projects" />
+//                 <FeatureItem text="Expert mentorship" />
+//                 <FeatureItem text="Lifetime access" />
+//                 <FeatureItem text="Job assistance" />
+//               </div>
+
+//               <motion.button
+//                 whileHover={{ scale: 1.02 }}
+//                 whileTap={{ scale: 0.98 }}
+//                 className="w-full bg-white text-blue-600 font-bold py-4 rounded-xl hover:bg-gray-100 transition-colors shadow-lg"
+//               >
+//                 Enroll Now
+//               </motion.button>
+
+//               {/* Refund Policy */}
+//               <div className="mt-4 text-center">
+//                 <div className="flex items-center justify-center gap-2 text-blue-200 text-sm">
+//                   <FaShieldAlt className="text-green-300" />
+//                   <span>{fees.refundPolicy}</span>
+//                 </div>
+//               </div>
+//             </motion.div>
+
+//             {/* Features Card */}
+//             <motion.div
+//               initial={{ opacity: 0, y: 30 }}
+//               animate={{ opacity: 1, y: 0 }}
+//               transition={{ delay: 0.5 }}
+//               className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
+//             >
+//               <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+//                 <FaStar className="text-yellow-500" />
+//                 Key Benefits
+//               </h3>
+
+//               <div className="space-y-3">
+//                 <BenefitItem
+//                   icon={<FaRocket className="text-green-500" />}
+//                   text="Career acceleration"
+//                 />
+//                 <BenefitItem
+//                   icon={<FaTools className="text-blue-500" />}
+//                   text="Practical skills"
+//                 />
+//                 <BenefitItem
+//                   icon={<FaUsers className="text-purple-500" />}
+//                   text="Network building"
+//                 />
+//                 <BenefitItem
+//                   icon={<FaCertificate className="text-orange-500" />}
+//                   text="Industry recognition"
+//                 />
+//               </div>
+//             </motion.div>
+//           </div>
+//         </div>
+
+//         {/* Certification Badge */}
+//         {certification && (
+//           <motion.div
+//             initial={{ opacity: 0, y: 30 }}
+//             animate={{ opacity: 1, y: 0 }}
+//             transition={{ delay: 0.6 }}
+//             className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg p-8 text-white text-center"
+//           >
+//             <div className="flex items-center justify-center gap-4 mb-4">
+//               <FaCertificate className="text-3xl text-yellow-300" />
+//               <h3 className="text-2xl font-bold">Official Certification</h3>
+//             </div>
+//             <p className="text-green-100 text-lg">
+//               Receive a recognized certificate upon successful completion
+//             </p>
+//           </motion.div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// // Reusable Components
+// const DetailItem = ({ icon, label, value }) => (
+//   <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+//     <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
+//       {icon}
+//     </div>
+//     <div>
+//       <div className="text-sm text-gray-600 font-medium">{label}</div>
+//       <div className="font-semibold text-gray-900">{value}</div>
+//     </div>
+//   </div>
+// );
+
+// const FeatureItem = ({ text }) => (
+//   <div className="flex items-center gap-3">
+//     <div className="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center">
+//       <span className="text-white text-xs">✓</span>
+//     </div>
+//     <span className="text-blue-100">{text}</span>
+//   </div>
+// );
+
+// const BenefitItem = ({ icon, text }) => (
+//   <div className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+//     <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+//       {icon}
+//     </div>
+//     <span className="text-gray-700 font-medium">{text}</span>
+//   </div>
+// );
 
 export default InternshipDetailsPage;

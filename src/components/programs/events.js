@@ -1,28 +1,28 @@
-// import { api } from "../apiUtils/instance";
-
 import { api } from "../../apiUtils/instance";
+
+/* =====================================================
+   🔹 SESSION CATEGORIES
+===================================================== */
+
+//  Fetch all session categories.
+export const getSessionCategories = async () => {
+  try {
+    const response = await api.get(`/session-category`);
+    return response.data;
+  } catch (error) {
+    console.error("API error while fetching session categories:", error);
+    throw error;
+  }
+};
+
+/* =====================================================
+   🔹 EVENTS (Categorized by Date)
+===================================================== */
 
 /**
  * Fetch all events and categorize them as ongoing, upcoming, or past.
- * This function calculates statuses based on date, not just relying on backend.
+ * Categorization is done on the frontend using event start/end dates.
  */
-
-// src/api/sessionApi.js
-import axios from "axios";
-
-// Replace this with your actual base URL or use .env variable
-// const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
-
-export const getSessionCategories = async () => {
-    try {
-        const response = await api.get(`/session-category`);
-        return response.data;
-    } catch (error) {
-        console.error("API error while fetching session categories:", error);
-        throw error;
-    }
-};
-
 
 export const fetchCategorizedEvents = async () => {
   try {
@@ -65,31 +65,35 @@ export const fetchCategorizedEvents = async () => {
 };
 
 
-export const fetchWebinars = async () => {
-  const response = await api.get(`/webinars`);
-  return response.data; // Structure: { statusCode, success, message, data: [...] }
+
+//  Fetches details for a specific event by ID.
+export const getEventById = async (eventId) => {
+  const response = await api.get(`/event/${eventId}`);
+  return response.data.data;
 };
 
+/* =====================================================
+   🔹 WEBINARS
+===================================================== */
+
+//  Fetch all webinars.
+export const fetchWebinars = async () => {
+  const response = await api.get(`/webinars`);
+  return response.data;
+};
+
+// Fetch a single webinar by ID.
 
 export const fetchWebinarById = async (id) => {
   const response = await api.get(`/webinars/${id}`);
-  return response.data; // { success, message, data: { ... } }
+  return response.data;
 };
 
-// Fetch all workshops
-// export const fetchWorkshops = async () => {
-//   try {
-//     const res = await api.get("/workshops");
-//     return {
-//       success: res.data?.success,
-//       data: res.data?.data || [],
-//     };
-//   } catch (error) {
-//     console.error("Error fetching workshops:", error);
-//     return { success: false, data: [] };
-//   }
-// };
+/* =====================================================
+   🔹 WORKSHOPS
+===================================================== */
 
+//  Fetch all workshops.
 export const fetchWorkshops = async () => {
   try {
     const res = await api.get("/workshops");
@@ -103,7 +107,7 @@ export const fetchWorkshops = async () => {
   }
 };
 
-// fetch single workshop by ID
+//  Fetch a single workshop by ID.
 export const fetchWorkshopById = async (id) => {
   try {
     const res = await api.get(`/workshops/${id}`);
@@ -117,33 +121,26 @@ export const fetchWorkshopById = async (id) => {
   }
 };
 
+/* =====================================================
+   🔹 INTERNSHIP SESSIONS
+===================================================== */
 
-// export const fetchInternshipSessions = async () => {
-//   try {
-//     const res = await api.get(`/internship-sessions`);
-//     return res.data; // { success: true, data: [...] }
-//   } catch (error) {
-//     console.error("Failed to fetch internship sessions:", error);
-//     return { success: false, data: [] };
-//   }
-// };
-
-// Fetch all internship sessions
+//  Fetch all internship sessions.
 export const fetchInternshipSessions = async () => {
   try {
     const res = await api.get("/internship-sessions");
-    return res.data; // { success: true, data: [...] }
+    return res.data;
   } catch (error) {
     console.error("Failed to fetch internship sessions:", error);
     return { success: false, data: [] };
   }
 };
 
-// ✅ Fetch a single internship session by ID
+//  Fetch a single internship session by ID.
 export const fetchInternshipSessionById = async (id) => {
   try {
     const res = await api.get(`/internship-sessions/${id}`);
-    return res.data; // { success: true, data: {...} }
+    return res.data;
   } catch (error) {
     console.error(`Error fetching internship session with ID ${id}:`, error);
     return { success: false, data: null };

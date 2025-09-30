@@ -1,14 +1,20 @@
-
 import React, { useEffect, useState } from "react";
 import Mentor from "../../components/mentors/Mentor";
 import { Button } from "../../components/utility/Button";
 import { getAllMentors } from "../../components/home/mentorApi";
-import { DIR } from "../../config"; // Make sure DIR.TRAINER_PROFILE_PHOTO is defined
+import { DIR } from "../../config";
+
+/**
+ * MentorsPage Component
+ *
+ * Displays a list of mentors fetched from the backend.
+ */
 
 const MentorsPage = () => {
   const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  //  Fetch mentor data from API on component mount
   useEffect(() => {
     const fetchMentors = async () => {
       try {
@@ -27,6 +33,7 @@ const MentorsPage = () => {
   return (
     <section className="py-8 md:py-16 bg-white">
       <div className="container">
+        {/* Page Heading */}
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4 inline-block relative">
             Our Mentors
@@ -34,6 +41,7 @@ const MentorsPage = () => {
           </h2>
         </div>
 
+        {/* Loading State */}
         {loading ? (
           <p className="text-center text-gray-500 mt-10">Loading mentors...</p>
         ) : (
@@ -45,7 +53,9 @@ const MentorsPage = () => {
                   name: mentor.fullName,
                   title: mentor.highestQualification,
                   bio: mentor.summary,
-                  img: `${DIR.TRAINER_PROFILE_PHOTO}${mentor.profilePhotoTrainer || "default-avatar.png"}`,
+                  img: `${DIR.TRAINER_PROFILE_PHOTO}${
+                    mentor.profilePhotoTrainer || "default-avatar.png"
+                  }`,
                   id: mentor._id,
                 }}
               />
@@ -53,6 +63,7 @@ const MentorsPage = () => {
           </div>
         )}
 
+        {/* Placeholder for Pagination or Show More */}
         <div className="mt-4 md:mt-12 text-center">
           <Button size="md" className="gap-2">
             Show More ...

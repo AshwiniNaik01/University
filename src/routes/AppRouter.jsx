@@ -30,10 +30,10 @@ import InternshipDetailsPage from "../components/programs/InternshipDetailsPage"
 
 const AppRouters = () => (
   <Routes>
-    {/* Dashboard route inside Layout */}
     <Route element={<RootLayout />}>
       <Route path="/" element={<HomePage />} />
 
+      {/* Course Section */}
       <Route path="/courses">
         <Route path="" element={<CoursesPage />} />
         <Route path="c/:courseId" element={<CoursePage />} />
@@ -43,12 +43,12 @@ const AppRouters = () => (
 
       <Route path="/contact" element={<ContactPage />} />
 
+      {/* Book session section */}
       <Route path="/book">
         <Route index element={<BookDemoPage />} /> {/* or BookCategoryPage */}
         <Route path=":categorySlug" element={<BookListingPage />} />
         {/* <Route path=':categorySlug/:itemId' element={<BookDetailsPage />} /> */}
         <Route path=":categorySlug/:eventId" element={<EventDetailsPage />} />
-        {/* workshop details */}
         <Route path="workshop/:eventId" element={<WorkshopDetails />} />
       </Route>
       <Route path="/webinar/:webinarId" element={<WebinarDetailsPage />} />
@@ -59,6 +59,7 @@ const AppRouters = () => (
 
       {/* <Route path="/internship/:sessionId" element={<InternshipDetailsPage />} /> */}
 
+      {/* Authentication pages */}
       <Route path="/auth">
         <Route path="register" element={<SignupPage />} />
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
@@ -66,17 +67,20 @@ const AppRouters = () => (
 
       <Route path="/feedback" element={<FeedbackPage />} />
 
+      {/* Mentor section */}
       <Route path="/mentors">
         <Route path="" element={<MentorsPage />} />
         <Route path="m/:mentorId" element={<MentorPage />} />
       </Route>
 
+      {/* Policies */}
       <Route path="/policies">
         <Route path="terms-conditions" element={<TermsConditionsPage />} />
         <Route path="refund" element={<RefundPolicyPage />} />
         <Route path="privacy" element={<PrivacyPolicyPage />} />
       </Route>
 
+      {/* Testimonial (feedback) section */}
       <Route path="/testimonials">
         <Route path="" element={<TestimonialsPage />} />
       </Route>

@@ -136,3 +136,2756 @@ Ask ChatGPT
 // };
 
 // export default RefundPolicyPage; this was the previous code got refund page 
+
+
+
+// import { useState, useEffect } from "react";
+// import { Modal } from "../utility/Modal";
+// import { codedriftLogoImage } from "../../access-assets/images";
+// import { Button } from "../utility/Button";
+// import Image from "../utility/Image";
+// import { sendOtp, verifyOtp } from "./loginApi";
+// import { useFormik } from "formik";
+// import * as Yup from "yup";
+// import { toast } from "react-toastify";
+// import { setCookie } from "../../apiUtils/cookieUtils";
+
+// const LoginFormModal = ({ open, setOpen }) => {
+//   const [referenceId, setReferenceId] = useState(null);
+//   const [mode, setMode] = useState("default"); // default → input mobile, otp → enter otp
+//   const [loading, setLoading] = useState(false);
+
+//   // ✅ Clear fields when modal closes
+//   useEffect(() => {
+//     if (!open) {
+//       formik.resetForm();
+//       otpFormik.resetForm();
+//       setReferenceId(null);
+//       setMode("default");
+//       setLoading(false);
+//     }
+//   }, [open]);
+
+//   // Yup Schemas
+//   const mobileSchema = Yup.object({
+//     mobileNo: Yup.string()
+//       .matches(/^[0-9]{10}$/, "Mobile number must be 10 digits")
+//       .required("Mobile number is required"),
+//   });
+
+//   const otpSchema = Yup.object({
+//     otp: Yup.string()
+//       .matches(/^[0-9]{6}$/, "OTP must be 6 digits")
+//       .required("OTP is required"),
+//   });
+
+//   // Mobile Form
+//   const formik = useFormik({
+//     initialValues: { mobileNo: "" },
+//     validationSchema: mobileSchema,
+//     onSubmit: async (values) => {
+//       try {
+//         setLoading(true);
+//         const res = await sendOtp(values.mobileNo);
+//         if (res.success) {
+//           setReferenceId(res.data.reference_id);
+//           setMode("otp");
+//           toast.success(res.message || "OTP sent successfully");
+//         } else {
+//           toast.error(res.message || "Failed to send OTP");
+//         }
+//       } catch (err) {
+//         toast.error(err.message || "Failed to send OTP");
+//       } finally {
+//         setLoading(false);
+//       }
+//     },
+//   });
+
+//   // OTP Form
+//   // const otpFormik = useFormik({
+//   //   initialValues: { otp: "" },
+//   //   validationSchema: otpSchema,
+//   //   onSubmit: async (values) => {
+//   //     try {
+//   //       setLoading(true);
+//   //       const res = await verifyOtp(referenceId, values.otp);
+//   //       if (res.success) {
+//   //         toast.success(res.message || "Login successful");
+//   //         setOpen(false); // close modal
+//   //       } else {
+//   //         toast.error(res.success || "Invalid OTP");
+//   //       }
+//   //     } catch (err) {
+//   //       toast.error(err.message || "Failed to verify OTP");
+//   //     } finally {
+//   //       setLoading(false);
+//   //     }
+//   //   },
+//   // });
+
+//   const otpFormik = useFormik({
+//     initialValues: { otp: "" },
+//     validationSchema: otpSchema,
+//     onSubmit: async (values) => {
+//       try {
+//         setLoading(true);
+//         const res = await verifyOtp(referenceId, values.otp);
+
+//         if (res.success && res.data) {
+//           const { studentId, mobileNo } = res.data;
+
+//           setCookie("studentId", res.data.studentId);
+//           console.log("Student Id", studentId);
+//           setCookie("mobileNo", res.data.mobileNo);
+//           // ✅ Optional: Store both in one cookie as JSON
+//           // Cookies.set("studentData", JSON.stringify({ studentId, mobileNo }), { expires: 7 });
+
+//           toast.success(res.message || "Login successful");
+//           setOpen(false); // close modal
+//         } else {
+//           toast.error(res.message || "Invalid OTP");
+//         }
+//       } catch (err) {
+//         toast.error(err.message || "Failed to verify OTP");
+//       } finally {
+//         setLoading(false);
+//       }
+//     },
+//   });
+
+//   return (
+//     <Modal
+//       isOpen={open}
+//       onClose={() => setOpen(false)}
+//       variant="sm"
+//       scrollableBody={false}
+//     >
+//       <Modal.Body>
+//         <div className="flex justify-end">
+//           <button
+//             onClick={() => setOpen(false)}
+//             className="text-gray-500 hover:text-gray-700 text-2xl font-bold focus:outline-none"
+//             aria-label="Close"
+//           >
+//             ×
+//           </button>
+//         </div>
+
+//         {/* Logo */}
+//         <div className="flex justify-center mb-4">
+//           <Image
+//             src={codedriftLogoImage}
+//             alt="CodeDrift Logo"
+//             className="w-16 h-16 rounded-full shadow-md"
+//           />
+//         </div>
+
+//         {/* Heading */}
+//         <div className="text-center mb-4">
+//           <h2 className="text-xl font-bold text-gray-800">
+//             Login to CodeDrift
+//           </h2>
+//           <p className="text-sm text-gray-500">
+//             {mode === "default"
+//               ? "Enter your mobile number to receive an OTP"
+//               : "Enter the OTP sent to your number"}
+//           </p>
+//         </div>
+
+//         {/* FORM START */}
+//         {mode === "default" && (
+//           <form onSubmit={formik.handleSubmit} className="space-y-4">
+//             {/* Mobile Input */}
+//             <div>
+//               <label className="block text-gray-700 text-sm mb-1">
+//                 Mobile Number <span className="text-red-500">*</span>
+//               </label>
+//               <input
+//                 type="text"
+//                 name="mobileNo"
+//                 value={formik.values.mobileNo}
+//                 onChange={formik.handleChange}
+//                 onBlur={formik.handleBlur}
+//                 placeholder="Enter mobile number"
+//                 className={`w-full px-4 py-2.5 rounded-lg border ${
+//                   formik.touched.mobileNo && formik.errors.mobileNo
+//                     ? "border-red-500"
+//                     : "border-gray-300"
+//                 } focus:ring-2 focus:ring-codedrift-pink outline-none`}
+//                 maxLength={10}
+//               />
+//               {formik.touched.mobileNo && formik.errors.mobileNo && (
+//                 <p className="text-red-500 text-xs mt-1">
+//                   {formik.errors.mobileNo}
+//                 </p>
+//               )}
+//             </div>
+
+//             {/* Send OTP Button */}
+//             <Button
+//               type="submit"
+//               variant="pink"
+//               size="md"
+//               className="w-full"
+//               disabled={loading}
+//             >
+//               {loading ? "Sending OTP..." : "Send OTP"}
+//             </Button>
+//           </form>
+//         )}
+
+//         {/* OTP FLOW */}
+//         {mode === "otp" && (
+//           <form onSubmit={otpFormik.handleSubmit} className="space-y-4">
+//             {/* Mobile (readonly) */}
+//             <div>
+//               <label className="block text-gray-700 text-sm mb-1">Mobile</label>
+//               <input
+//                 type="text"
+//                 value={formik.values.mobileNo}
+//                 readOnly
+//                 className="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-500 border border-gray-200"
+//               />
+//             </div>
+
+//             {/* OTP Input */}
+//             <div>
+//               <label className="block text-gray-700 text-sm mb-1">
+//                 OTP <span className="text-red-500">*</span>
+//               </label>
+//               <input
+//                 type="text"
+//                 name="otp"
+//                 value={otpFormik.values.otp}
+//                 onChange={otpFormik.handleChange}
+//                 onBlur={otpFormik.handleBlur}
+//                 placeholder="Enter OTP"
+//                 className={`w-full px-4 py-2.5 rounded-lg border ${
+//                   otpFormik.touched.otp && otpFormik.errors.otp
+//                     ? "border-red-500"
+//                     : "border-gray-300"
+//                 } focus:ring-2 focus:ring-codedrift-pink outline-none`}
+//                 maxLength={6}
+//               />
+//               {otpFormik.touched.otp && otpFormik.errors.otp && (
+//                 <p className="text-red-500 text-xs mt-1">
+//                   {otpFormik.errors.otp}
+//                 </p>
+//               )}
+//             </div>
+
+//             {/* OTP Actions */}
+//             <div className="space-y-2 pt-2">
+//               <Button
+//                 type="submit"
+//                 variant="pink"
+//                 size="md"
+//                 className="w-full"
+//                 disabled={loading}
+//               >
+//                 {loading ? "Verifying..." : "Login with OTP"}
+//               </Button>
+
+//               {/* Register Link */}
+//               {/* <div className="text-center text-sm ">
+//                 <span className="text-gray-600">New user?</span>{" "}
+//                 <a
+//                   href="/register"
+//                   className="text-codedrift-pink font-medium hover:underline"
+//                 >
+//                   Register here
+//                 </a>
+//               </div> */}
+
+//               {/* <Button
+//                 type="button"
+//                 variant="outline"
+//                 size="md"
+//                 className="w-full text-codedrift-indigo border-codedrift-indigo"
+//                 onClick={() => {
+//                   setMode("default");
+//                   otpFormik.resetForm();
+//                 }}
+//               >
+//                 Resend OTP
+//               </Button> */}
+//             </div>
+//           </form>
+//         )}
+//       </Modal.Body>
+
+//       <Modal.Footer>
+//     <div className="w-full text-center text-sm">
+//       <span className="text-gray-600">New user?</span>{" "}
+//       <a
+//         href="/auth/register"
+//         className="text-codedrift-pink font-medium hover:underline"
+//       >
+//         Register here
+//       </a>
+//     </div>
+//   </Modal.Footer>
+//     </Modal>
+//   );
+// };
+
+// export default LoginFormModal;
+
+
+firstly login form
+
+
+// import fs from 'node:fs/promises'
+// import express from 'express'
+// import { Transform } from 'node:stream'
+
+// // Constants
+// const isProduction = process.env.NODE_ENV === 'production'
+// const port = process.env.PORT || 5174
+// const base = process.env.BASE || '/'
+// const ABORT_DELAY = 10000
+
+// // Cached production assets
+// const templateHtml = isProduction
+//   ? await fs.readFile('./dist/client/index.html', 'utf-8')
+//   : ''
+
+// // Create http server
+// const app = express()
+
+// // Add Vite or respective production middlewares
+// /** @type {import('vite').ViteDevServer | undefined} */
+// let vite
+// if (!isProduction) {
+//   const { createServer } = await import('vite')
+//   vite = await createServer({
+//     server: { middlewareMode: true },
+//     appType: 'custom',
+//     base,
+//   })
+//   app.use(vite.middlewares)
+// } else {
+//   const compression = (await import('compression')).default
+//   const sirv = (await import('sirv')).default
+//   app.use(compression())
+//   app.use(base, sirv('./dist/client', { extensions: [] }))
+// }
+
+// // Serve HTML
+// app.use('*all', async (req, res) => {
+//   try {
+//     const url = req.originalUrl.replace(base, '')
+
+//     /** @type {string} */
+//     let template
+//     /** @type {import('./src/entry-server.js').render} */
+//     let render
+//     if (!isProduction) {
+//       // Always read fresh template in development
+//       template = await fs.readFile('./index.html', 'utf-8')
+//       template = await vite.transformIndexHtml(url, template)
+//       render = (await vite.ssrLoadModule('/src/entry-server.jsx')).render
+//     } else {
+//       template = templateHtml
+//       render = (await import('./dist/server/entry-server.js')).render
+//     }
+
+//     let didError = false
+
+//     const { pipe, abort } = render(url, {
+//       onShellError() {
+//         res.status(500)
+//         res.set({ 'Content-Type': 'text/html' })
+//         res.send('<h1>Something went wrong</h1>')
+//       },
+//       onShellReady() {
+//         res.status(didError ? 500 : 200)
+//         res.set({ 'Content-Type': 'text/html' })
+
+//         const transformStream = new Transform({
+//           transform(chunk, encoding, callback) {
+//             res.write(chunk, encoding)
+//             callback()
+//           },
+//         })
+
+//         const [htmlStart, htmlEnd] = template.split(`<!--app-html-->`)
+
+//         res.write(htmlStart)
+
+//         transformStream.on('finish', () => {
+//           res.end(htmlEnd)
+//         })
+
+//         pipe(transformStream)
+//       },
+//       onError(error) {
+//         didError = true
+//         console.error(error)
+//       },
+//     })
+
+//     setTimeout(() => {
+//       abort()
+//     }, ABORT_DELAY)
+//   } catch (e) {
+//     vite?.ssrFixStacktrace(e)
+//     console.log(e.stack)
+//     res.status(500).end(e.stack)
+//   }
+// })
+
+// // Start http server
+// app.listen(port, () => {
+//   console.log(`Server started at http://localhost:${port}`)
+// })
+
+
+previous server.js
+
+// Example of lazy-loaded component
+// const Card = lazy(() => import('./Card'));
+
+// function App() {
+//     return (
+//         <Suspense fallback={<div>Loading...</div>}>
+//             <AppRouters />
+//              <ToastContainer position="top-right" autoClose={3000} />
+//         </Suspense>
+//     );
+// }
+previous App.jsx
+
+
+  // useEffect(() => {
+  //   const loadItems = async () => {
+  //     setLoading(true);
+
+  //     try {
+  //       // Handle 'event' category
+  //       if (categorySlug === "event") {
+  //         const categorized = await fetchCategorizedEvents();
+  //         setEventData(categorized);
+  //       }
+
+  //       // Handle 'webinar' category
+  //       else if (categorySlug === "webinar") {
+  //         const response = await fetchWebinars();
+
+  //         if (response.success) {
+  //           const webinars = response.data;
+  //           const categorized = {
+  //             ongoing: webinars.filter((item) => item.status === "ongoing"),
+  //             upcoming: webinars.filter((item) => item.status === "upcoming"),
+  //             past: webinars.filter((item) => item.status === "past"),
+  //           };
+  //           setEventData(categorized);
+  //         }
+  //       }
+
+  //       // 🔽 Handle 'workshop' category
+  //       else if (categorySlug === "workshop") {
+  //         const response = await fetchWorkshops();
+
+  //         if (response.success) {
+  //           const workshops = response.data; // ✅ this is already an array
+
+  //           const categorized = {
+  //             ongoing: workshops.filter(
+  //               (item) => item.status?.toLowerCase() === "ongoing"
+  //             ),
+  //             upcoming: workshops.filter(
+  //               (item) => item.status?.toLowerCase() === "upcoming"
+  //             ),
+  //             past: workshops.filter(
+  //               (item) => item.status?.toLowerCase() === "past"
+  //             ),
+  //           };
+
+  //           setEventData(categorized);
+  //         }
+  //       } 
+        
+  //       // 🔽 Handle 'internship-session' category
+  //       else if (categorySlug === "internship-session") {
+  //         const response = await fetchInternshipSessions();
+
+  //         if (response.success) {
+  //           const sessions = response.data;
+
+  //           const categorized = {
+  //             ongoing: sessions.filter(
+  //               (item) => item.status?.toLowerCase() === "ongoing"
+  //             ),
+  //             upcoming: sessions.filter(
+  //               (item) => item.status?.toLowerCase() === "upcoming"
+  //             ),
+  //             past: sessions.filter(
+  //               (item) => item.status?.toLowerCase() === "past"
+  //             ),
+  //           };
+
+  //           setEventData(categorized);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to load data", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   loadItems();
+  // }, [categorySlug]);
+ useEffect from BookListingPage
+
+ // import React, { useEffect, useState } from "react";
+// import { useParams, Link } from "react-router-dom";
+// import { api } from "../../apiUtils/instance";
+// import {
+//   FaFacebookF,
+//   FaInstagram,
+//   FaTwitter,
+//   FaLinkedinIn,
+//   FaClock,
+//   FaMapMarkerAlt,
+//   FaGlobe,
+//   FaUsers,
+//   FaCertificate,
+//   FaExternalLinkAlt,
+//   FaRegCopy,
+//   FaRegClock,
+//   FaUserTie,
+//   FaCheckCircle,
+//   FaUserFriends,
+//   FaTags,
+//   FaCalendarAlt,
+// } from "react-icons/fa";
+// import { DIR } from "../../config";
+// import { getEventById } from "./events";
+
+// const EventDetailsPage = () => {
+//   const { eventId } = useParams();
+//   const [event, setEvent] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+
+//   const socialIconsMap = {
+//     facebook: FaFacebookF,
+//     instagram: FaInstagram,
+//     twitter: FaTwitter,
+//     linkedin: FaLinkedinIn,
+//   };
+
+//   // Format Date Helper
+//   const formatDate = (d) =>
+//     new Date(d).toLocaleDateString(undefined, {
+//       month: "long",
+//       day: "numeric",
+//       year: "numeric",
+//     });
+
+//   // Fetch event details on mount
+//   useEffect(() => {
+//     const fetchEventDetails = async () => {
+//       try {
+//         setLoading(true);
+//         const data = await getEventById(eventId); // ✅ Use the service
+//         setEvent(data);
+//       } catch (err) {
+//         console.error(err);
+//         setError("Oops! Couldn't load the event.");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchEventDetails();
+//   }, [eventId]);
+
+//   // Loading State
+//   if (loading)
+//     return (
+//       <div className="flex justify-center items-center min-h-screen text-gray-500">
+//         Loading...
+//       </div>
+//     );
+
+//   // Error or not found
+//   if (error || !event)
+//     return (
+//       <div className="flex justify-center items-center min-h-screen text-red-500">
+//         {error || "Event not found"}
+//       </div>
+//     );
+
+//   return (
+//     <div className="relative min-h-screen bg-gradient-to-br from-slate-100 via-slate-300 to-gray-700 text-white font-sans animate-gradient-x bg-[length:200%_200%] overflow-hidden">
+//     {/* Background Visual Effects */}
+//       <div className="absolute inset-0 -z-10 overflow-hidden">
+//         <div className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+//         <div className="absolute top-[200px] right-[-100px] w-[300px] h-[300px] bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+//       </div>
+
+//       {/* Hero Section */}
+//       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center px-6 overflow-hidden">
+//         {/* Background Image: Banner Image */}
+//         <div
+//           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+//           style={{
+//             backgroundImage: `url(${
+//               event.bannerImage
+//                 ? DIR.EVENT_BANNER + event.bannerImage
+//                 : "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+//             })`,
+//           }}
+//         >
+//           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 to-transparent"></div>
+//         </div>
+
+//         {/* Content */}
+//         <div className="relative max-w-6xl w-full p-12 mx-auto text-center">
+//           {/* Event Badge */}
+//           <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full border border-white/30 text-white text-sm font-medium mb-6">
+//             <FaCalendarAlt className="mr-2" />
+//             {event.mode} Event
+//           </div>
+
+//           {/* Event Title */}
+//           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+//             {event.title}
+//           </h1>
+
+//           {/* Event Description */}
+//           <p className="text-lg text-white/90 max-w-2xl mx-auto mb-8">
+//             {event.description}
+//           </p>
+
+//           {/* Event Details */}
+//           <div className="flex flex-wrap justify-center gap-4 mb-10">
+//             <div className="flex items-center text-white/90">
+//               <FaClock className="mr-2" />
+//               <span>
+//                 {formatDate(event.startDate)} • {event.startTime}
+//               </span>
+//             </div>
+//             <div className="flex items-center text-white/90">
+//               <FaMapMarkerAlt className="mr-2" />
+//               <span>{event.location}</span>
+//             </div>
+//           </div>
+
+//           {/* CTA Buttons */}
+//           <div className="flex flex-wrap justify-center gap-4">
+//             {event.registrationLink && (
+//               <a
+//                 href={event.registrationLink}
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//                 className="px-8 py-3 bg-white text-gray-900 rounded-full font-medium shadow-lg hover:bg-gray-100 transition"
+//               >
+//                 Register Now
+//               </a>
+//             )}
+//             <Link
+//               to="/events"
+//               className="px-8 py-3 bg-transparent rounded-full font-medium text-white border border-white hover:bg-white/10 transition"
+//             >
+//               Browse Events
+//             </Link>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* Main content */}
+//       <main className="max-w-7xl mx-auto px-6 py-10 md:flex md:space-x-12 items-start">
+//         {/* Event Info */}
+//         <section className="bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-700 flex-1">
+//           <h2 className="text-3xl font-semibold mb-6 tracking-wide">
+//             {/* <FaInfoCircle className="text-pink-500" /> */}
+//             Event Details
+//           </h2>
+//           <div className="space-y-5 text-gray-300">
+//             <div className="flex items-center space-x-3">
+//               <FaClock className="text-pink-500" />
+//               <span>
+//                 {formatDate(event.startDate)} - {formatDate(event.endDate)} |{" "}
+//                 {event.startTime} - {event.endTime}
+//               </span>
+//             </div>
+
+//             <div className="flex items-center space-x-3">
+//               <FaMapMarkerAlt className="text-pink-500" />
+//               <span>{event.location}</span>
+//             </div>
+
+//             <div className="flex items-center space-x-3">
+//               <FaGlobe className="text-pink-500" />
+//               <span>{event.mode}</span>
+//             </div>
+
+//             <div className="flex items-center space-x-3">
+//               <FaUsers className="text-pink-500" />
+//               <span>
+//                 {event.registeredCount} / {event.maxParticipants} Participants
+//               </span>
+//             </div>
+
+//             <div className="flex items-center space-x-3">
+//               <FaCertificate className="text-pink-500" />
+//               <span>
+//                 Certificate:{" "}
+//                 {event.certificateAvailable ? "Available" : "Not Available"}
+//               </span>
+//             </div>
+
+//             <div className="flex items-center space-x-3">
+//               <FaUserTie className="text-pink-500 mt-1" />
+//               <span>Organizer: {event.organizer}</span>
+//             </div>
+
+//             <div className="flex items-center space-x-3">
+//               <FaCheckCircle className="text-pink-500 mt-1" />
+//               <span>
+//                 Status:{" "}
+//                 <span
+//                   className={`font-semibold ${
+//                     event.status === "Active"
+//                       ? "text-green-400"
+//                       : event.status === "Past"
+//                       ? "text-red-400"
+//                       : "text-yellow-400"
+//                   }`}
+//                 >
+//                   {event.status}
+//                 </span>
+//               </span>
+//             </div>
+
+//             <div className="flex items-center space-x-3">
+//               <FaUserFriends className="text-pink-500 mt-1" />
+//               <span>Speakers: {event.speakers.join(", ")}</span>
+//             </div>
+
+//             <div className="flex items-center space-x-3">
+//               <FaTags className="text-pink-500 mt-1" />
+//               <span>
+//                 Price:{" "}
+//                 {event.isFree ? (
+//                   <span className="text-green-400 font-semibold">Free</span>
+//                 ) : (
+//                   `₹${event.price}`
+//                 )}
+//               </span>
+//             </div>
+
+//             {event.meetingLink && (
+//               <p>
+//                 <strong>Meeting Link:</strong>{" "}
+//                 <a
+//                   href={event.meetingLink}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   className="underline text-[#53b8ec] hover:text-[#e9577c]"
+//                 >
+//                   Join Meeting
+//                 </a>
+//               </p>
+//             )}
+//             {event.registrationLink && (
+//               <p>
+//                 <strong>Registration:</strong>{" "}
+//                 <a
+//                   href={event.registrationLink}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   className="underline text-[#53b8ec] hover:text-[#e9577c]"
+//                 >
+//                   Register Now
+//                 </a>
+//               </p>
+//             )}
+//             {event.feedbackFormLink && event.feedbackFormLink !== "true" && (
+//               <p>
+//                 <strong>Feedback:</strong>{" "}
+//                 <a
+//                   href={event.feedbackFormLink}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   className="underline text-[#53b8ec] hover:text-[#e9577c]"
+//                 >
+//                   Provide Feedback
+//                 </a>
+//               </p>
+//             )}
+//           </div>
+
+//           {event.registrationLink && (
+//             <a
+//               href={event.registrationLink}
+//               target="_blank"
+//               rel="noopener noreferrer"
+//               className="mt-8 block text-center bg-pink-600 hover:bg-pink-700 rounded-full py-4 font-semibold transition shadow-lg shadow-pink-800/40"
+//             >
+//               Register Now
+//             </a>
+//           )}
+//         </section>
+
+//         {/* Agenda + Gallery */}
+//         <section className="space-y-10 flex-1">
+//           {/* Agenda Timeline */}
+
+//           <div className="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-2xl p-8 shadow-2xl border border-gray-700">
+//             <h2 className="text-3xl font-bold mb-8 tracking-wide text-pink-400 flex items-center gap-3">
+//               <FaRegClock className="text-pink-500 text-3xl" />
+//               Event Agenda
+//             </h2>
+
+//             <ol className="relative border-l-4 border-pink-500/40 ml-4 space-y-12">
+//               {event.agenda.map(({ _id, time, activity }, index) => (
+//                 <li key={_id} className="relative pl-10 group">
+//                   {/* Circle Dot */}
+//                   <div className="absolute -left-[30px] top-1.5 w-6 h-6 bg-pink-600 rounded-full shadow-lg border-4 border-gray-900 z-10" />
+
+//                   {/* Content */}
+//                   <div className="bg-gray-800 rounded-xl p-5 shadow-md border border-gray-700 transition-all duration-300 group-hover:shadow-pink-500/20 group-hover:border-pink-500/40">
+//                     <div className="flex items-center justify-between mb-2">
+//                       <span className="text-sm text-pink-400 font-semibold tracking-wide">
+//                         {time}
+//                       </span>
+//                       <span className="text-sm text-gray-400">
+//                         Session {index + 1}
+//                       </span>
+//                     </div>
+//                     <p className="text-lg font-medium text-gray-100">
+//                       {activity}
+//                     </p>
+//                   </div>
+//                 </li>
+//               ))}
+//             </ol>
+//           </div>
+
+//           {/* Gallery Carousel */}
+//           {event.gallery?.length > 0 && (
+//             <div className="bg-gray-800 rounded-xl p-8 shadow-lg border border-gray-700">
+//               <h2 className="text-3xl font-semibold mb-6 tracking-wide">
+//                 Gallery
+//               </h2>
+//               <div className="flex space-x-6 overflow-x-auto scrollbar-thin scrollbar-thumb-pink-500 scrollbar-track-gray-700">
+//                 {event.gallery.map((img, idx) => (
+//                   <img
+//                     key={idx}
+//                     src={`${DIR.EVENT_GALLERY_IMAGE}${img}`}
+//                     // src={img}
+//                     alt={`Gallery image ${idx + 1}`}
+//                     className="rounded-lg max-h-48 object-cover cursor-pointer hover:scale-105 transition-transform"
+//                   />
+//                 ))}
+//               </div>
+//             </div>
+//           )}
+
+//           {/* Sponsors */}
+
+//           {/* Resources */}
+//         </section>
+//       </main>
+
+//       {/* Sponsors & Resources Section */}
+//       {(event.sponsors?.length > 0 || event.resources?.length > 0) && (
+//         <section className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+//           {/* Sponsors */}
+//           {event.sponsors?.length > 0 && (
+//             <div className="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-2xl p-8 shadow-xl border border-gray-700">
+//               <h3 className="text-2xl font-bold mb-6 text-center text-pink-500 uppercase tracking-widest">
+//                 Our Sponsors
+//               </h3>
+
+//               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+//                 {event.sponsors.map((sponsor, i) => (
+//                   <div
+//                     key={i}
+//                     className="flex items-center space-x-3 bg-gray-800 rounded-lg p-3 shadow border border-gray-700 hover:shadow-pink-500/30 transition-transform hover:scale-[1.02] cursor-pointer"
+//                     title={sponsor.name || sponsor}
+//                   >
+//                     {/* Logo or Fallback */}
+//                     {sponsor.logo ? (
+//                       <img
+//                         src={sponsor.logo}
+//                         alt={`${sponsor.name || sponsor} logo`}
+//                         className="h-10 w-10 object-contain bg-white rounded-full p-1"
+//                       />
+//                     ) : (
+//                       <div className="h-10 w-10 flex items-center justify-center bg-pink-600 rounded-full text-white text-base font-bold">
+//                         {sponsor.name
+//                           ? sponsor.name.charAt(0)
+//                           : sponsor.charAt(0)}
+//                       </div>
+//                     )}
+
+//                     {/* Sponsor Name */}
+//                     <div className="text-left">
+//                       <p className="text-sm text-gray-200 font-semibold truncate max-w-[100px]">
+//                         {sponsor.name || sponsor}
+//                       </p>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           )}
+
+//           {/* Resources */}
+//           {event.resources?.length > 0 && (
+//             <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+//               <h3 className="text-2xl font-semibold mb-4 tracking-wide text-pink-400">
+//                 Resources
+//               </h3>
+//               <ul className="space-y-3">
+//                 {event.resources.map((url, idx) => (
+//                   <li
+//                     key={idx}
+//                     className="flex items-center space-x-3 text-pink-300 hover:text-pink-600 transition-colors"
+//                   >
+//                     <FaExternalLinkAlt className="text-lg" />
+//                     <a
+//                       href={url}
+//                       target="_blank"
+//                       rel="noopener noreferrer"
+//                       className="underline truncate max-w-xs"
+//                       title={url}
+//                     >
+//                       {url.length > 40 ? url.slice(0, 40) + "..." : url}
+//                     </a>
+//                     <button
+//                       onClick={() => navigator.clipboard.writeText(url)}
+//                       className="ml-auto text-pink-400 hover:text-pink-700 transition"
+//                       aria-label="Copy link"
+//                     >
+//                       <FaRegCopy />
+//                     </button>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+//           )}
+//         </section>
+//       )}
+
+//       <style>
+//         {`
+//           @keyframes gradient-x {
+//             0% { background-position: 0% 50%; }
+//             50% { background-position: 100% 50%; }
+//             100% { background-position: 0% 50%; }
+//           }
+//           .animate-gradient-x {
+//             background-size: 200% 200%;
+//             animation: gradient-x 8s ease infinite;
+//           }
+//           /* Scrollbar styles */
+//           .scrollbar-thin::-webkit-scrollbar {
+//             height: 6px;
+//           }
+//           .scrollbar-thin::-webkit-scrollbar-track {
+//             background: transparent;
+//           }
+//           .scrollbar-thin::-webkit-scrollbar-thumb {
+//             background-color: #db2777; /* pink-600 */
+//             border-radius: 9999px;
+//           }
+//         `}
+//       </style>
+//     </div>
+//   );
+// };
+
+// export default EventDetailsPage;
+
+this is the previous code for EventDetailsPage
+
+
+// import React from "react";
+// import { Modal } from "../../components/utility/Modal";
+// import { Button } from "../../components/utility/Button";
+// import * as Yup from "yup";
+// import { Formik, Form, Field, ErrorMessage } from "formik";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { getCookie } from "../../apiUtils/cookieUtils";
+// import { enrollStudent } from "../../pages/courses/enrollment";
+
+// // Yup validation schema
+// const enrollSchema = Yup.object().shape({
+//   firstName: Yup.string()
+//     .matches(/^[a-zA-Z\s'-]{2,30}$/, "First name is invalid")
+//     .required("First Name is required"),
+
+//   middleName: Yup.string()
+//     .matches(/^[a-zA-Z\s'-]{0,30}$/, "Middle name is invalid")
+//     .notRequired(),
+
+//   lastName: Yup.string()
+//     .matches(/^[a-zA-Z\s'-]{2,30}$/, "Last name is invalid")
+//     .required("Last Name is required"),
+
+//   mobileNo: Yup.string()
+//     .required("Mobile Number is required")
+//     .matches(/^[789]\d{9}$/, "Phone must be 10 digits and start with 7, 8, or 9")
+//     .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits")
+//     .test(
+//       "not-repetitive",
+//       "Mobile number cannot be repetitive or invalid (e.g. 1234567890)",
+//       (value) => {
+//         if (!value) return false;
+//         if (/^(\d)\1{9}$/.test(value)) return false;
+//         const invalids = ["1234567890", "0987654321", "1111111111", "2222222222"];
+//         return !invalids.includes(value);
+//       }
+//     ),
+
+//   email: Yup.string()
+//     .required("Email is required")
+//     .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please enter a valid email address"),
+
+//   collegeName: Yup.string()
+//     .trim()
+//     .min(3, "College name must be at least 3 characters")
+//     .max(100, "College name must be less than 100 characters")
+//     .required("College Name is required"),
+// });
+
+// const EnrollFormModal = ({ open, setOpen, course }) => {
+//   const handleClose = (resetForm) => {
+//     resetForm();
+//     setOpen(false);
+//   };
+
+//   return (
+//     <>
+//       <Modal
+//         isOpen={open}
+//         onClose={() => setOpen(false)}
+//         variant="lg"
+//         scrollableBody
+//         closeOnEsc={false}
+//       >
+//         <Modal.Header>
+//           Enroll for {course?.title || "Selected Course"}
+//         </Modal.Header>
+
+//         <Modal.Body>
+//           <Formik
+//             initialValues={{
+//               firstName: "",
+//               middleName: "",
+//               lastName: "",
+//               mobileNo: "",
+//               email: "",
+//               collegeName: "",
+//             }}
+//             validationSchema={enrollSchema}
+//             onSubmit={async (values, { setSubmitting, resetForm }) => {
+//               const fullName = [
+//                 values.firstName.trim(),
+//                 values.middleName.trim(),
+//                 values.lastName.trim(),
+//               ]
+//                 .filter(Boolean)
+//                 .join(" ");
+
+//               const studentId = getCookie("studentId");
+
+//               try {
+//                 const enrollmentData = {
+//                   studentId,
+//                   fullName,
+//                   mobileNo: values.mobileNo.trim(),
+//                   email: values.email.trim(),
+//                   collegeName: values.collegeName.trim(),
+//                   selectedProgram: course?.title,
+//                   enrolledCourses: [course?._id],
+//                 };
+
+//                 const response = await enrollStudent(enrollmentData);
+
+//                 if (response.success) {
+//                   toast.success("Enrolled successfully!");
+//                   handleClose(resetForm);
+//                 } else {
+//                   toast.error(response.message || "Enrollment failed");
+//                 }
+//               } catch (err) {
+//                 const errorMessage = err.response?.data?.message || "Please try again";
+//                 toast.error(errorMessage);
+//               } finally {
+//                 setSubmitting(false);
+//               }
+//             }}
+//           >
+//             {({ isSubmitting }) => (
+//               <Form className="space-y-6">
+//                 {/* Name Fields */}
+//                 <div className="grid md:grid-cols-3 gap-4">
+//                   {["First", "Middle", "Last"].map((label) => {
+//                     const nameKey = `${label.toLowerCase()}Name`;
+//                     return (
+//                       <div key={nameKey}>
+//                         <label className="block text-gray-700 text-sm mb-1">
+//                           {label} Name {label !== "Middle" && <span className="text-red-500">*</span>}
+//                         </label>
+//                         <Field
+//                           type="text"
+//                           name={nameKey}
+//                           placeholder={`Enter ${label.toLowerCase()} name`}
+//                           className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//                         />
+//                         <ErrorMessage name={nameKey} component="div" className="text-red-500 text-xs mt-1" />
+//                       </div>
+//                     );
+//                   })}
+//                 </div>
+
+//                 {/* Mobile & Email */}
+//                 <div className="grid md:grid-cols-2 gap-4">
+//                   {["mobileNo", "email"].map((field) => (
+//                     <div key={field}>
+//                       <label className="block text-gray-700 text-sm mb-1">
+//                         {field === "mobileNo" ? "Mobile" : "Email"} <span className="text-red-500">*</span>
+//                       </label>
+//                       <Field
+//                         type={field === "email" ? "email" : "tel"}
+//                         name={field}
+//                         placeholder={field === "email" ? "Enter email address" : "Enter mobile number"}
+//                         className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//                       />
+//                       <ErrorMessage name={field} component="div" className="text-red-500 text-xs mt-1" />
+//                     </div>
+//                   ))}
+//                 </div>
+
+//                 {/* College Name */}
+//                 <div>
+//                   <label className="block text-gray-700 text-sm mb-1">
+//                     College Name <span className="text-red-500">*</span>
+//                   </label>
+//                   <Field
+//                     type="text"
+//                     name="collegeName"
+//                     placeholder="Enter college name"
+//                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
+//                   />
+//                   <ErrorMessage name="collegeName" component="div" className="text-red-500 text-xs mt-1" />
+//                 </div>
+
+//                 {/* Submit */}
+//                 <div className="pt-2">
+//                   <Button
+//                     type="submit"
+//                     variant="pink"
+//                     size="md"
+//                     className="w-full shadow-md"
+//                     disabled={isSubmitting}
+//                   >
+//                     {isSubmitting ? "Enrolling..." : "Enroll"}
+//                   </Button>
+//                 </div>
+//               </Form>
+//             )}
+//           </Formik>
+//         </Modal.Body>
+//       </Modal>
+
+//       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+//     </>
+//   );
+// };
+
+// export default EnrollFormModal;
+
+// import React, { useState, useEffect } from "react";
+// import { Modal } from "../../components/utility/Modal";
+// import { Button } from "../../components/utility/Button";
+// import { Formik, Form, Field, ErrorMessage } from "formik";
+// import * as Yup from "yup";
+// import { toast, ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { setCookie } from "../../apiUtils/cookieUtils";
+// import { sendOtp, verifyOtp } from "../../components/auth/loginApi";
+// import { checkEnrollmentByMobile, enrollNewStudent } from "./enrollment";
+
+// const EnrollFormModal = ({ open, setOpen, course }) => {
+//   const [stage, setStage] = useState("mobile");
+//   // stages: "mobile" → just mobile input
+//   //          "prefill" → show prefilled form + OTP section
+//   //          "otp" → OTP verification step
+//   const [prefillData, setPrefillData] = useState(null); // data from enrollByMobile (existing user)
+
+//   const handleClose = (resetAll) => {
+//     resetAll();
+//     setStage("mobile");
+//     setPrefillData(null);
+//     setOpen(false);
+//   };
+
+//   /** Validation schemas for different stages **/
+//   const mobileSchema = Yup.object({
+//     mobileNo: Yup.string()
+//       .matches(/^[0-9]{10}$/, "Must be 10 digits")
+//       .required("Mobile number is required"),
+//   });
+
+//   const fullFormSchema = Yup.object({
+//     fullName: Yup.string().required("Full name required"),
+//     email: Yup.string().email("Invalid email").required("Email required"),
+//     // Optionally mobileNo here too (but mobile is already known)
+//   });
+
+//   const otpSchema = Yup.object({
+//     otp: Yup.string()
+//       .matches(/^[0-9]{6}$/, "OTP must be 6 digits")
+//       .required("OTP required"),
+//   });
+
+//   useEffect(() => {
+//     const sendOtpOnStageChange = async () => {
+//       if (stage === "otp" && prefillData?.mobileNo) {
+//         try {
+//           const sendRes = await sendOtp(prefillData.mobileNo);
+//           if (sendRes.success && sendRes.data.reference_id) {
+//             setPrefillData((prev) => ({
+//               ...prev,
+//               reference_id: sendRes.data.reference_id,
+//             }));
+//             toast.success("OTP sent to your mobile");
+//           } else {
+//             toast.error(sendRes.message || "Failed to send OTP");
+//           }
+//         } catch (error) {
+//           toast.error(error.message || "Error sending OTP");
+//         }
+//       }
+//     };
+
+//     sendOtpOnStageChange();
+//   }, [stage, prefillData?.mobileNo]);
+
+//   return (
+//     <Modal
+//       isOpen={open}
+//       onClose={() => setOpen(false)}
+//       variant="lg"
+//       scrollableBody
+//       closeOnEsc={false}
+//     >
+//       <Modal.Header>Enroll for {course?.title || "Course"}</Modal.Header>
+//       <Modal.Body>
+//         {stage === "mobile" && (
+//           <Formik
+//             initialValues={{ mobileNo: "" }}
+//             validationSchema={mobileSchema}
+//             onSubmit={async (values, { setSubmitting, resetForm }) => {
+//               try {
+//                 const res = await checkEnrollmentByMobile({
+//                   mobileNo: values.mobileNo,
+//                 });
+
+//                 if (res.success) {
+//                   setPrefillData(res.data);
+//                   setStage("prefill");
+//                   toast.success("Student already enrolled. Please verify OTP.");
+//                 } else {
+//                   setPrefillData({ mobileNo: values.mobileNo });
+//                   setStage("prefill");
+//                 }
+//               } catch (err) {
+//                 const message =
+//                   err.message || err?.message || "Error checking enrollment";
+
+//                 // ✅ Always show the error
+//                 toast.error(message);
+
+//                 // ✅ Check for 400 error message and continue to form
+//                 if (
+//                   message ===
+//                     "All required fields must be filled for new enrollment." ||
+//                   err?.statusCode === 400
+//                 ) {
+//                   setPrefillData({ mobileNo: values.mobileNo });
+//                   setStage("prefill");
+//                 }
+//               } finally {
+//                 setSubmitting(false);
+//               }
+//             }}
+//           >
+//             {/* {({ isSubmitting }) => (
+//               <Form className="space-y-4">
+//                 <div>
+//                   <label>Mobile Number *</label>
+//                   <Field
+//                     name="mobileNo"
+//                     type="text"
+//                     placeholder="Enter mobile number"
+//                   />
+//                   <ErrorMessage
+//                     name="mobileNo"
+//                     component="div"
+//                     className="text-red-500 text-xs"
+//                   />
+//                 </div>
+//                 <Button type="submit" disabled={isSubmitting}>
+//                   {isSubmitting ? "Checking..." : "Continue"}
+//                 </Button>
+//               </Form>
+//             )} */}
+
+//             {({ isSubmitting }) => (
+//               <Form className="space-y-6 px-2 py-2">
+//                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
+//                   Enter Your Mobile Number
+//                 </h3>
+
+//                 <div className="flex flex-col gap-2 w-75">
+//                   <label className="text-sm font-medium text-gray-600">
+//                     Mobile Number <span className="text-red-500">*</span>
+//                   </label>
+//                   <Field
+//                     name="mobileNo"
+//                     type="text"
+//                     placeholder="e.g. 9876543210"
+//                     className="w-full px-4 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition"
+//                   />
+//                   <ErrorMessage
+//                     name="mobileNo"
+//                     component="div"
+//                     className="text-red-500 text-xs"
+//                   />
+//                 </div>
+
+//                 <Button
+//                   type="submit"
+//                   disabled={isSubmitting}
+//                   className="w-full py-2  text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+//                 >
+//                   {isSubmitting ? "Checking..." : "Continue"}
+//                 </Button>
+//               </Form>
+//             )}
+//           </Formik>
+//         )}
+
+//         {stage === "prefill" && prefillData && (
+//           <Formik
+//             initialValues={{
+//               fullName: prefillData.fullName || "",
+//               mobileNo: prefillData.mobileNo,
+//               email: prefillData.email || "",
+//             }}
+//             validationSchema={fullFormSchema}
+//             onSubmit={async (values, { setSubmitting, resetForm }) => {
+//               try {
+//                 // Call enroll again with full data
+//                 const payload = {
+//                   fullName: values.fullName,
+//                   mobileNo: values.mobileNo,
+//                   email: values.email,
+//                   enrolledCourses: [course?._id],
+//                 };
+//                 // const res = await enrollStudent(payload);
+//                 const res = await enrollNewStudent(payload);
+//                 if (res.success) {
+//                   // Ensure mobileNo is preserved even if backend doesn't return it
+//                   setPrefillData((prev) => ({
+//                     ...prev,
+//                     ...res.data,
+//                     mobileNo: prev.mobileNo, // Fallback to old one if missing
+//                   }));
+//                   setStage("otp");
+//                   toast.success("OTP sent for verification");
+//                 } else {
+//                   toast.error(res.message || "Enrollment failed");
+//                 }
+//               } catch (err) {
+//                 const message =
+//                   err?.response?.data?.message ||
+//                   err?.message ||
+//                   "Something went wrong during registration.";
+
+//                 console.error("Registration Error:", err);
+//                 toast.error(message);
+//               } finally {
+//                 setSubmitting(false);
+//               }
+//             }}
+//           >
+//             {({ isSubmitting }) => (
+//               <Form className="space-y-6 px-2 py-4">
+//                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
+//                   {prefillData.fullName
+//                     ? "Verify Your Details"
+//                     : "Complete Your Enrollment"}
+//                 </h3>
+
+//                 {/* Full Name */}
+//                 <div className="flex flex-col gap-2">
+//                   <label className="text-sm font-medium text-gray-600">
+//                     Full Name <span className="text-red-500">*</span>
+//                   </label>
+//                   <Field
+//                     name="fullName"
+//                     type="text"
+//                     disabled
+//                     placeholder="Your full name"
+//                     className="w-full px-4 py-2 border border-blue-300 rounded-md cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition"
+//                   />
+//                   <ErrorMessage
+//                     name="fullName"
+//                     component="div"
+//                     className="text-red-500 text-xs"
+//                   />
+//                 </div>
+
+//                 {/* Email */}
+//                 <div className="flex flex-col gap-2">
+//                   <label className="text-sm font-medium text-gray-600">
+//                     Email <span className="text-red-500">*</span>
+//                   </label>
+//                   <Field
+//                     name="email"
+//                     type="email"
+//                     disabled
+//                     placeholder="your@email.com"
+//                     className="w-full px-4 py-2 border border-blue-300 cursor-not-allowed rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition"
+//                   />
+//                   <ErrorMessage
+//                     name="email"
+//                     component="div"
+//                     className="text-red-500 text-xs"
+//                   />
+//                 </div>
+
+//                 {/* Mobile Number (Disabled) */}
+//                 <div className="flex flex-col gap-2">
+//                   <label className="text-sm font-medium text-gray-600">
+//                     Mobile Number
+//                   </label>
+//                   <Field
+//                     name="mobileNo"
+//                     type="text"
+//                     disabled
+//                     className="w-full px-4 py-2 bg-gray-100 text-gray-500 border border-gray-200 rounded-md cursor-not-allowed"
+//                   />
+//                 </div>
+
+//                 {/* Submit Button */}
+//                 <Button
+//                   type="submit"
+//                   disabled={isSubmitting}
+//                   className="w-full py-2 text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+//                 >
+//                   {isSubmitting ? "Registering..." : "Register & Send OTP"}
+//                 </Button>
+//               </Form>
+//             )}
+//           </Formik>
+//         )}
+
+//         {stage === "otp" && prefillData && (
+//           <Formik
+//             initialValues={{ otp: "" }}
+//             validationSchema={otpSchema}
+//             onSubmit={async (values, { setSubmitting }) => {
+//               try {
+//                 // Send OTP if not already sent
+//                 // const sendRes = await sendOtp({
+//                 //   mobileNo: prefillData.mobileNo,
+//                 // });
+
+//                 const sendRes = await sendOtp(prefillData.mobileNo); // ✅ just pass the string
+
+//                 if (!sendRes.success) {
+//                   toast.error(sendRes.message || "Failed to send OTP");
+//                   setSubmitting(false);
+//                   return;
+//                 }
+
+//                 // Then verify
+//                 // const verifyRes = await verifyOtp({
+//                 //   reference_id: sendRes.data.reference_id,
+//                 //   otp: values.otp,
+//                 // });
+//                 // const verifyRes = await verifyOtp(sendRes.data.reference_id, values.otp); // ✅ two arguments
+//                 if (!prefillData?.reference_id) {
+//                   toast.error("Missing reference ID for OTP verification.");
+//                   return;
+//                 }
+//                 const verifyRes = await verifyOtp(
+//                   prefillData.reference_id,
+//                   values.otp
+//                 );
+
+//                 if (verifyRes.success && verifyRes.data) {
+//                   // Set cookies etc.
+//                   const { studentId, mobileNo, fullName, email, token } =
+//                     verifyRes.data;
+//                   setCookie("studentId", studentId);
+//                   setCookie("mobileNo", mobileNo);
+//                   setCookie("fullName", fullName);
+//                   setCookie("email", email);
+//                   setCookie("token", token);
+
+//                   toast.success("Login successful");
+//                   handleClose(() => {}); // no form reset needed
+//                   // Redirect to dashboard
+
+//                   let baseUrl = "";
+//                   switch (import.meta.env.VITE_ENV) {
+//                     case "development":
+//                       baseUrl = "http://localhost:6174";
+//                       break;
+//                     case "production":
+//                       baseUrl = "https://learning.codedrift.co";
+//                       break;
+//                     default:
+//                       baseUrl = window.location.origin;
+//                   }
+
+//                   window.location.href = `${baseUrl}/student/dashboard`;
+//                 } else {
+//                   toast.error(verifyRes.message || "Invalid OTP");
+//                 }
+//               } catch (err) {
+//                 toast.error(
+//                   err.response?.data?.message || "OTP verification failed"
+//                 );
+//               } finally {
+//                 setSubmitting(false);
+//               }
+//             }}
+//           >
+//             {({ isSubmitting }) => (
+//               <Form className="space-y-6 px-2 py-4">
+//                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
+//                   OTP Verification
+//                 </h3>
+
+//                 <p className="text-sm text-gray-600 mb-3">
+//                   We've sent an OTP to{" "}
+//                   <span className="font-medium text-blue-600">
+//                     {prefillData.mobileNo}
+//                   </span>
+//                   . Please enter it below to verify your identity.
+//                 </p>
+
+//                 {/* OTP Field */}
+//                 <div className="flex flex-col gap-2">
+//                   <label className="text-sm font-medium text-gray-600">
+//                     OTP <span className="text-red-500">*</span>
+//                   </label>
+//                   <Field
+//                     name="otp"
+//                     type="text"
+//                     placeholder="Enter 6-digit OTP"
+//                     className="w-full px-4 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition"
+//                   />
+//                   <ErrorMessage
+//                     name="otp"
+//                     component="div"
+//                     className="text-red-500 text-xs"
+//                   />
+//                 </div>
+
+//                 {/* Submit Button */}
+//                 <Button
+//                   type="submit"
+//                   disabled={isSubmitting}
+//                   className="w-full py-2  text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+//                 >
+//                   {isSubmitting ? "Verifying..." : "Verify OTP"}
+//                 </Button>
+//               </Form>
+//             )}
+//           </Formik>
+//         )}
+//       </Modal.Body>
+//       <Modal.Footer>
+//         <Button onClick={() => handleClose(() => {})} variant="secondary">
+//           Cancel
+//         </Button>
+//       </Modal.Footer>
+
+//       <ToastContainer
+//         position="top-right"
+//         autoClose={3000}
+//         hideProgressBar={false}
+//       />
+//     </Modal>
+//   );
+// };
+
+// export default EnrollFormModal;
+
+
+// import React, { useState, useEffect } from "react";
+// import { Modal } from "../../components/utility/Modal";
+// import { Button } from "../../components/utility/Button";
+// import { Formik, Form, Field, ErrorMessage } from "formik";
+// import * as Yup from "yup";
+// import { toast, ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { setCookie } from "../../apiUtils/cookieUtils";
+// import { sendOtp, verifyOtp } from "../../components/auth/loginApi";
+// import { checkEnrollmentByMobile } from "./enrollment";
+
+// // Reusable input component
+// const FormikInput = ({
+//   label,
+//   name,
+//   type = "text",
+//   placeholder = "",
+//   disabled = false,
+//   required = false,
+// }) => (
+//   <div className="flex flex-col gap-2 w-full">
+//     <label htmlFor={name} className="text-sm font-medium text-gray-600">
+//       {label} {required && <span className="text-red-500">*</span>}
+//     </label>
+//     <Field
+//       id={name}
+//       name={name}
+//       type={type}
+//       placeholder={placeholder}
+//       disabled={disabled}
+//       className={`w-full px-4 py-2 border rounded-md transition 
+//         ${
+//           disabled
+//             ? "bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed"
+//             : "border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+//         }`}
+//     />
+//     <ErrorMessage
+//       name={name}
+//       component="div"
+//       className="text-red-500 text-xs mt-1"
+//     />
+//   </div>
+// );
+
+// // Validation Schemas
+// const mobileSchema = Yup.object({
+//   mobileNo: Yup.string()
+//     .matches(/^[0-9]{10}$/, "Must be 10 digits")
+//     .required("Mobile number is required"),
+// });
+
+// const fullFormSchema = Yup.object({
+//   fullName: Yup.string().required("Full name required"),
+//   email: Yup.string().email("Invalid email").required("Email required"),
+// });
+
+// const otpSchema = Yup.object({
+//   otp: Yup.string()
+//     .matches(/^[0-9]{6}$/, "OTP must be 6 digits")
+//     .required("OTP required"),
+// });
+
+// const EnrollFormModal = ({ open, setOpen, course }) => {
+//   const [stage, setStage] = useState("mobile");
+//   const [prefillData, setPrefillData] = useState(null);
+//   const [otpToastShown, setOtpToastShown] = useState(false);
+
+//   // Reset all states when modal closes
+//   useEffect(() => {
+//     if (!open) {
+//       setStage("mobile");
+//       setPrefillData(null);
+//       setOtpToastShown(false);
+//     }
+//   }, [open]);
+
+//   // Send OTP when stage === "otp" and not already sent
+//   useEffect(() => {
+//     const sendOtpOnOtpStage = async () => {
+//       if (stage === "otp" && prefillData?.mobileNo && !otpToastShown) {
+//         try {
+//           const response = await sendOtp(prefillData.mobileNo);
+//           if (response.success && response.data.reference_id) {
+//             setPrefillData((prev) => ({
+//               ...prev,
+//               reference_id: response.data.reference_id,
+//             }));
+//             toast.success("OTP sent to your mobile");
+//             setOtpToastShown(true); // prevent multiple OTP toasts
+//           } else {
+//             toast.error(response.message || "Failed to send OTP");
+//           }
+//         } catch (error) {
+//           toast.error(error.message || "Error sending OTP");
+//         }
+//       }
+//     };
+
+//     sendOtpOnOtpStage();
+//   }, [stage, prefillData?.mobileNo, otpToastShown]);
+
+//   const handleClose = () => {
+//     setOpen(false); // Triggers useEffect to reset
+//   };
+
+//   // Mobile Form
+//   const MobileForm = () => (
+//     <Formik
+//       initialValues={{ mobileNo: "" }}
+//       validationSchema={mobileSchema}
+//       onSubmit={async (values, { setSubmitting }) => {
+//         try {
+//           const res = await checkEnrollmentByMobile({
+//             mobileNo: values.mobileNo,
+//           });
+
+//           if (res.success) {
+//             setPrefillData({ ...res.data, isExistingUser: true });
+//             setStage("prefill");
+//             toast.success("Student already enrolled. Please verify OTP.");
+//           } else {
+//             setPrefillData({
+//               mobileNo: values.mobileNo,
+//               isExistingUser: false,
+//             });
+//             setStage("prefill");
+//           }
+//         } catch (err) {
+//           const message =
+//             err?.message ||
+//             err?.response?.data?.message ||
+//             "Error checking enrollment";
+
+//           toast.error(message);
+
+//           if (
+//             message ===
+//               "All required fields must be filled for new enrollment." ||
+//             err?.statusCode === 400
+//           ) {
+//             setPrefillData({
+//               mobileNo: values.mobileNo,
+//               isExistingUser: false,
+//             });
+//             setStage("prefill");
+//           }
+//         } finally {
+//           setSubmitting(false);
+//         }
+//       }}
+//     >
+//       {({ isSubmitting }) => (
+//         <Form className="space-y-6 px-2 py-2">
+//           <h3 className="text-lg font-semibold text-gray-800 mb-2">
+//             Enter Your Mobile Number
+//           </h3>
+
+//           <FormikInput
+//             label="Mobile Number"
+//             name="mobileNo"
+//             placeholder="e.g. 9876543210"
+//             required
+//           />
+
+//           <Button
+//             type="submit"
+//             disabled={isSubmitting}
+//             className="w-full py-2 text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+//           >
+//             {isSubmitting ? "Checking..." : "Continue"}
+//           </Button>
+//         </Form>
+//       )}
+//     </Formik>
+//   );
+
+//   // Prefill / Register Form
+//   const PrefillForm = () => (
+//     <Formik
+//       initialValues={{
+//         fullName: prefillData.fullName || "",
+//         mobileNo: prefillData.mobileNo,
+//         email: prefillData.email || "",
+//       }}
+//       validationSchema={fullFormSchema}
+//       onSubmit={async (values, { setSubmitting }) => {
+//         try {
+//           const payload = {
+//             fullName: values.fullName,
+//             mobileNo: values.mobileNo,
+//             email: values.email,
+//             enrolledCourses: [course?._id],
+//           };
+
+//           // In your logic, this re-checks and enrolls if needed
+//           const res = await checkEnrollmentByMobile(payload);
+
+//           if (res.success) {
+//             setPrefillData((prev) => ({
+//               ...prev,
+//               ...res.data,
+//               mobileNo: prev.mobileNo,
+//               isExistingUser: true,
+//             }));
+//             setStage("otp"); // OTP will be sent via useEffect
+//           } else {
+//             toast.error(res.message || "Enrollment failed");
+//           }
+//         } catch (err) {
+//           const message =
+//             err?.response?.data?.message ||
+//             err?.message ||
+//             "Something went wrong during registration.";
+//           console.error("Registration Error:", err);
+//           toast.error(message);
+//         } finally {
+//           setSubmitting(false);
+//         }
+//       }}
+//     >
+//       {({ isSubmitting }) => (
+//         <Form className="space-y-6 px-2 py-4">
+//           <h3 className="text-lg font-semibold text-gray-800 mb-2">
+//             {prefillData.fullName
+//               ? "Verify Your Details"
+//               : "Complete Your Enrollment"}
+//           </h3>
+
+//           <FormikInput
+//             label="Full Name"
+//             name="fullName"
+//             required
+//             disabled={prefillData.isExistingUser}
+//           />
+
+//           <FormikInput
+//             label="Email"
+//             name="email"
+//             type="email"
+//             required
+//             disabled={prefillData.isExistingUser}
+//           />
+
+//           <FormikInput label="Mobile Number" name="mobileNo" disabled />
+
+//           <Button
+//             type="submit"
+//             disabled={isSubmitting}
+//             className="w-full py-2 text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+//           >
+//             {isSubmitting ? "Registering..." : "Register & Send OTP"}
+//           </Button>
+//         </Form>
+//       )}
+//     </Formik>
+//   );
+
+//   // OTP Form
+//   const OTPForm = () => (
+//     <Formik
+//       initialValues={{ otp: "" }}
+//       validationSchema={otpSchema}
+//       onSubmit={async (values, { setSubmitting }) => {
+//         try {
+//           if (!prefillData?.reference_id) {
+//             toast.error("Missing reference ID for OTP verification.");
+//             setSubmitting(false);
+//             return;
+//           }
+
+//           const verifyRes = await verifyOtp(
+//             prefillData.reference_id,
+//             values.otp
+//           );
+
+//           if (verifyRes.success && verifyRes.data) {
+//             const { studentId, mobileNo, fullName, email, token } =
+//               verifyRes.data;
+
+//             setCookie("studentId", studentId);
+//             setCookie("mobileNo", mobileNo);
+//             setCookie("fullName", fullName);
+//             setCookie("email", email);
+//             setCookie("token", token);
+
+//             toast.success("Login successful");
+//             handleClose();
+
+//             let baseUrl = "";
+//             switch (import.meta.env.VITE_ENV) {
+//               case "development":
+//                 baseUrl = "http://localhost:6174";
+//                 break;
+//               case "production":
+//                 baseUrl = "https://learning.codedrift.co";
+//                 break;
+//               default:
+//                 baseUrl = window.location.origin;
+//             }
+//             window.location.href = `${baseUrl}/student/dashboard`;
+//           } else {
+//             toast.error(verifyRes.message || "Invalid OTP");
+//           }
+//         } catch (err) {
+//           toast.error(
+//             err?.response?.data?.message || "OTP verification failed"
+//           );
+//         } finally {
+//           setSubmitting(false);
+//         }
+//       }}
+//     >
+//       {({ isSubmitting }) => (
+//         <Form className="space-y-6 px-2 py-4">
+//           <h3 className="text-lg font-semibold text-gray-800 mb-2">
+//             OTP Verification
+//           </h3>
+
+//           <p className="text-sm text-gray-600 mb-3">
+//             We've sent an OTP to{" "}
+//             <span className="font-medium text-blue-600">
+//               {prefillData.mobileNo}
+//             </span>
+//             . Please enter it below to verify your identity.
+//           </p>
+
+//           <FormikInput
+//             label="OTP"
+//             name="otp"
+//             placeholder="Enter 6-digit OTP"
+//             required
+//           />
+
+//           <Button
+//             type="submit"
+//             disabled={isSubmitting}
+//             className="w-full py-2 text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+//           >
+//             {isSubmitting ? "Verifying..." : "Verify OTP"}
+//           </Button>
+//         </Form>
+//       )}
+//     </Formik>
+//   );
+
+//   return (
+//     <Modal
+//       isOpen={open}
+//       onClose={handleClose}
+//       variant="lg"
+//       scrollableBody
+//       closeOnEsc={false}
+//     >
+//       <Modal.Header>Enroll for {course?.title || "Course"}</Modal.Header>
+//       <Modal.Body>
+//         {stage === "mobile" && <MobileForm />}
+//         {stage === "prefill" && prefillData && <PrefillForm />}
+//         {stage === "otp" && prefillData && <OTPForm />}
+//       </Modal.Body>
+//       <Modal.Footer>
+//         <Button onClick={handleClose} variant="secondary">
+//           Cancel
+//         </Button>
+//       </Modal.Footer>
+
+//       <ToastContainer
+//         position="top-right"
+//         autoClose={3000}
+//         hideProgressBar={false}
+//       />
+//     </Modal>
+//   );
+// };
+
+// export default EnrollFormModal;
+
+
+ previos enrollment form
+
+
+ // React and external library imports
+import React, { useState, useEffect } from "react";
+import { Modal } from "../../components/utility/Modal";
+import { Button } from "../../components/utility/Button";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
+
+// Utility imports for cookies and API
+import { setCookie } from "../../apiUtils/cookieUtils";
+import { sendOtp, verifyOtp } from "../../components/auth/loginApi";
+import { checkEnrollmentByMobile } from "./enrollment";
+import { api } from "../../apiUtils/instance";
+
+/**
+ * Reusable Formik input component with error handling and styling.
+ * Accepts common props and supports conditional disabling.
+ */
+const FormikInput = ({
+  label,
+  name,
+  type = "text",
+  placeholder = "",
+  disabled = false,
+  required = false,
+}) => (
+  <div className="flex flex-col gap-2">
+    <label htmlFor={name} className="text-sm font-medium text-gray-600">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    <Field
+      id={name}
+      name={name}
+      type={type}
+      placeholder={placeholder}
+      disabled={disabled}
+      className={`w-full px-4 py-2 border rounded-md transition 
+        ${
+          disabled
+            ? "bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed"
+            : "border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+        }`}
+    />
+    <ErrorMessage
+      name={name}
+      component="div"
+      className="text-red-500 text-xs mt-1"
+    />
+  </div>
+);
+
+// Form validation schemas using Yup
+const mobileSchema = Yup.object({
+  mobileNo: Yup.string()
+    .matches(/^[0-9]{10}$/, "Must be 10 digits")
+    .required("Mobile number is required"),
+});
+
+const fullFormSchema = Yup.object({
+  fullName: Yup.string().required("Full name required"),
+  email: Yup.string().email("Invalid email").required("Email required"),
+});
+
+const otpSchema = Yup.object({
+  otp: Yup.string()
+    .matches(/^[0-9]{6}$/, "OTP must be 6 digits")
+    .required("OTP required"),
+});
+
+/**
+ * Main Enroll Modal Component
+ * Manages 3 stages: Mobile Input → Prefill/Registration → OTP Verification
+ */
+const EnrollFormModal = ({ open, setOpen, course }) => {
+  const [stage, setStage] = useState("mobile"); // Track modal stage
+  const [prefillData, setPrefillData] = useState(null); // Holds user info if available
+  const [otpToastShown, setOtpToastShown] = useState(false); // Prevents duplicate OTP toasts
+  const [availableBatches, setAvailableBatches] = useState([]);
+  const [selectedBatchId, setSelectedBatchId] = useState(null);
+
+  const steps = [
+    { key: "mobile", label: "Mobile Number" },
+    { key: "prefill", label: "Details" },
+    { key: "batch", label: "Batch" },
+    { key: "otp", label: "OTP" },
+  ];
+
+  /**
+   * Reset component state when modal is closed.
+   * This ensures clean state for next open.
+   */
+  useEffect(() => {
+    if (!open) {
+      setStage("mobile");
+      setPrefillData(null);
+      setOtpToastShown(false);
+      setSelectedBatchId(null);
+      setAvailableBatches([]);
+    }
+  }, [open]);
+
+// Helper function
+const getBaseUrl = () => {
+  switch (import.meta.env.VITE_ENV) {
+    case "development":
+      return "http://localhost:6174";
+    case "production":
+      return "https://learning.codedrift.co";
+    default:
+      return window.location.origin;
+  }
+}
+
+  /**
+   * Automatically triggers OTP sending when entering the 'otp' stage.
+   * Uses a local flag to prevent duplicate OTP toasts/API calls.
+   */
+  useEffect(() => {
+    const sendOtpOnOtpStage = async () => {
+      if (stage === "otp" && prefillData?.mobileNo && !otpToastShown) {
+        try {
+          const response = await sendOtp(prefillData.mobileNo);
+          if (response.success && response.data.reference_id) {
+            setPrefillData((prev) => ({
+              ...prev,
+              reference_id: response.data.reference_id,
+            }));
+            toast.success("OTP sent to your mobile");
+            setOtpToastShown(true); // Flag to avoid duplicate toasts
+          } else {
+            toast.error(response.message || "Failed to send OTP");
+          }
+        } catch (error) {
+          toast.error(error.message || "Error sending OTP");
+        }
+      }
+    };
+
+    sendOtpOnOtpStage();
+  }, [stage, prefillData?.mobileNo, otpToastShown]);
+
+  /**
+   * Handle modal close - trigger unmounting and cleanup
+   */
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  /**
+   * Step 1: Collect user mobile number
+   * Calls `checkEnrollmentByMobile` to determine if user already exists
+   */
+  const MobileForm = () => (
+    <Formik
+      initialValues={{ mobileNo: "" }}
+      validationSchema={mobileSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        try {
+          const res = await checkEnrollmentByMobile({
+            mobileNo: values.mobileNo,
+          });
+
+          if (res.success) {
+            // Existing student - proceed to OTP verification
+            setPrefillData({ ...res.data.student, isExistingUser: true });
+            setStage("prefill");
+            toast.success("Student already enrolled. Please verify OTP.");
+          } else {
+            // New user - continue to full form
+            setPrefillData({
+              mobileNo: values.mobileNo,
+              isExistingUser: false,
+            });
+            setStage("prefill");
+          }
+        } catch (err) {
+          const message =
+            err?.message ||
+            err?.response?.data?.message ||
+            "Error checking enrollment";
+
+          toast.error(message);
+
+          // In case of validation error from backend, fallback to registration
+          if (
+            message ===
+              "All required fields must be filled for new enrollment." ||
+            err?.statusCode === 400
+          ) {
+            setPrefillData({
+              mobileNo: values.mobileNo,
+              isExistingUser: false,
+            });
+            setStage("prefill");
+          }
+        } finally {
+          setSubmitting(false);
+        }
+      }}
+    >
+      {({ isSubmitting }) => (
+        <div className="flex justify-center items-center px-4">
+          {/* <div className="w-full max-w-4xl  overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-8 p-2 md:p-10"> */}
+
+          {/* Form Section */}
+          <Form className="space-y-6 w-full">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              Enter Your Mobile Number
+            </h3>
+
+            <p className="text-sm text-gray-500">
+              We’ll send an OTP to verify your number and continue your
+              enrollment.
+            </p>
+
+            <FormikInput
+              label="Mobile Number"
+              name="mobileNo"
+              placeholder="e.g. 9876543210"
+              required
+            />
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full md:w-auto px-6 py-2 text-white font-semibold rounded-md transition-all duration-300 disabled:opacity-50 mx-auto"
+            >
+              {isSubmitting ? "Checking..." : "Continue"}
+            </Button>
+          </Form>
+
+          {/* Image Section */}
+          <div className="hidden md:flex justify-center items-center relative">
+            <div className="relative w-60 h-60 flex justify-center items-center">
+              {/* Pulsing ring 1 */}
+              <div className="absolute w-26 h-26 rounded-full bg-pink-400 opacity-30 animate-ping"></div>
+
+              {/* Pulsing ring 2 */}
+              <div className="absolute w-36 h-36 rounded-full bg-blue-400 opacity-20 animate-ping delay-200"></div>
+
+              {/* Phone image with bounce animation */}
+              <img
+                src="https://static.vecteezy.com/system/resources/previews/011/157/544/non_2x/mobile-phone-cartoon-icon-illustration-technology-object-icon-concept-isolated-premium-flat-cartoon-style-vector.jpg"
+                alt="Ringing mobile"
+                className="w-40 h-40 object-contain rounded-full drop-shadow-lg"
+              />
+            </div>
+          </div>
+          {/* </div> */}
+        </div>
+      )}
+    </Formik>
+  );
+
+  /**
+   * Step 2: Prefill user data (existing) or collect it (new)
+   * On submit, proceeds to OTP stage
+   */
+  const PrefillForm = () => (
+    <Formik
+    enableReinitialize
+      initialValues={{
+        fullName: prefillData.fullName || "",
+        mobileNo: prefillData.mobileNo,
+        email: prefillData.email || "",
+      }}
+      validationSchema={fullFormSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        try {
+          const payload = {
+            fullName: values.fullName,
+            mobileNo: values.mobileNo,
+            email: values.email,
+            enrolledCourses: [course?._id],
+          };
+
+          const res = await checkEnrollmentByMobile(payload);
+
+          if (res.success) {
+            // Save returned user info and proceed to OTP stage
+            setPrefillData((prev) => ({
+              ...prev,
+              ...res.data,
+              mobileNo: prev.mobileNo,
+              isExistingUser: true,
+            }));
+
+            // Fetch batches and move to 'batch' stage
+            const batchesResponse = await api.get(`/batches/${course._id}`);
+            if (batchesResponse.data.success) {
+              setAvailableBatches(batchesResponse.data.data);
+              console.log("Fetched batches:", batchesResponse.data.data);
+              setStage("batch");
+            } else {
+              toast.error("No batches available");
+            }
+          }
+
+          // setStage("otp");
+          // } else {
+          //   toast.error(res.message || "Enrollment failed");
+          // }
+        } catch (err) {
+          const message =
+            err?.response?.data?.message ||
+            err?.message ||
+            "Something went wrong during registration.";
+          console.error("Registration Error:", err);
+          toast.error(message);
+        } finally {
+          setSubmitting(false);
+        }
+      }}
+    >
+      {({ isSubmitting }) => (
+        <Form className="space-y-6 px-2 py-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">
+            {prefillData.fullName
+              ? "Verify Your Details"
+              : "Complete Your Enrollment"}
+          </h3>
+
+          {/* Grid wrapper */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormikInput
+              label="Full Name"
+              name="fullName"
+              className="w-75"
+              required
+              disabled={prefillData.isExistingUser}
+            />
+
+            <FormikInput
+              label="Email"
+              name="email"
+              type="email"
+              required
+              disabled={prefillData.isExistingUser}
+            />
+
+            <FormikInput label="Mobile Number" name="mobileNo" disabled />
+          </div>
+
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="mx-auto px-6 py-2 text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+          >
+            {isSubmitting ? "Registering..." : "Register & Send OTP"}
+          </Button>
+        </Form>
+      )}
+    </Formik>
+  );
+
+  const BatchSelectionForm = () => (
+    <div className="px-4 py-6">
+      <h3 className="text-xl font-semibold mb-4">Select a Batch</h3>
+
+      {availableBatches.length === 0 ? (
+        <p className="text-gray-500">No batches available for this course.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {availableBatches.map((batch) => (
+            <div
+              key={batch._id}
+              onClick={() => setSelectedBatchId(batch._id)}
+              className={`cursor-pointer border rounded-md p-4 transition ${
+                selectedBatchId === batch._id
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-200"
+              }`}
+            >
+              <p className="font-medium text-lg">{batch.batchName}</p>
+              <p className="text-sm text-gray-600 mb-1">
+                {batch.additionalNotes || "No additional notes"}
+              </p>
+              <p className="text-sm text-gray-500">
+                {batch.mode} | {batch.time.start} - {batch.time.end}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <Button
+        disabled={!selectedBatchId}
+        onClick={() => setStage("otp")}
+        className="mt-6"
+      >
+        Continue to OTP
+      </Button>
+    </div>
+  );
+
+  /**
+   * Step 3: OTP Verification Form
+   * Uses `verifyOtp` API, then sets auth cookies and redirects user to dashboard
+   */
+  const OTPForm = () => (
+    <Formik
+      initialValues={{ otp: "" }}
+      validationSchema={otpSchema}
+      // onSubmit={async (values, { setSubmitting }) => {
+      //   try {
+      //     if (!prefillData?.reference_id) {
+      //       toast.error("Missing reference ID for OTP verification.");
+      //       setSubmitting(false);
+      //       return;
+      //     }
+
+      //     // Step 1: Verify OTP
+      //     const verifyRes = await verifyOtp(
+      //       prefillData.reference_id,
+      //       values.otp
+      //     );
+
+      //     if (verifyRes.success && verifyRes.data) {
+      //       const { studentId, mobileNo, fullName, email, token } =
+      //         verifyRes.data;
+
+      //       // Store user session info in cookies
+      //       setCookie("studentId", studentId);
+      //       setCookie("mobileNo", mobileNo);
+      //       setCookie("fullName", fullName);
+      //       setCookie("email", email);
+      //       setCookie("token", token);
+
+      //       toast.success("Login successful");
+      //       handleClose();
+
+      //       // Step 2: Fetch batches related to the enrolled course
+      //       const batchesResponse = await api.get(`/batches/${course._id}`);
+
+      //       if (
+      //         batchesResponse.data.success &&
+      //         batchesResponse.data.data.length > 0
+      //       ) {
+      //         // const batch = batchesResponse.data.data[0]; // Pick first batch (or add your logic)
+      //         const batchId = selectedBatchId;
+
+      //         // Step 3: Assign student to batch
+      //         const assignPayload = {
+      //           batchId: batchId,
+      //           studentId: studentId,
+      //         };
+
+      //         const assignResponse = await api.post(
+      //           `/batches/student-batche`,
+      //           assignPayload
+      //         );
+
+      //         if (assignResponse.data.success) {
+      //           // Step 4: Store batchId cookie
+      //           setCookie("batchId", batchId);
+
+      //           toast.success("Batch assigned successfully. Login successful!");
+      //           handleClose();
+
+      //           // Step 5: Redirect to dashboard
+      //           let baseUrl = "";
+      //           switch (import.meta.env.VITE_ENV) {
+      //             case "development":
+      //               baseUrl = "http://localhost:6174";
+      //               break;
+      //             case "production":
+      //               baseUrl = "https://learning.codedrift.co";
+      //               break;
+      //             default:
+      //               baseUrl = window.location.origin;
+      //           }
+      //           window.location.href = `${baseUrl}/student/dashboard`;
+      //         } else {
+      //           toast.error(
+      //             assignResponse.data.message || "Failed to assign batch"
+      //           );
+      //         }
+      //       } else {
+      //         toast.error("No batches available for this course");
+      //       }
+      //     } else {
+      //       toast.error(verifyRes.message || "Invalid OTP");
+      //     }
+      //   } catch (err) {
+      //     toast.error(
+      //       err?.response?.data?.message || "OTP verification failed"
+      //     );
+      //   } finally {
+      //     setSubmitting(false);
+      //   }
+      // }}
+
+    onSubmit={async (values, { setSubmitting }) => {
+  console.log("🚀 Form submitted with values:", values);
+
+  try {
+    if (!prefillData?.reference_id) {
+      console.error("❌ Missing reference ID");
+      toast.error("Missing reference ID for OTP verification.");
+      setSubmitting(false);
+      return;
+    }
+
+    console.log("🔐 Verifying OTP...");
+    const verifyRes = await verifyOtp(prefillData.reference_id, values.otp);
+    console.log("✅ OTP verification response:", verifyRes);
+
+    if (verifyRes.success && verifyRes.data) {
+      const { studentId, mobileNo, fullName, email, token } = verifyRes.data;
+
+      console.log("🎓 Student info received:", verifyRes.data);
+
+      // Store user session info in cookies
+      setCookie("studentId", studentId);
+      setCookie("mobileNo", mobileNo);
+      setCookie("fullName", fullName);
+      setCookie("email", email);
+      setCookie("token", token);
+
+      toast.success("Login successful");
+      console.log("📦 Fetching batches for course:", course._id);
+      handleClose();
+
+      // Step 2: Fetch batches
+      const batchesResponse = await api.get(`/batches/${course._id}`);
+      console.log("📦 Batches response:", batchesResponse.data);
+
+      if (
+        batchesResponse.data.success &&
+        batchesResponse.data.data.length > 0
+      ) {
+        const batchId = selectedBatchId;
+        console.log("🧪 Selected batchId:", batchId);
+
+        const assignPayload = {
+          batchId: batchId,
+          studentId: studentId,
+        };
+        console.log("📤 Sending batch assignment payload:", assignPayload);
+
+        try {
+          const assignResponse = await api.post(
+            `/batches/student-batche`,
+            assignPayload
+          );
+
+          console.log("✅ Batch assignment response:", assignResponse.data);
+
+          if (assignResponse.data.success) {
+            setCookie("batchId", batchId);
+            toast.success("Batch assigned successfully. Login successful!");
+
+            const baseUrl = getBaseUrl();
+            console.log("🔀 Redirecting to dashboard:", baseUrl);
+            setTimeout(() => {
+              window.location.href = `${baseUrl}/student/dashboard`;
+            }, 500);
+
+            setTimeout(() => {
+              console.log("🧼 Closing modal");
+              handleClose();
+            }, 1000);
+          }
+        } catch (err) {
+          const message = err?.response?.data?.message;
+          console.warn("⚠️ Batch assignment failed:", message);
+
+          if (message === "Student already assigned to this batch") {
+            setCookie("batchId", batchId);
+            toast.success("Batch already assigned. Login successful!");
+
+            const baseUrl = getBaseUrl();
+            console.log("🔁 Redirecting (already assigned):", baseUrl);
+
+            setTimeout(() => {
+              window.location.href = `${baseUrl}/student/dashboard`;
+            }, 500);
+
+            setTimeout(() => {
+              console.log("🧼 Closing modal (already assigned)");
+              handleClose();
+            }, 1000);
+          } else {
+            toast.error(message || "Failed to assign batch");
+          }
+        }
+      } else {
+        console.error("❌ No batches found for course.");
+        toast.error("No batches available for this course");
+      }
+    } else {
+      console.error("❌ OTP verification failed:", verifyRes.message);
+      toast.error(verifyRes.message || "Invalid OTP");
+    }
+  } catch (err) {
+    console.error("🔥 Exception in onSubmit:", err);
+    toast.error(err?.response?.data?.message || "OTP verification failed");
+  } finally {
+    console.log("✅ Done submitting.");
+    setSubmitting(false);
+  }
+}}
+
+    >
+      {({ isSubmitting }) => (
+        <div className="flex justify-center items-center px-4">
+          {/* <div className="w-full max-w-4xl  overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-10"> */}
+
+          {/* OTP Form Section */}
+          <Form className="space-y-6 w-full">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              OTP Verification
+            </h3>
+
+            <p className="text-sm text-gray-600 mb-3">
+              We've sent an OTP to{" "}
+              <span className="font-medium text-blue-600">
+                {prefillData.mobileNo}
+              </span>
+              . Please enter it below to verify your identity.
+            </p>
+
+            <FormikInput
+              label="OTP"
+              name="otp"
+              placeholder="Enter 6-digit OTP"
+              required
+            />
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full md:w-auto px-6 py-2 text-white font-semibold rounded-md transition-all duration-300 disabled:opacity-50 mx-auto"
+            >
+              {isSubmitting ? "Verifying..." : "Verify OTP"}
+            </Button>
+          </Form>
+
+          {/* Image Section */}
+          <div className="hidden md:flex justify-center items-center relative">
+            <div className="relative w-60 h-60 flex justify-center items-center">
+              {/* Pulse effect */}
+              <div className="absolute w-24 h-24 rounded-full bg-pink-400 opacity-30 animate-ping"></div>
+              <div className="absolute w-36 h-36 rounded-full bg-blue-400 opacity-20 animate-ping delay-200"></div>
+
+              {/* OTP verification image */}
+              <img
+                src="https://ouch-prod-src-cdn.icons8.com/pz/illustration_preview_assets/1guJ-RyGRv69yOkD.png"
+                alt="OTP verification"
+                className="w-50 h-50 object-contain drop-shadow-lg"
+              />
+            </div>
+          </div>
+          {/* </div> */}
+        </div>
+      )}
+    </Formik>
+  );
+
+  return (
+    <Modal
+      isOpen={open}
+      onClose={handleClose}
+      variant="xl"
+      scrollableBody
+      closeOnEsc={false}
+    >
+      <Modal.Header>Enroll for {course?.title || "Course"}</Modal.Header>
+      {/* <Modal.Body>
+        <div className="flex items-center justify-center mb-4 space-x-4">
+  {steps.map((step, index) => {
+    const isActive = stage === step.key;
+    const isCompleted =
+      steps.findIndex((s) => s.key === stage) > index;
+
+    return (
+      <div key={step.key} className="flex items-center space-x-2">
+        <div
+          className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold
+            ${isActive ? "bg-blue-600 text-white" :
+              isCompleted ? "bg-green-500 text-white" :
+              "bg-gray-300 text-gray-600"}
+          `}
+        >
+          {index + 1}
+        </div>
+        <span
+          className={`text-sm font-medium ${
+            isActive ? "text-blue-600" :
+            isCompleted ? "text-green-600" :
+            "text-gray-500"
+          }`}
+        >
+          {step.label}
+        </span>
+        {index < steps.length - 1 && (
+          <div className="w-6 border-t border-gray-300"></div>
+        )}
+      </div>
+    );
+  })}
+</div>
+
+        {stage === "mobile" && <MobileForm />}
+        {stage === "prefill" && prefillData && <PrefillForm />}
+        {stage === "otp" && prefillData && <OTPForm />}
+      </Modal.Body> */}
+
+      <Modal.Body>
+        {/* Step indicator breadcrumb */}
+        <div className="flex items-center justify-center mb-4 space-x-4">
+          {steps.map((step, index) => {
+            const isActive = stage === step.key;
+            const isCompleted = steps.findIndex((s) => s.key === stage) > index;
+
+            return (
+              <div key={step.key} className="flex items-center space-x-2">
+                <div
+                  className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold
+              ${
+                isActive
+                  ? "bg-blue-600 text-white"
+                  : isCompleted
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-300 text-gray-600"
+              }
+            `}
+                >
+                  {index + 1}
+                </div>
+                <span
+                  className={`text-sm font-medium ${
+                    isActive
+                      ? "text-blue-600"
+                      : isCompleted
+                      ? "text-green-600"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {step.label}
+                </span>
+                {index < steps.length - 1 && (
+                  <div className="w-6 border-t border-gray-300"></div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Dynamic form rendering */}
+        {stage === "mobile" && <MobileForm />}
+        {stage === "prefill" && prefillData && <PrefillForm />}
+        {/* {stage === "batch" && availableBatches.length > 0 && <BatchSelectionForm />} */}
+        {stage === "batch" && <BatchSelectionForm />}
+        {stage === "otp" && prefillData && <OTPForm />}
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button onClick={handleClose} variant="secondary">
+          Cancel
+        </Button>
+      </Modal.Footer>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
+    </Modal>
+  );
+};
+
+export default EnrollFormModal;
+
+
+this is mt enrollment form working code 

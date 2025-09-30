@@ -4,6 +4,13 @@ import { motion } from "framer-motion";
 import Image from "../utility/Image";
 import { Link } from "react-router-dom";
 
+/**
+ * Mentor Component
+ *
+ * Displays individual mentor details including profile image, name, title, bio,
+ * and LinkedIn link with hover animations.
+ */
+
 const Mentor = ({ mentor }) => {
   return (
     <motion.div
@@ -22,7 +29,7 @@ const Mentor = ({ mentor }) => {
       {/* Top gradient bar */}
       <div className="absolute top-0 left-0 w-full h-1 bg-codedrift-gradient" />
 
-      {/* Mentor Image */}
+      {/* Mentor Profile Image */}
       <div className="relative w-24 h-24 mx-auto mb-4">
         <Image
           src={mentor.img}
@@ -30,7 +37,7 @@ const Mentor = ({ mentor }) => {
           className="w-full h-full object-cover rounded-full border-4 border-codedrift-indigo shadow-md group-hover:scale-105 transition-transform duration-300"
         />
 
-        {/* LinkedIn Badge Icon */}
+        {/* LinkedIn Icon Link */}
         <a
           href={mentor.linkedin}
           target="_blank"
@@ -42,15 +49,7 @@ const Mentor = ({ mentor }) => {
         </a>
       </div>
 
-      {/* Mentor Info */}
-      {/* <Link
-                as='link'
-                to={`/mentors/m/${1}`}
-                className="block text-center text-lg font-bold text-gray-800 group-hover:text-codedrift-pink transition-colors duration-200"
-            >
-                {mentor.name}
-            </Link> */}
-
+      {/* Mentor Name - links to detailed mentor page */}
       <Link
         to={`/mentors/m/${mentor.id}`}
         className="block text-center text-lg font-bold text-gray-800 group-hover:text-codedrift-pink transition-colors duration-200"
@@ -58,8 +57,10 @@ const Mentor = ({ mentor }) => {
         {mentor.name}
       </Link>
 
+      {/* Mentor Title */}
       <p className="text-center text-sm text-gray-500 mt-1">{mentor.title}</p>
 
+      {/* Mentor Bio - limited to 3 lines with line*/}
       <p className="text-gray-600 text-sm mt-4 text-center line-clamp-3">
         {mentor.bio}
       </p>

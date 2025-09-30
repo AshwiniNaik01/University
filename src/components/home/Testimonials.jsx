@@ -4,6 +4,8 @@ import { Button } from "../utility/Button";
 import Testimonial from "../common/Testimonial";
 import { fetchTestimonials } from "../../pages/testimonials/testimonials";
 
+// Testimonial: This page shows the student feedback in the home page
+
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ const Testimonials = () => {
             </div>
           )}
 
-          {/* Button */}
+          {/* Show more Button */}
           <div className="mt-12">
             <Button
               as="link"
