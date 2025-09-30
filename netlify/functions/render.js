@@ -28,16 +28,16 @@
 // }
 
 // functions-compiled/render.js (after Babel or directly if you hand-write it)
-const { render } = require('../../dist/server/entry-server');
+const { render } = require("../../dist/server/entry-server");
 
 exports.handler = async (event) => {
-  const url = event.rawUrl || event.path || '/';
+  const url = event.rawUrl || event.path || "/";
   const appHtml = await render(url);
 
   return {
     statusCode: 200,
     headers: {
-      'Content-Type': 'text/html'
+      "Content-Type": "text/html",
     },
     body: `
       <!DOCTYPE html>
@@ -52,6 +52,6 @@ exports.handler = async (event) => {
           <script type="module" src="/assets/index.js"></script>      
         </body>
       </html>
-    `
+    `,
   };
 };

@@ -20,71 +20,71 @@ import { twMerge } from "tailwind-merge";
  * @returns {JSX.Element}
  */
 const Button = ({
-    children,
-    variant = "gradient",
-    size = "lg",
-    className = "",
-    onClick,
-    type = "button",
-    as = "button",
-    to = "#",
-    ...rest
+  children,
+  variant = "gradient",
+  size = "lg",
+  className = "",
+  onClick,
+  type = "button",
+  as = "button",
+  to = "#",
+  ...rest
 }) => {
-    const base =
-        "inline-flex items-center justify-center font-semibold rounded-full transition-all duration-300 cursor-pointer";
+  const base =
+    "inline-flex items-center justify-center font-semibold rounded-full transition-all duration-300 cursor-pointer";
 
-    const sizes = {
-        sm: "text-sm px-4 py-2",
-        md: "text-base px-5 py-2.5",
-        lg: "text-lg px-6 py-3",
-    };
+  const sizes = {
+    sm: "text-sm px-4 py-2",
+    md: "text-base px-5 py-2.5",
+    lg: "text-lg px-6 py-3",
+  };
 
-    const variants = {
-        gradient: "bg-codedrift-gradient text-white shadow-md hover:shadow-lg",
-        pink: "bg-codedrift-pink text-white hover:bg-codedrift-indigo-dark",
-        blue: "bg-codedrift-blue text-white hover:bg-codedrift-indigo-dark",
-        indigo: "bg-codedrift-indigo text-white hover:bg-codedrift-indigo-dark",
-        outline:
-            "border border-codedrift-indigo text-codedrift-indigo bg-white hover:bg-codedrift-indigo hover:text-white",
-        ghost: "text-codedrift-indigo hover:underline",
-    };
+  const variants = {
+    gradient: "bg-codedrift-gradient text-white shadow-md hover:shadow-lg",
+    pink: "bg-codedrift-pink text-white hover:bg-codedrift-indigo-dark",
+    blue: "bg-codedrift-blue text-white hover:bg-codedrift-indigo-dark",
+    indigo: "bg-codedrift-indigo text-white hover:bg-codedrift-indigo-dark",
+    outline:
+      "border border-codedrift-indigo text-codedrift-indigo bg-white hover:bg-codedrift-indigo hover:text-white",
+    ghost: "text-codedrift-indigo hover:underline",
+  };
 
-    const mergedClasses = twMerge(base, sizes[size], variants[variant], className);
+  const mergedClasses = twMerge(
+    base,
+    sizes[size],
+    variants[variant],
+    className
+  );
 
-    if (as === "link") {
-        return (
-            <Link to={to} className={mergedClasses} {...rest}>
-                {children}
-            </Link>
-        );
-    }
-
-    if (as === "navlink") {
-        return (
-            <NavLink to={to} className={mergedClasses} {...rest}>
-                {children}
-            </NavLink>
-        );
-    }
-
-    if (as === "hashlink") {
-        return (
-            <HashLink to={to} className={mergedClasses} {...rest}>
-                {children}
-            </HashLink>
-        );
-    }
-
+  if (as === "link") {
     return (
-        <button
-            type={type}
-            onClick={onClick}
-            className={mergedClasses}
-            {...rest}
-        >
-            {children}
-        </button>
+      <Link to={to} className={mergedClasses} {...rest}>
+        {children}
+      </Link>
     );
+  }
+
+  if (as === "navlink") {
+    return (
+      <NavLink to={to} className={mergedClasses} {...rest}>
+        {children}
+      </NavLink>
+    );
+  }
+
+  if (as === "hashlink") {
+    return (
+      <HashLink to={to} className={mergedClasses} {...rest}>
+        {children}
+      </HashLink>
+    );
+  }
+
+  return (
+    <button type={type} onClick={onClick} className={mergedClasses} {...rest}>
+      {children}
+    </button>
+  );
 };
 
-export { Button }
+export { Button };

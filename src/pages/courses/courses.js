@@ -1,5 +1,4 @@
-// import { api } from "../apiUtils/instance"; // adjust path if needed
-import {api} from "../../apiUtils/instance";
+import { api } from "../../apiUtils/instance";
 
 // Fetch all courses
 export const getAllCourses = async () => {
@@ -15,7 +14,6 @@ export const getAllCourses = async () => {
     throw error;
   }
 };
-
 
 // ✅ Fetch a single course by ID
 export const getCourseById = async (courseId) => {

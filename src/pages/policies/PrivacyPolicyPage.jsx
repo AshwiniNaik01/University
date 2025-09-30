@@ -9,9 +9,11 @@ const PrivacyPolicyPage = () => {
           Privacy Policy
         </h1>
         <p className="max-w-2xl mx-auto text-gray-600 text-lg">
-          At <span className="text-codedrift-pink font-semibold">Code Drift</span>,  
-          we are committed to protecting your privacy. This policy explains how we collect, use,  
-          and safeguard your information when you use our services.
+          At{" "}
+          <span className="text-codedrift-pink font-semibold">Code Drift</span>,
+          we are committed to protecting your privacy. This policy explains how
+          we collect, use, and safeguard your information when you use our
+          services.
         </p>
       </section>
 
@@ -23,9 +25,10 @@ const PrivacyPolicyPage = () => {
               Information We Collect
             </h2>
             <p>
-              We may collect personal information you provide directly, such as your name, email address,  
-              and phone number. We may also collect information about your usage of our services  
-              and interactions with us.
+              We may collect personal information you provide directly, such as
+              your name, email address, and phone number. We may also collect
+              information about your usage of our services and interactions with
+              us.
             </p>
           </div>
 
@@ -36,7 +39,9 @@ const PrivacyPolicyPage = () => {
             <ul className="list-disc pl-6 space-y-2">
               <li>Provide and improve our services.</li>
               <li>Respond to inquiries and provide customer support.</li>
-              <li>Send updates, promotions, and other service-related information.</li>
+              <li>
+                Send updates, promotions, and other service-related information.
+              </li>
               <li>Analyze usage trends to enhance user experience.</li>
             </ul>
           </div>
@@ -46,11 +51,16 @@ const PrivacyPolicyPage = () => {
               How We Share Your Information
             </h2>
             <p>
-              We do not sell, trade, or transfer your personal information to outside parties, except:
+              We do not sell, trade, or transfer your personal information to
+              outside parties, except:
             </p>
             <ul className="list-disc pl-6 space-y-2 mt-2">
-              <li>Service providers who help us operate our website and services.</li>
-              <li>Regulatory authorities or legal entities if required by law.</li>
+              <li>
+                Service providers who help us operate our website and services.
+              </li>
+              <li>
+                Regulatory authorities or legal entities if required by law.
+              </li>
             </ul>
           </div>
 
@@ -59,8 +69,9 @@ const PrivacyPolicyPage = () => {
               Data Security
             </h2>
             <p>
-              We implement appropriate technical and organizational measures to protect your personal  
-              information from unauthorized access, disclosure, alteration, or destruction.
+              We implement appropriate technical and organizational measures to
+              protect your personal information from unauthorized access,
+              disclosure, alteration, or destruction.
             </p>
           </div>
 
@@ -80,8 +91,9 @@ const PrivacyPolicyPage = () => {
               Changes to This Policy
             </h2>
             <p>
-              We may update this Privacy Policy from time to time. Any changes will be posted here,  
-              and we encourage you to review this policy periodically.
+              We may update this Privacy Policy from time to time. Any changes
+              will be posted here, and we encourage you to review this policy
+              periodically.
             </p>
           </div>
 
@@ -90,8 +102,8 @@ const PrivacyPolicyPage = () => {
               Contact Us
             </h2>
             <p>
-              If you have any questions or concerns about this Privacy Policy or our data practices,  
-              please contact us at:  
+              If you have any questions or concerns about this Privacy Policy or
+              our data practices, please contact us at:
               <span className="block mt-1 text-codedrift-pink font-semibold">
                 admin@codedrift.co
               </span>

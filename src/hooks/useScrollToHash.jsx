@@ -18,26 +18,27 @@ import { useLocation } from "react-router-dom";
  * @returns {void}
  */
 const useScrollToHash = () => {
-    const location = useLocation();
-    const NAVBAR_OFFSET = 70; // Adjust based on your header height
+  const location = useLocation();
+  const NAVBAR_OFFSET = 70; // Adjust based on your header height
 
-    useEffect(() => {
-        if (!location.hash) return;
+  useEffect(() => {
+    if (!location.hash) return;
 
-        const id = location.hash.substring(1);
+    const id = location.hash.substring(1);
 
-        const scrollToElement = () => {
-            const el = document.getElementById(id);
-            if (el) {
-                const y = el.getBoundingClientRect().top + window.scrollY - NAVBAR_OFFSET;
-                window.scrollTo({ top: y, behavior: "smooth" });
-            }
-        };
+    const scrollToElement = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        const y =
+          el.getBoundingClientRect().top + window.scrollY - NAVBAR_OFFSET;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    };
 
-        const timeout = setTimeout(scrollToElement, 50); // Wait briefly to ensure DOM is ready
+    const timeout = setTimeout(scrollToElement, 50); // Wait briefly to ensure DOM is ready
 
-        return () => clearTimeout(timeout);
-    }, [location]);
+    return () => clearTimeout(timeout);
+  }, [location]);
 };
 
 export default useScrollToHash;

@@ -1,6 +1,4 @@
-// src/utils/cookieUtils.js
-
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const COOKIE_EXPIRY_DAYS = 7; // Default expiry duration
 
@@ -36,7 +34,10 @@ export const getCookieObject = (key) => {
 
 // ✅ Remove all relevant cookies (for logout)
 export const clearUserCookies = () => {
-  removeCookie('studentId');
-  removeCookie('mobileNo');
-  removeCookie('studentData'); // if stored as object
+  removeCookie("studentId");
+  removeCookie("mobileNo");
+  removeCookie("studentData"); // if stored as object
+  removeCookie("token"); // 🔐 Don't forget auth token cleanup
+  removeCookie("role");
+  removeCookie("courseId");
 };
