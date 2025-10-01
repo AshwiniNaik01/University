@@ -1,20 +1,18 @@
 // React and external library imports
-import React, { useState, useEffect } from "react";
-import { Modal } from "../../components/utility/Modal";
-import { Button } from "../../components/utility/Button";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
+import * as Yup from "yup";
+import { Button } from "../../components/utility/Button";
+import { Modal } from "../../components/utility/Modal";
 
 // Utility imports for cookies and API
 import { setCookie } from "../../apiUtils/cookieUtils";
 import { sendOtp, verifyOtp } from "../../components/auth/loginApi";
-import { checkEnrollmentByMobile } from "./enrollment";
-import { api } from "../../apiUtils/instance";
-import { assignStudentToBatch, fetchBatches } from "./batches";
 import { LMS_BASE_URL } from "../../config";
+import { assignStudentToBatch, fetchBatches } from "./batches";
+import { checkEnrollmentByMobile } from "./enrollment";
 
 /**
  * Reusable Formik input component with error handling and styling.
@@ -81,6 +79,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
   const [otpToastShown, setOtpToastShown] = useState(false); // Prevents duplicate OTP toasts
   const [availableBatches, setAvailableBatches] = useState([]);
   const [selectedBatchId, setSelectedBatchId] = useState(null);
+  
 
   const steps = [
     { key: "mobile", label: "Mobile Number" },
@@ -325,6 +324,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             message.includes("No batches found") ||
             err?.response?.status === 404
           ) {
+             toast.success("Enrolled successfully! Batches coming soon 🚀");
             setTimeout(() => handleClose(), 2000);
           }
         } finally {
@@ -373,46 +373,174 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
     </Formik>
   );
 
-  const BatchSelectionForm = () => (
-    <div className="px-4 py-6">
-      <h3 className="text-xl font-semibold mb-4">Select a Batch</h3>
+  const BatchSelectionForm = () => {
+    const [hoveredBatch, setHoveredBatch] = useState(null);
 
-      {availableBatches.length === 0 ? (
-        <p className="text-gray-500">No batches available for this course.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {availableBatches.map((batch) => (
-            <div
-              key={batch._id}
-              onClick={() => setSelectedBatchId(batch._id)}
-              className={`cursor-pointer border rounded-md p-4 transition ${
-                selectedBatchId === batch._id
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200"
-              }`}
-            >
-              <p className="font-medium text-lg">{batch.batchName}</p>
-              <p className="text-sm text-gray-600 mb-1">
-                {batch.additionalNotes || "No additional notes"}
-              </p>
-              <p className="text-sm text-gray-500">
-                {batch.mode} | {batch.time.start} - {batch.time.end}
-              </p>
-            </div>
-          ))}
+   const formatDate = (dateString) => {
+  if (!dateString) return "TBA";
+
+  // Convert from "DD-MM-YYYY" to "YYYY-MM-DD"
+  const [day, month, year] = dateString.split("-");
+  const isoFormatted = `${year}-${month}-${day}`;
+
+  const date = new Date(isoFormatted);
+
+  if (isNaN(date)) return "Invalid Date";
+
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+
+    return (
+      <div className="px-4 py-8">
+        <h3 className="text-xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
+          Select Your Batch
+        </h3>
+
+        {availableBatches.length === 0 ? (
+          <p className="text-gray-500 text-center text-lg">
+            No batches available for this course.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {availableBatches.map((batch) => {
+              const isSelected = selectedBatchId === batch._id;
+
+              return (
+                <div
+                  key={batch._id}
+                  onClick={() => setSelectedBatchId(batch._id)}
+                  onMouseEnter={() => setHoveredBatch(batch._id)}
+                  onMouseLeave={() => setHoveredBatch(null)}
+                  className={`relative cursor-pointer border-2 rounded-2xl p-6 transition-all duration-500 transform overflow-hidden group ${
+                    isSelected
+                      ? "border-purple-500 bg-gradient-to-br from-purple-100 to-blue-50 shadow-xl scale-105"
+                      : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-lg hover:scale-[1.02]"
+                  }`}
+                >
+                  {/* Status badge */}
+                  <span
+                    className={`absolute top-4 right-4 px-3 py-1 text-xs font-bold rounded-full border transition ${
+                      batch.status === "Upcoming"
+                        ? "bg-green-100 text-green-800 border-green-300"
+                        : "bg-gray-100 text-gray-700 border-gray-300"
+                    }`}
+                  >
+                    {batch.status === "Upcoming" ? "🟢" : "🔘"} {batch.status}
+                  </span>
+
+                  {/* Batch name */}
+                  <h4 className="text-xl font-semibold mb-2 text-gray-900">
+                    {batch.batchName}
+                  </h4>
+
+                  {/* Notes */}
+                  {/* {batch.additionalNotes && (
+                  <p className="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg p-2 mb-3">
+                    💡 {batch.additionalNotes}
+                  </p>
+                )} */}
+
+                  {/* Time & mode */}
+                  <div className="flex items-center gap-2 text-gray-700 mb-3">
+                    <span className="text-lg">🕐</span>
+                    <p className="text-sm md:text-base font-medium text-gray-700">
+                      {batch.mode} | {batch.time.start} - {batch.time.end}
+                    </p>
+                  </div>
+
+                  {/* Start date */}
+                  <div className="flex items-center gap-3 text-gray-700">
+                    <span className="text-lg">🎯</span>
+                    <div>
+                      <p className="text-sm text-gray-500">Starts at</p>
+                      <p className="font-semibold text-gray-900">
+                        {formatDate(batch.startDate)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Selection tick */}
+                  {isSelected && (
+                    <div className="absolute bottom-4 right-4 bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                      ✓
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Continue Button */}
+        <div className="text-center mt-10">
+          <button
+            disabled={!selectedBatchId}
+            onClick={() => setStage("otp")}
+            className={`px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform ${
+              selectedBatchId
+                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg hover:scale-105"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            {selectedBatchId
+              ? "Continue to OTP 🚀"
+              : "Select a Batch to Continue"}
+          </button>
+
+          {selectedBatchId && (
+            <p className="text-gray-500 mt-4 text-sm">
+              You've selected a batch! Let's move to the next step.
+            </p>
+          )}
         </div>
-      )}
+      </div>
+    );
+  };
 
-      <Button
-        disabled={!selectedBatchId}
-        onClick={() => setStage("otp")}
-        className="mt-6"
-      >
-        Continue to OTP
-      </Button>
-    </div>
-  );
+  // const BatchSelectionForm = () => (
+  //   <div className="px-4 py-6">
+  //     <h3 className="text-xl font-semibold mb-4">Select a Batch</h3>
 
+  //     {availableBatches.length === 0 ? (
+  //       <p className="text-gray-500">No batches available for this course.</p>
+  //     ) : (
+  //       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  //         {availableBatches.map((batch) => (
+  //           <div
+  //             key={batch._id}
+  //             onClick={() => setSelectedBatchId(batch._id)}
+  //             className={`cursor-pointer border rounded-md p-4 transition ${
+  //               selectedBatchId === batch._id
+  //                 ? "border-blue-500 bg-blue-50"
+  //                 : "border-gray-200"
+  //             }`}
+  //           >
+  //             <p className="font-medium text-lg">{batch.batchName}</p>
+  //             <p className="text-sm text-gray-600 mb-1">
+  //               {batch.additionalNotes || "No additional notes"}
+  //             </p>
+  //             <p className="text-sm text-gray-500">
+  //               {batch.mode} | {batch.time.start} - {batch.time.end}
+  //             </p>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     )}
+
+  //     <Button
+  //       disabled={!selectedBatchId}
+  //       onClick={() => setStage("otp")}
+  //       className="mt-6"
+  //     >
+  //       Continue to OTP
+  //     </Button>
+  //   </div>
+  // );
   /**
    * Step 3: OTP Verification Form
    * Uses `verifyOtp` API, then sets auth cookies and redirects user to dashboard
