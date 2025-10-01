@@ -14,6 +14,7 @@ import { sendOtp, verifyOtp } from "../../components/auth/loginApi";
 import { checkEnrollmentByMobile } from "./enrollment";
 import { api } from "../../apiUtils/instance";
 import { assignStudentToBatch, fetchBatches } from "./batches";
+import { LMS_BASE_URL } from "../../config";
 
 /**
  * Reusable Formik input component with error handling and styling.
@@ -103,19 +104,20 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
   }, [open]);
 
   // Helper function
-  const getBaseUrl = () => {
-    
-    switch (import.meta.env.VITE_ENV) {
-      case "development":
-        return "http://localhost:6194";
-      case "uat":
-        return "https://uat-lms.codedrift.co";
-      case "production":
-        return "https://lms.codedrift.co";
-      default:
-        return window.location.origin;
-    }
-  };
+  // const getBaseUrl = () => {
+  //   switch (import.meta.env.VITE_ENV) {
+  //     case "development":
+  //       return "http://localhost:6194";
+  //     case "uat":
+  //       return "https://uat-lms.codedrift.co";
+  //     case "production":
+  //       return "https://lms.codedrift.co";
+  //     default:
+  //       return window.location.origin;
+  //   }
+  // };
+
+  const getBaseUrl = () => LMS_BASE_URL;
 
   /**
    * Automatically triggers OTP sending when entering the 'otp' stage.
@@ -293,12 +295,16 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
 
             // Fetch batches and move to 'batch' stage
             const batchesResponse = await fetchBatches(course._id);
-            if (batchesResponse.success) {
+            console.log("🧪 fetchBatches response:", batchesResponse);
+
+            if (batchesResponse.success && batchesResponse.data.length > 0) {
               setAvailableBatches(batchesResponse.data);
               console.log("Fetched batches:", batchesResponse.data);
               setStage("batch");
             } else {
+              // Fallback check (just in case)
               toast.error("No batches available");
+              setTimeout(() => handleClose(), 2000);
             }
           }
 
@@ -313,6 +319,14 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             "Something went wrong during registration.";
           console.error("Registration Error:", err);
           toast.error(message);
+
+          // ✅ Close modal for specific batch error
+          if (
+            message.includes("No batches found") ||
+            err?.response?.status === 404
+          ) {
+            setTimeout(() => handleClose(), 2000);
+          }
         } finally {
           setSubmitting(false);
         }

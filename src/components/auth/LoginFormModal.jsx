@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { setCookie } from "../../apiUtils/cookieUtils";
+import { LMS_BASE_URL } from "../../config";
 
 /**
  * LoginFormModal Component
@@ -94,17 +95,22 @@ const LoginFormModal = ({ open, setOpen }) => {
           // Check env var - add this log:
           // console.log("VITE_ENV:", import.meta.env.VITE_ENV);
           // 🔁 Route user to dashboard depending on environment
-          let baseUrl = "";
-          switch (import.meta.env.VITE_ENV) {
-            case "development":
-              baseUrl = "http://localhost:6174";
-              break;
-            case "production":
-              baseUrl = "https://learning.codedrift.co";
-              break;
-            default:
-              baseUrl = window.location.origin;
-          }
+
+          let baseUrl = LMS_BASE_URL;
+          // let baseUrl = "";
+          // switch (import.meta.env.VITE_ENV) {
+          //   case "development":
+          //     baseUrl = "http://localhost:6174";
+          //     break;
+          //   case "uat":
+          //     baseUrl = "https://uat-lms.codedrift.co";
+          //     break;
+          //   case "production":
+          //     baseUrl = "https://lms.codedrift.co";
+          //     break;
+          //   default:
+          //     baseUrl = window.location.origin;
+          // }
 
           // console.log("Redirecting to:", `${baseUrl}/student/dashboard`);
 

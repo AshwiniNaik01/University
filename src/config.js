@@ -1,8 +1,21 @@
-import { Routes } from "react-router-dom";
 
 export const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 // console.log("env from config", API_BASE_URL);
+
+// 🌐 LMS Frontend Base URL
+export const LMS_BASE_URL = (() => {
+  switch (import.meta.env.VITE_ENV) {
+    case "development":
+      return "http://localhost:6174";
+    case "uat":
+      return "https://uat-lms.codedrift.co";
+    case "production":
+      return "https://lms.codedrift.co";
+    default:
+      return window.location.origin;
+  }
+})();
 
 // Images, notes and resume folder Routes
 export const DIR = {
