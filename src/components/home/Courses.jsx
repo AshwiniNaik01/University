@@ -148,7 +148,7 @@ const Courses = () => {
 
                 {/* Link */}
                 <Link
-                  to={course.link}
+                  to="/courses#courses-list"
                   className="text-codedrift-pink font-medium hover:underline flex items-center gap-1"
                 >
                   Explore Course →

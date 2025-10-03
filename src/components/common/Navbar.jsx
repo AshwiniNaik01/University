@@ -57,7 +57,7 @@ const Navbar = () => {
                 className="size-12 md:size-10 rounded-full shadow"
               />
               <p className="hidden md:inline text-2xl font-extrabold">
-                <span className="text-codedrift-pink">Code</span>
+                <span className="text-codedrift-pink mr-2">Code</span>
                 <span className="text-codedrift-blue">Drift</span>
               </p>
             </Link>

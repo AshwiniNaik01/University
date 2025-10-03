@@ -79,7 +79,6 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
   const [otpToastShown, setOtpToastShown] = useState(false); // Prevents duplicate OTP toasts
   const [availableBatches, setAvailableBatches] = useState([]);
   const [selectedBatchId, setSelectedBatchId] = useState(null);
-  
 
   const steps = [
     { key: "mobile", label: "Mobile Number" },
@@ -296,14 +295,39 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             const batchesResponse = await fetchBatches(course._id);
             console.log("🧪 fetchBatches response:", batchesResponse);
 
+            // if (batchesResponse.success && batchesResponse.data.length > 0) {
+            //   setAvailableBatches(batchesResponse.data);
+            //   console.log("Fetched batches:", batchesResponse.data);
+            //   setStage("batch");
+            // }
+
             if (batchesResponse.success && batchesResponse.data.length > 0) {
-              setAvailableBatches(batchesResponse.data);
-              console.log("Fetched batches:", batchesResponse.data);
-              setStage("batch");
+              const enrolledBatchIds =
+                res?.data?.enrollment?.enrolledBatches || [];
+
+              const filteredBatches = batchesResponse.data.map((batch) => ({
+                ...batch,
+                isEnrolled: enrolledBatchIds.includes(batch._id), // mark if already enrolled
+              }));
+
+              setAvailableBatches(filteredBatches);
+
+              const totalBatches = filteredBatches.length;
+              const enrolledBatchesOnly = filteredBatches.filter(
+                (b) => b.isEnrolled
+              ).length;
+
+              if (enrolledBatchesOnly === totalBatches) {
+                // Student is already enrolled in ALL batches of this course
+                toast.info("You are already enrolled in this batch.");
+                setTimeout(() => handleClose(), 3000);
+              } else {
+                setStage("batch"); // Continue to batch selection
+              }
             } else {
               // Fallback check (just in case)
               toast.error("No batches available");
-              setTimeout(() => handleClose(), 2000);
+              setTimeout(() => handleClose(), 3000);
             }
           }
 
@@ -324,8 +348,8 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             message.includes("No batches found") ||
             err?.response?.status === 404
           ) {
-             toast.success("Enrolled successfully! Batches coming soon 🚀");
-            setTimeout(() => handleClose(), 2000);
+            toast.success("Enrolled successfully! Batches coming soon 🚀");
+            setTimeout(() => handleClose(), 3000);
           }
         } finally {
           setSubmitting(false);
@@ -376,27 +400,26 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
   const BatchSelectionForm = () => {
     const [hoveredBatch, setHoveredBatch] = useState(null);
 
-   const formatDate = (dateString) => {
-  if (!dateString) return "TBA";
+    const formatDate = (dateString) => {
+      if (!dateString) return "TBA";
 
-  // Convert from "DD-MM-YYYY" to "YYYY-MM-DD"
-  const [day, month, year] = dateString.split("-");
-  const isoFormatted = `${year}-${month}-${day}`;
+      // Convert from "DD-MM-YYYY" to "YYYY-MM-DD"
+      const [day, month, year] = dateString.split("-");
+      const isoFormatted = `${year}-${month}-${day}`;
 
-  const date = new Date(isoFormatted);
+      const date = new Date(isoFormatted);
 
-  if (isNaN(date)) return "Invalid Date";
+      if (isNaN(date)) return "Invalid Date";
 
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
-};
-
+      return date.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      });
+    };
 
     return (
-      <div className="px-4 py-8">
+      <div className="px-4 py-2">
         <h3 className="text-xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
           Select Your Batch
         </h3>
@@ -408,68 +431,343 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {availableBatches.map((batch) => {
+              // const isSelected = selectedBatchId === batch._id;
+
               const isSelected = selectedBatchId === batch._id;
+              const isEnrolled = batch.isEnrolled;
+              //       return (
+              //         <div
+              //           key={batch._id}
+              //           onClick={() => {
+              //             if (!isEnrolled) setSelectedBatchId(batch._id);
+              //           }}
+              //           // onClick={() => setSelectedBatchId(batch._id)}
+              //           onMouseEnter={() => setHoveredBatch(batch._id)}
+              //           onMouseLeave={() => setHoveredBatch(null)}
+              //           // className={`relative cursor-pointer border-2 rounded-2xl p-6 transition-all duration-500 transform overflow-hidden group ${
+              //           //   isSelected
+              //           //     ? "border-purple-500 bg-gradient-to-br from-purple-100 to-blue-50 shadow-xl scale-105"
+              //           //     : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-lg hover:scale-[1.02]"
+              //           // }`}
+
+              //           className={`relative cursor-pointer border-2 rounded-2xl p-6 transition-all duration-500 transform overflow-hidden group
+              // ${
+              //   isSelected
+              //     ? "border-purple-500 bg-gradient-to-br from-purple-100 to-blue-50 shadow-xl scale-105"
+              //     : isEnrolled
+              //     ? "opacity-50 pointer-events-none border-gray-300 bg-gray-100"
+              //     : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-lg hover:scale-[1.02]"
+              // }`}
+              //         >
+              //           {/* Status badge */}
+              //           <span
+              //             className={`absolute top-4 right-4 px-3 py-1 text-xs font-bold rounded-full border transition ${
+              //               batch.status === "Upcoming"
+              //                 ? "bg-green-100 text-green-800 border-green-300"
+              //                 : "bg-gray-100 text-gray-700 border-gray-300"
+              //             }`}
+              //           >
+              //             {batch.status === "Upcoming" ? "🟢" : "🔘"} {batch.status}
+              //           </span>
+
+              //           {/* Batch name */}
+              //           <h4 className="text-xl font-semibold mb-2 text-gray-900">
+              //             {batch.batchName}
+              //           </h4>
+
+              //           {/* Notes */}
+              //           {/* {batch.additionalNotes && (
+              //           <p className="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg p-2 mb-3">
+              //             💡 {batch.additionalNotes}
+              //           </p>
+              //         )} */}
+
+              //           {/* Time & mode */}
+              //           <div className="flex items-center gap-2 text-gray-700 mb-3">
+              //             <span className="text-lg">🕐</span>
+              //             <p className="text-sm md:text-base font-medium text-gray-700">
+              //               {batch.mode} | {batch.time.start} - {batch.time.end}
+              //             </p>
+              //           </div>
+
+              //           {/* Start date */}
+              //           <div className="flex items-center gap-3 text-gray-700">
+              //             <span className="text-lg">🎯</span>
+              //             <div>
+              //               <p className="text-sm text-gray-500">Starts at</p>
+              //               <p className="font-semibold text-gray-900">
+              //                 {formatDate(batch.startDate)}
+              //               </p>
+              //             </div>
+              //           </div>
+
+              //           {/* Selection tick */}
+              //           {isSelected && (
+              //             <div className="absolute bottom-4 right-4 bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
+              //               ✓
+              //             </div>
+              //           )}
+              //         </div>
+              //       );
 
               return (
                 <div
                   key={batch._id}
-                  onClick={() => setSelectedBatchId(batch._id)}
+                  onClick={() => {
+                    if (!isEnrolled) setSelectedBatchId(batch._id);
+                  }}
                   onMouseEnter={() => setHoveredBatch(batch._id)}
                   onMouseLeave={() => setHoveredBatch(null)}
-                  className={`relative cursor-pointer border-2 rounded-2xl p-6 transition-all duration-500 transform overflow-hidden group ${
-                    isSelected
-                      ? "border-purple-500 bg-gradient-to-br from-purple-100 to-blue-50 shadow-xl scale-105"
-                      : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-lg hover:scale-[1.02]"
-                  }`}
+                  className={`relative cursor-pointer border-2 rounded-3xl p-3 transition-all duration-700 transform overflow-hidden group perspective-1000
+      ${
+        isSelected
+          ? "border-purple-500 bg-gradient-to-br from-purple-100 via-blue-50 to-indigo-100 shadow-2xl scale-105"
+          : isEnrolled
+          ? "opacity-60 pointer-events-none border-gray-300 bg-gradient-to-br from-gray-100 to-gray-200"
+          : "border-gray-200 bg-gradient-to-br from-white to-gray-50 hover:border-purple-400 hover:shadow-2xl hover:scale-[1.03]"
+      }`}
+                  style={{
+                    transformStyle: "preserve-3d",
+                  }}
                 >
-                  {/* Status badge */}
-                  <span
-                    className={`absolute top-4 right-4 px-3 py-1 text-xs font-bold rounded-full border transition ${
-                      batch.status === "Upcoming"
-                        ? "bg-green-100 text-green-800 border-green-300"
-                        : "bg-gray-100 text-gray-700 border-gray-300"
-                    }`}
-                  >
-                    {batch.status === "Upcoming" ? "🟢" : "🔘"} {batch.status}
-                  </span>
+                  {/* 3D Floating Elements */}
+                  <div className="absolute -top-10 -right-10 w-20 h-20 bg-purple-200/30 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000"></div>
+                  <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-blue-200/30 rounded-full blur-xl group-hover:scale-150 transition-transform duration-1000 delay-200"></div>
 
-                  {/* Batch name */}
-                  <h4 className="text-xl font-semibold mb-2 text-gray-900">
-                    {batch.batchName}
-                  </h4>
-
-                  {/* Notes */}
-                  {/* {batch.additionalNotes && (
-                  <p className="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg p-2 mb-3">
-                    💡 {batch.additionalNotes}
-                  </p>
-                )} */}
-
-                  {/* Time & mode */}
-                  <div className="flex items-center gap-2 text-gray-700 mb-3">
-                    <span className="text-lg">🕐</span>
-                    <p className="text-sm md:text-base font-medium text-gray-700">
-                      {batch.mode} | {batch.time.start} - {batch.time.end}
-                    </p>
+                  {/* Animated Background Pattern */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-purple-50/50 to-transparent animate-pulse"></div>
                   </div>
 
-                  {/* Start date */}
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <span className="text-lg">🎯</span>
-                    <div>
-                      <p className="text-sm text-gray-500">Starts at</p>
-                      <p className="font-semibold text-gray-900">
-                        {formatDate(batch.startDate)}
-                      </p>
+                  {/* Status Badge with Animation */}
+
+                  <div
+                    className={`absolute top-4 right-4 z-20 ${
+                      isSelected ? "scale-110" : "hover:scale-105"
+                    } transition-all duration-500`}
+                  >
+                    <div className="relative flex items-center justify-center group">
+                      {/* Animated Gradient Ring */}
+                      <div
+                        className={`absolute -inset-[4px] rounded-full blur-md opacity-40 animate-[spin_6s_linear_infinite] ${
+                          batch.status === "Upcoming"
+                            ? "bg-[conic-gradient(from_0deg,green_400,emerald_500,green_400)]"
+                            : batch.status === "Ongoing"
+                            ? "bg-[conic-gradient(from_0deg,yellow_400,amber_500,yellow_400)]"
+                            : "bg-[conic-gradient(from_0deg,gray_400,gray_500,gray_400)]"
+                        }`}
+                      ></div>
+
+                      {/* Badge Plate */}
+                      <div
+                        className={`relative z-10 px-5 py-2 rounded-full border-2 bg-white/10 backdrop-blur-md shadow-xl flex items-center gap-3 font-semibold text-sm tracking-wide transition-all duration-300 ${
+                          batch.status === "Upcoming"
+                            ? "border-emerald-300 text-emerald-200"
+                            : batch.status === "Ongoing"
+                            ? "border-amber-300 text-amber-200"
+                            : "border-gray-300 text-gray-300"
+                        }`}
+                      >
+                        {/* Flickering Dot */}
+                        <div
+                          className={`w-3 h-3 rounded-full shadow-inner animate-[flicker_2s_infinite] ${
+                            batch.status === "Upcoming"
+                              ? "bg-emerald-400"
+                              : batch.status === "Ongoing"
+                              ? "bg-amber-400"
+                              : "bg-gray-400"
+                          }`}
+                          style={{
+                            animationName: "flicker",
+                            animationDuration: "2s",
+                            animationIterationCount: "infinite",
+                          }}
+                        ></div>
+                        <span className="uppercase tracking-widest text-black">
+                          {batch.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Inline Keyframes via <style> tag */}
+                    <style jsx>{`
+                      @keyframes flicker {
+                        0%,
+                        100% {
+                          opacity: 1;
+                        }
+                        45% {
+                          opacity: 0.4;
+                        }
+                        55% {
+                          opacity: 0.7;
+                        }
+                        65% {
+                          opacity: 0.3;
+                        }
+                        75% {
+                          opacity: 0.9;
+                        }
+                      }
+                    `}</style>
+                  </div>
+
+                  {/* Batch Header with Icon */}
+                  <div className="relative mb-4 transform transition-all duration-500 group-hover:translate-x-2">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`relative w-12 h-12 rounded-2xl flex items-center justify-center text-xl transition-all duration-500 group-hover:scale-110 ${
+                          isSelected
+                            ? "bg-gradient-to-br from-purple-500 to-blue-500 text-white shadow-lg"
+                            : "bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600"
+                        }`}
+                      >
+                        {batch.mode === "Live Online" ? "🎥" : "🏢"}
+                        {/* Icon glow */}
+                        <div
+                          className={`absolute inset-0 rounded-2xl blur-md opacity-30 ${
+                            isSelected ? "bg-purple-400" : "bg-gray-400"
+                          }`}
+                        ></div>
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-blue-600 transition-all duration-500">
+                          {batch.batchName}
+                        </h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs px-2 py-1 bg-gradient-to-r from-orange-100 to-amber-100 text-amber-700 rounded-full border border-amber-200">
+                            ⚡ {batch.mode}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Selection tick */}
-                  {isSelected && (
-                    <div className="absolute bottom-4 right-4 bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
-                      ✓
+                  {/* Schedule Information */}
+                  <div className="space-y-3 mb-4 relative">
+                    {/* Time Slot */}
+                    <div className="flex items-center gap-3 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 group-hover:border-purple-200/50 transition-all duration-500 group-hover:translate-x-1">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center text-blue-600 text-lg">
+                        🕐
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-800">
+                          {batch.time.start} - {batch.time.end}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Daily Schedule
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Start Date */}
+                    <div className="flex items-center gap-3 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 group-hover:border-green-200/50 transition-all duration-500 group-hover:translate-x-1 delay-100">
+                      <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center text-green-600 text-lg">
+                        🎯
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-800">
+                          {formatDate(batch.startDate)}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Batch Starts
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Days Indicator */}
+                  {/* {batch.days && (
+                    <div className="mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          📅 Class Days
+                        </span>
+                      </div>
+                      <div className="flex gap-1">
+                        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+                          (day) => (
+                            <div
+                              key={day}
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all duration-300 ${
+                                batch.days.includes(day)
+                                  ? "bg-gradient-to-br from-purple-500 to-blue-500 text-white shadow-md scale-110"
+                                  : "bg-gray-100 text-gray-400 scale-90"
+                              }`}
+                            >
+                              {day[0]}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )} */}
+
+                  {batch.days && batch.days.length > 0 && (
+                    <div className="mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          📅 Class Days
+                        </span>
+                      </div>
+                      <div className="flex gap-1">
+                        {batch.days.map((day) => (
+                          <div
+                            key={day}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium bg-gradient-to-br from-purple-500 to-blue-500 text-white shadow-md"
+                          >
+                            {day[0]}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
+
+                  {/* Additional Notes with Floating Animation */}
+                  {/* {batch.additionalNotes && (
+                    <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border border-blue-200/50 backdrop-blur-sm transform transition-all duration-500 group-hover:scale-105">
+                      <p className="text-sm text-blue-700 font-medium flex items-center gap-2">
+                        <span className="text-lg animate-bounce">💡</span>
+                        {batch.additionalNotes}
+                      </p>
+                    </div>
+                  )} */}
+
+                  {/* Selection Indicator */}
+                  {isSelected && (
+                    <div className="absolute bottom-4 right-4">
+                      <div className="relative">
+                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center text-white text-lg shadow-2xl animate-pulse">
+                          ✓
+                        </div>
+                        <div className="absolute inset-0 bg-purple-400 rounded-2xl blur-md animate-ping"></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Enrolled Overlay */}
+                  {isEnrolled && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-500/10 to-gray-700/10 backdrop-blur-sm rounded-3xl flex items-center justify-center">
+                      <div className="text-center p-4 bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-300 shadow-lg">
+                        <div className="text-2xl mb-2">🎉</div>
+                        <p className="text-sm font-semibold text-gray-700">
+                          Already Enrolled
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          You're in this batch!
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Hover Border Effect */}
+                  <div
+                    className={`absolute inset-0 rounded-3xl border-2 pointer-events-none transition-all duration-500 ${
+                      isSelected
+                        ? "border-purple-400/50"
+                        : "border-transparent group-hover:border-purple-300/30"
+                    }`}
+                  ></div>
                 </div>
               );
             })}

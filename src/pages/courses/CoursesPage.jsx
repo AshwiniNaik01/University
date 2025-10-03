@@ -29,7 +29,7 @@ import { Button } from "../../components/utility/Button";
 import useScrollToHash from "../../hooks/useScrollToHash";
 import { getAllCourses } from "./courses";
 
-// CoursesPage 
+// CoursesPage
 
 // This page serves as the main landing and promotional page for all courses.
 
@@ -259,6 +259,60 @@ const CoursesPage = () => {
 
           {/* Courses Grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
+            {/* {courses.map((course) => (
+              <div
+                key={course._id}
+                className="relative rounded-2xl p-[2px] codedrift-gradient codedrift-gradient-animate shadow-lg hover:shadow-2xl transition-transform hover:-translate-y-2 duration-300"
+              >
+                <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 h-full flex flex-col justify-between">
+                  {/* Course Title */}
+            {/* <div className="flex items-center mb-4">
+                    <h3 className="text-lg font-semibold text-codedrift-indigo">
+                      {course.title}
+                    </h3>
+                  </div> */}
+
+            {/* Course Info */}
+            {/* <ul className="text-gray-700 text-sm space-y-2 mb-5">
+                    <li className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-codedrift-pink" />
+                      {course.duration}
+                    </li>
+                    {course.features?.certificate && (
+                      <li className="flex items-center gap-2">
+                        <GraduationCap className="w-4 h-4 text-codedrift-blue" />
+                        Professional Certificate
+                      </li>
+                    )}
+                    {course.features?.codingExercises && (
+                      <li className="flex items-center gap-2">
+                        <Laptop className="w-4 h-4 text-codedrift-indigo" />
+                        Coding Exercises
+                      </li>
+                    )}
+                    {course.features?.recordedLectures && (
+                      <li className="flex items-center gap-2">
+                        <Video className="w-4 h-4 text-codedrift-pink" />
+                        Recorded Lectures
+                      </li>
+                    )}
+                  </ul> */}
+
+            {/* Button */}
+            {/* <Button
+                    as="link"
+                    to={`/courses/c/${course._id}`}
+                    variant="pink"
+                    className="group w-full flex items-center justify-center gap-2 bg-codedrift-pink text-white rounded-full font-semibold shadow-md
+                    transition-all duration-300 hover:bg-gradient-to-r hover:from-codedrift-pink hover:to-codedrift-blue hover:shadow-lg hover:scale-105"
+                  >
+                    Start Learning
+                    <MoveRight className="w-5 h-5 transition-all duration-300 group-hover:translate-x-2 group-hover:scale-x-125" />
+                  </Button>
+                </div>
+              </div>
+            ))} */}
+
             {courses.map((course) => (
               <div
                 key={course._id}
@@ -266,10 +320,99 @@ const CoursesPage = () => {
               >
                 <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 h-full flex flex-col justify-between">
                   {/* Course Title */}
-                  <div className="flex items-center mb-4">
+                  <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-codedrift-indigo">
                       {course.title}
                     </h3>
+
+                    {/* Batch status (show if batches exist) */}
+                    {course.batches && course.batches.length > 0 && (
+                      // <span
+                      //   className={`text-xs font-semibold px-2 py-1 rounded-full
+                      //   ${
+                      //     course.batches[0].status === "Upcoming"
+                      //       ? "bg-yellow-200 text-yellow-800"
+                      //       : course.batches[0].status === "Ongoing"
+                      //       ? "bg-green-200 text-green-800"
+                      //       : course.batches[0].status === "Completed"
+                      //       ? "bg-gray-300 text-gray-700"
+                      //       : "bg-blue-200 text-blue-800"
+                      //   }`}
+                      // >
+                      //   {course.batches[0].status}
+                      // </span>
+
+                      <span
+                        className={`inline-flex items-center gap-1 text-sm font-semibold px-3 py-1 rounded-full
+    shadow-sm border
+    transition-all duration-300
+    cursor-default
+    ${
+      course.batches[0].status === "Upcoming"
+        ? "bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-200"
+        : course.batches[0].status === "Ongoing"
+        ? "bg-green-100 text-green-800 border-green-300 hover:bg-green-200"
+        : course.batches[0].status === "Completed"
+        ? "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
+        : "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200"
+    }`}
+                      >
+                        {/* Optional icon based on status */}
+                        {course.batches[0].status === "Upcoming" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 8v4l3 3"
+                            />
+                          </svg>
+                        )}
+                        {course.batches[0].status === "Ongoing" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4 animate-spin"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <circle
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                              strokeDasharray="31.4 31.4"
+                            />
+                          </svg>
+                        )}
+                        {course.batches[0].status === "Completed" && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        )}
+
+                        {course.batches[0].status}
+                      </span>
+                    )}
                   </div>
 
                   {/* Course Info */}

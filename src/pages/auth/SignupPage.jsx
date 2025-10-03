@@ -95,15 +95,15 @@ const signupSchema = Yup.object().shape({
       }
     ),
 
-  collegeName: Yup.string()
-    .trim()
-    .min(1, "College name must be at least 2 characters")
-    .max(100, "College name cannot exceed 100 characters")
-    .required("College name is required"),
+  // collegeName: Yup.string()
+  //   .trim()
+  //   .min(1, "College name must be at least 2 characters")
+  //   .max(100, "College name cannot exceed 100 characters")
+  //   .required("College name is required"),
 
-  selectedProgram: Yup.string()
-    .trim()
-    .required("Program selection is required"),
+  // selectedProgram: Yup.string()
+  //   .trim()
+  //   .required("Program selection is required"),
 });
 
 // Initial values used by Formik form
@@ -114,8 +114,8 @@ const initialValues = {
   mobileNo: "",
   email: "",
   dob: "",
-  collegeName: "",
-  selectedProgram: "Full Stack Web Development - 02 June 2025 (90 Days)",
+  // collegeName: "",
+  // selectedProgram: "Full Stack Web Development - 02 June 2025 (90 Days)",
 };
 
 const SignupPage = () => {
@@ -131,8 +131,8 @@ const SignupPage = () => {
         email: values.email,
         mobileNo: values.mobileNo,
         dob: values.dob,
-        collegeName: values.collegeName,
-        selectedProgram: values.selectedProgram,
+        // collegeName: values.collegeName,
+        // selectedProgram: values.selectedProgram,
       };
 
       const res = await registerCandidate(payload);
@@ -296,7 +296,7 @@ const SignupPage = () => {
                         className="text-red-500 text-sm mt-1"
                       />
                     </div>
-                    <div>
+                    {/* <div>
                       <label
                         className="block text-gray-700 text-sm mb-1"
                         htmlFor="collegeName"
@@ -315,11 +315,11 @@ const SignupPage = () => {
                         component="p"
                         className="text-red-500 text-sm mt-1"
                       />
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Program Selection */}
-                  <div>
+                  {/* <div>
                     <label
                       className="block text-gray-700 text-sm mb-1"
                       htmlFor="selectedProgram"
@@ -344,7 +344,7 @@ const SignupPage = () => {
                       component="p"
                       className="text-red-500 text-sm mt-1"
                     />
-                  </div>
+                  </div> */}
 
                   {/* Buttons */}
                   <div className="flex flex-col md:flex-row gap-4 pt-2">

@@ -238,7 +238,7 @@ const CoursePage = () => {
               </p>
 
               {/* Mentor: Trainer info */}
-              {course.trainer && (
+              {/* {course.trainer && (
                 <div className="flex items-center justify-center gap-3 mt-6">
                   <Image
                     src={`${DIR.TRAINER_PROFILE_PHOTO}${course.trainer.profilePhotoTrainer}`}
@@ -255,6 +255,73 @@ const CoursePage = () => {
                     </span>
                     , {course.trainer.highestQualification}
                   </Link>
+                </div>
+              )} */}
+
+              {/* {course.trainer && course.trainer.length > 0 && (
+                <div className="flex flex-col gap-4 mt-6">
+                  {course.trainer.map((trainer) => (
+                    <div
+                      key={trainer._id}
+                      className="flex items-center justify-center gap-3"
+                    >
+                      <Image
+                        src={`${DIR.TRAINER_PROFILE_PHOTO}${trainer.profilePhotoTrainer}`}
+                        alt={trainer.fullName}
+                        className="w-12 h-12 rounded-full border-2 border-white shadow-md object-cover"
+                      />
+                      <Link
+                        to={`/mentors/m/${trainer._id}`}
+                        className="text-sm text-gray-100"
+                      >
+                        Taught by{" "}
+                        <span className="font-semibold">
+                          {trainer.fullName}
+                        </span>
+                        , {trainer.highestQualification}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )} */}
+
+              {course.trainer && course.trainer.length > 0 && (
+                <div className="my-4">
+                  {/* Section Title */}
+                  <h3 className="text-xl font-bold mb-2 underline">
+                    {course.trainer.length > 1
+                      ? "Meet Your Trainers"
+                      : "Meet Your Trainer"}
+                  </h3>
+
+                  {/* Trainers container */}
+                  <div className="flex gap-6 overflow-x-auto no-scrollbar justify-center px-2 md:px-4">
+                    {course.trainer.map((trainer) => (
+                      <div
+                        key={trainer._id}
+                        className="group relative flex flex-col items-center min-w-[80px] duration-300 ease-in-out"
+                      >
+                        {/* Glowing ring effect */}
+                        <div className="relative mb-3">
+                          <div className="absolute -inset-1 bg-gradient-to-r from-codedrift-pink to-codedrift-blue rounded-full blur opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
+                          <Image
+                            src={`${DIR.TRAINER_PROFILE_PHOTO}${trainer.profilePhotoTrainer}`}
+                            alt={trainer.fullName}
+                            className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover relative z-10"
+                          />
+                        </div>
+
+                        {/* Name */}
+                        <Link
+                          to={`/mentors/m/${trainer._id}`}
+                          className="text-sm font-semibold text-white hover:underline text-center z-10"
+                          title={`View profile of ${trainer.fullName}`}
+                        >
+                          {trainer.fullName}
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

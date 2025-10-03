@@ -10,6 +10,7 @@ import {
   FaInstagram,
   FaWhatsapp,
   FaPhone,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 
 const Footer = () => {
@@ -141,6 +142,27 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Address Section outside grid */}
+        <div className="max-w-full bg-opacity-70 backdrop-blur-md flex flex-col items-center md:items-start text-gray-600 text-base space-y-4">
+          <h4 className="text-md font-bold text-codedrift-pink mb-2 border-b-2 border-codedrift-pink w-full max-w-xs text-center md:text-left">
+            Our Location
+          </h4>
+          <p className="font-semibold text-md text-center md:text-left">
+            Office No 10, Ramrajya 1, Near Bhonsala Military School, College
+            Road, Nashik - 422005
+          </p>
+          <a
+            href="https://maps.app.goo.gl/r6KxMDfapqhGRbwn9"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open in Google Maps"
+            className="flex items-center gap-3 text-white bg-codedrift-pink hover:bg-codedrift-blue transition-colors duration-300 font-semibold rounded-md px-4 py-2 shadow-md hover:shadow-lg"
+          >
+            <FaMapMarkerAlt size={22} className="animate-pulse" />
+            <span>View on Google Maps</span>
+          </a>
+        </div>
+
         {/* Divider */}
         <div className="my-10 border-t border-gray-300"></div>
 
@@ -150,7 +172,7 @@ const Footer = () => {
           <div className="flex gap-4">
             {[
               {
-                href: "https://wa.me/91XXXXXXXXXX",
+                href: "https://wa.me/918430101013",
                 icon: <FaWhatsapp size={18} />,
               },
               {
@@ -170,8 +192,7 @@ const Footer = () => {
                 icon: <FaInstagram size={18} />,
               },
               {
-                internal: true,
-                to: "/contact",
+                href: "tel:+918430101013",
                 icon: <FaPhone size={18} />,
               },
             ].map((social, i) =>

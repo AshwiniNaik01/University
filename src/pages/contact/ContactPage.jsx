@@ -10,6 +10,7 @@ import {
   FaFacebookF,
   FaWhatsapp,
   FaInstagram,
+  FaMapPin,
 } from "react-icons/fa";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -104,15 +105,31 @@ const ContactPage = () => {
               {/* Contact Details */}
               <div className="space-y-4 text-gray-600">
                 {/* Location */}
-                <p className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-codedrift-pink flex-shrink-0" />
-                  <span>
-                    <strong>Locate Us:</strong>
-                    <br />
-                    Office No 10, Ramrajya 1, Near Bhonsala Military School,
-                    College Road, Nashik - 422005
-                  </span>
-                </p>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-codedrift-pink flex-shrink-0 mt-1" />
+                    <div>
+                      <strong className="block text-gray-800 mb-1">
+                        Locate Us:
+                      </strong>
+                      <address className="not-italic text-gray-700 leading-relaxed">
+                        Office No 10, Ramrajya 1, Near Bhonsala Military School,
+                        <br />
+                        College Road, Nashik - 422005
+                      </address>
+                    </div>
+                  </div>
+                  <a
+                    href="https://maps.app.goo.gl/r6KxMDfapqhGRbwn9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Open in Google Maps"
+                    className="inline-flex items-center gap-2 text-codedrift-pink hover:text-codedrift-blue transition-colors font-semibold"
+                  >
+                    <FaMapPin size={18} className="animate-ping" />
+                    View on Google Maps
+                  </a>
+                </div>
 
                 {/* Email */}
                 <p className="flex items-center gap-3">
@@ -129,7 +146,7 @@ const ContactPage = () => {
                     <strong>Phone:</strong>
                     <br />
                     +91 8430101013 <br />
-                    +91 7591010101 <br />
+                    {/* +91 7591010101 <br /> */}
                     +91 8378010108
                   </span>
                 </p>

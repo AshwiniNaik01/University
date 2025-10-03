@@ -64,7 +64,7 @@ const ScrollToTop = () => {
       >
         {/* WhatsApp */}
         <a
-          href="https://wa.me/91XXXXXXXXXX"
+          href="https://wa.me/918430101013"
           target="_blank"
           rel="noopener noreferrer"
           title="WhatsApp"
@@ -118,17 +118,17 @@ const ScrollToTop = () => {
         </a>
 
         {/* Phone */}
-        <Link
-          to="/contact"
-          title="Contact Us"
+        <a
+          href="tel:+918430101013"
+          title="Call Us"
           className="p-3 rounded-full bg-codedrift-pink text-white shadow-lg hover:bg-codedrift-indigo-dark hover:scale-105 transition-all duration-300"
         >
           <FaPhone className="w-5 h-5" />
-        </Link>
+        </a>
       </div>
 
       {/* Toggle Button - Always at Bottom */}
-      <button
+      {/* <button
         onClick={toggleIcons}
         title={isOpen ? "Hide Social Icons" : "Show Social Icons"}
         className="p-3 rounded-full bg-white text-gray-800 shadow-xl hover:scale-110 transition-all duration-300"
@@ -137,6 +137,18 @@ const ScrollToTop = () => {
           <ChevronDown className="w-5 h-5 rotate-180 transition-transform duration-300" />
         ) : (
           <ChevronUp className="w-5 h-5 transition-transform duration-300" />
+        )}
+      </button> */}
+
+      <button
+        onClick={toggleIcons}
+        title={isOpen ? "Hide Social Icons" : "Show Social Icons"}
+        className="p-3 rounded-full bg-white text-gray-800 shadow-xl hover:scale-110 transition-all duration-300"
+      >
+        {isOpen ? (
+          <ChevronUp className="w-5 h-5 transition-transform duration-300" />
+        ) : (
+          <ChevronDown className="w-5 h-5 transition-transform duration-300" />
         )}
       </button>
 
