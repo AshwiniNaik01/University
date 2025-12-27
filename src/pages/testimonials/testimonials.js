@@ -7,7 +7,7 @@ import { DIR } from "../../config";
 
 export const fetchTestimonials = async () => {
   try {
-    const res = await api.get("/feedback");
+    const res = await api.get("/feedback/all");
     const data = res.data.data;
 
     // Map the raw API data to the structure used in the component

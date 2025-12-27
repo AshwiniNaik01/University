@@ -110,7 +110,7 @@ const MentorPage = () => {
               <div className="md:col-span-2 space-y-6">
                 {/* Summary */}
                 <div>
-                  <h3 className="text-xl font-bold bg-gradient-to-r from-[#ee4f7e] to-[#4cb7e5] text-transparent bg-clip-text mb-2">
+                  <h3 className="text-xl font-bold bg-gradient-to-r from-blue-900 via-blue-500 to-blue-900 text-transparent bg-clip-text mb-2">
                     Professional Summary
                   </h3>
                   <p className="text-gray-600 leading-relaxed text-sm">
@@ -171,7 +171,7 @@ const MentorPage = () => {
                   {mentor.courses.map((course, idx) => (
                     <div
                       key={idx}
-                      className="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition border-l-4 border-codedrift-pink"
+                      className="bg-white p-5 rounded-xl shadow-lg hover:shadow-xl transition border-l-4 border-codedrift-indigo"
                     >
                       <h4 className="font-semibold text-gray-800">{course}</h4>
                       <p className="text-xs text-gray-500 mt-1">

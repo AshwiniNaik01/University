@@ -3,7 +3,7 @@ import { api } from "../../apiUtils/instance";
 // Fetch all courses
 export const getAllCourses = async () => {
   try {
-    const res = await api.get("/courses/all");
+    const res = await api.get("/courses/all-course");
     if (res.data?.success && Array.isArray(res.data.data)) {
       return res.data.data;
     } else {

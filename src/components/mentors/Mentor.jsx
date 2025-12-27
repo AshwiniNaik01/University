@@ -27,7 +27,7 @@ const Mentor = ({ mentor }) => {
       }}
     >
       {/* Top gradient bar */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-codedrift-gradient" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900" />
 
       {/* Mentor Profile Image */}
       <div className="relative w-24 h-24 mx-auto mb-4">
@@ -52,7 +52,7 @@ const Mentor = ({ mentor }) => {
       {/* Mentor Name - links to detailed mentor page */}
       <Link
         to={`/mentors/m/${mentor.id}`}
-        className="block text-center text-lg font-bold text-gray-800 group-hover:text-codedrift-pink transition-colors duration-200"
+        className="block text-center text-lg font-bold text-gray-800 group-hover:text-gradient-to-r from-blue-900 via-blue-800 to-blue-900 transition-colors duration-200"
       >
         {mentor.name}
       </Link>

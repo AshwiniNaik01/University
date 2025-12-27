@@ -121,18 +121,46 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
    * Automatically triggers OTP sending when entering the 'otp' stage.
    * Uses a local flag to prevent duplicate OTP toasts/API calls.
    */
+  // useEffect(() => {
+  //   const sendOtpOnOtpStage = async () => {
+  //     if (stage === "otp" && prefillData?.mobileNo && !otpToastShown) {
+  //       try {
+  //         const response = await sendOtp(prefillData.mobileNo);
+  //         if (response.success && response.data.reference_id) {
+  //           setPrefillData((prev) => ({
+  //             ...prev,
+  //             reference_id: response.data.reference_id,
+  //           }));
+  //           toast.success("OTP sent to your mobile");
+  //           setOtpToastShown(true); // Flag to avoid duplicate toasts
+  //         } else {
+  //           toast.error(response.message || "Failed to send OTP");
+  //         }
+  //       } catch (error) {
+  //         toast.error(error.message || "Error sending OTP");
+  //       }
+  //     }
+  //   };
+
+  //   sendOtpOnOtpStage();
+  // }, [stage, prefillData?.mobileNo, otpToastShown]);
+
   useEffect(() => {
     const sendOtpOnOtpStage = async () => {
       if (stage === "otp" && prefillData?.mobileNo && !otpToastShown) {
         try {
-          const response = await sendOtp(prefillData.mobileNo);
-          if (response.success && response.data.reference_id) {
+          const response = await sendOtp({
+            mobileNo: prefillData.mobileNo,
+            email: prefillData.email, // ✅ send email
+          });
+
+          if (response.success && response.data?.reference_id) {
             setPrefillData((prev) => ({
               ...prev,
               reference_id: response.data.reference_id,
             }));
-            toast.success("OTP sent to your mobile");
-            setOtpToastShown(true); // Flag to avoid duplicate toasts
+            toast.success("OTP sent to your mobile and email");
+            setOtpToastShown(true); // prevent duplicate calls
           } else {
             toast.error(response.message || "Failed to send OTP");
           }
@@ -143,7 +171,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
     };
 
     sendOtpOnOtpStage();
-  }, [stage, prefillData?.mobileNo, otpToastShown]);
+  }, [stage, prefillData?.mobileNo, prefillData?.email, otpToastShown]);
 
   /**
    * Handle modal close - trigger unmounting and cleanup
@@ -229,7 +257,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full md:w-auto px-6 py-2 text-white font-semibold rounded-md transition-all duration-300 disabled:opacity-50 mx-auto"
+              className="w-full md:w-auto px-6 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-800  font-semibold rounded-md transition-all duration-300 disabled:opacity-50 mx-auto"
             >
               {isSubmitting ? "Checking..." : "Continue"}
             </Button>
@@ -239,14 +267,14 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
           <div className="hidden md:flex justify-center items-center relative">
             <div className="relative w-60 h-60 flex justify-center items-center">
               {/* Pulsing ring 1 */}
-              <div className="absolute w-26 h-26 rounded-full bg-pink-400 opacity-30 animate-ping"></div>
+              <div className="absolute w-26 h-26 rounded-full bg-yellow-900 opacity-30 animate-ping"></div>
 
               {/* Pulsing ring 2 */}
-              <div className="absolute w-36 h-36 rounded-full bg-blue-400 opacity-20 animate-ping delay-200"></div>
+              <div className="absolute w-36 h-36 rounded-full bg-blue-900 opacity-20 animate-ping delay-200"></div>
 
               {/* Phone image with bounce animation */}
               <img
-                src="https://static.vecteezy.com/system/resources/previews/011/157/544/non_2x/mobile-phone-cartoon-icon-illustration-technology-object-icon-concept-isolated-premium-flat-cartoon-style-vector.jpg"
+                src="https://thumbs.dreamstime.com/b/mobile-phone-chat-notification-message-yellow-background-vector-illustration-isolated-colored-smartphone-speech-bubble-191221592.jpg"
                 alt="Ringing mobile"
                 className="w-40 h-40 object-contain rounded-full drop-shadow-lg"
               />
@@ -388,7 +416,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="mx-auto px-6 py-2 text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+            className="mx-auto px-6 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-800  font-medium rounded-md transition-all duration-300 disabled:opacity-50"
           >
             {isSubmitting ? "Registering..." : "Register & Send OTP"}
           </Button>
@@ -435,80 +463,6 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
 
               const isSelected = selectedBatchId === batch._id;
               const isEnrolled = batch.isEnrolled;
-              //       return (
-              //         <div
-              //           key={batch._id}
-              //           onClick={() => {
-              //             if (!isEnrolled) setSelectedBatchId(batch._id);
-              //           }}
-              //           // onClick={() => setSelectedBatchId(batch._id)}
-              //           onMouseEnter={() => setHoveredBatch(batch._id)}
-              //           onMouseLeave={() => setHoveredBatch(null)}
-              //           // className={`relative cursor-pointer border-2 rounded-2xl p-6 transition-all duration-500 transform overflow-hidden group ${
-              //           //   isSelected
-              //           //     ? "border-purple-500 bg-gradient-to-br from-purple-100 to-blue-50 shadow-xl scale-105"
-              //           //     : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-lg hover:scale-[1.02]"
-              //           // }`}
-
-              //           className={`relative cursor-pointer border-2 rounded-2xl p-6 transition-all duration-500 transform overflow-hidden group
-              // ${
-              //   isSelected
-              //     ? "border-purple-500 bg-gradient-to-br from-purple-100 to-blue-50 shadow-xl scale-105"
-              //     : isEnrolled
-              //     ? "opacity-50 pointer-events-none border-gray-300 bg-gray-100"
-              //     : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-lg hover:scale-[1.02]"
-              // }`}
-              //         >
-              //           {/* Status badge */}
-              //           <span
-              //             className={`absolute top-4 right-4 px-3 py-1 text-xs font-bold rounded-full border transition ${
-              //               batch.status === "Upcoming"
-              //                 ? "bg-green-100 text-green-800 border-green-300"
-              //                 : "bg-gray-100 text-gray-700 border-gray-300"
-              //             }`}
-              //           >
-              //             {batch.status === "Upcoming" ? "🟢" : "🔘"} {batch.status}
-              //           </span>
-
-              //           {/* Batch name */}
-              //           <h4 className="text-xl font-semibold mb-2 text-gray-900">
-              //             {batch.batchName}
-              //           </h4>
-
-              //           {/* Notes */}
-              //           {/* {batch.additionalNotes && (
-              //           <p className="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg p-2 mb-3">
-              //             💡 {batch.additionalNotes}
-              //           </p>
-              //         )} */}
-
-              //           {/* Time & mode */}
-              //           <div className="flex items-center gap-2 text-gray-700 mb-3">
-              //             <span className="text-lg">🕐</span>
-              //             <p className="text-sm md:text-base font-medium text-gray-700">
-              //               {batch.mode} | {batch.time.start} - {batch.time.end}
-              //             </p>
-              //           </div>
-
-              //           {/* Start date */}
-              //           <div className="flex items-center gap-3 text-gray-700">
-              //             <span className="text-lg">🎯</span>
-              //             <div>
-              //               <p className="text-sm text-gray-500">Starts at</p>
-              //               <p className="font-semibold text-gray-900">
-              //                 {formatDate(batch.startDate)}
-              //               </p>
-              //             </div>
-              //           </div>
-
-              //           {/* Selection tick */}
-              //           {isSelected && (
-              //             <div className="absolute bottom-4 right-4 bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
-              //               ✓
-              //             </div>
-              //           )}
-              //         </div>
-              //       );
 
               return (
                 <div
@@ -677,31 +631,6 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
                   </div>
 
                   {/* Days Indicator */}
-                  {/* {batch.days && (
-                    <div className="mb-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-sm font-medium text-gray-700">
-                          📅 Class Days
-                        </span>
-                      </div>
-                      <div className="flex gap-1">
-                        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
-                          (day) => (
-                            <div
-                              key={day}
-                              className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all duration-300 ${
-                                batch.days.includes(day)
-                                  ? "bg-gradient-to-br from-purple-500 to-blue-500 text-white shadow-md scale-110"
-                                  : "bg-gray-100 text-gray-400 scale-90"
-                              }`}
-                            >
-                              {day[0]}
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </div>
-                  )} */}
 
                   {batch.days && batch.days.length > 0 && (
                     <div className="mb-4">
@@ -722,16 +651,6 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
                       </div>
                     </div>
                   )}
-
-                  {/* Additional Notes with Floating Animation */}
-                  {/* {batch.additionalNotes && (
-                    <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border border-blue-200/50 backdrop-blur-sm transform transition-all duration-500 group-hover:scale-105">
-                      <p className="text-sm text-blue-700 font-medium flex items-center gap-2">
-                        <span className="text-lg animate-bounce">💡</span>
-                        {batch.additionalNotes}
-                      </p>
-                    </div>
-                  )} */}
 
                   {/* Selection Indicator */}
                   {isSelected && (
@@ -800,45 +719,6 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
     );
   };
 
-  // const BatchSelectionForm = () => (
-  //   <div className="px-4 py-6">
-  //     <h3 className="text-xl font-semibold mb-4">Select a Batch</h3>
-
-  //     {availableBatches.length === 0 ? (
-  //       <p className="text-gray-500">No batches available for this course.</p>
-  //     ) : (
-  //       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  //         {availableBatches.map((batch) => (
-  //           <div
-  //             key={batch._id}
-  //             onClick={() => setSelectedBatchId(batch._id)}
-  //             className={`cursor-pointer border rounded-md p-4 transition ${
-  //               selectedBatchId === batch._id
-  //                 ? "border-blue-500 bg-blue-50"
-  //                 : "border-gray-200"
-  //             }`}
-  //           >
-  //             <p className="font-medium text-lg">{batch.batchName}</p>
-  //             <p className="text-sm text-gray-600 mb-1">
-  //               {batch.additionalNotes || "No additional notes"}
-  //             </p>
-  //             <p className="text-sm text-gray-500">
-  //               {batch.mode} | {batch.time.start} - {batch.time.end}
-  //             </p>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     )}
-
-  //     <Button
-  //       disabled={!selectedBatchId}
-  //       onClick={() => setStage("otp")}
-  //       className="mt-6"
-  //     >
-  //       Continue to OTP
-  //     </Button>
-  //   </div>
-  // );
   /**
    * Step 3: OTP Verification Form
    * Uses `verifyOtp` API, then sets auth cookies and redirects user to dashboard
@@ -880,7 +760,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
 
             toast.success("Login successful");
             console.log("📦 Fetching batches for course:", course._id);
-            handleClose();
+            // handleClose();
 
             // Step 2: Fetch batches
             const batchesResponse = await fetchBatches(course._id);
@@ -906,40 +786,65 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
 
                 if (assignResponse.success) {
                   setCookie("batchId", batchId);
+                  // toast.success(
+                  //   "Batch assigned successfully. Login successful!"
+                  // );
+
                   toast.success(
-                    "Batch assigned successfully. Login successful!"
+                    "You have successfully enrolled in the course and registration is complete!"
                   );
 
-                  const baseUrl = getBaseUrl();
-                  console.log("🔀 Redirecting to dashboard:", baseUrl);
-                  setTimeout(() => {
-                    window.location.href = `${baseUrl}/student/dashboard`;
-                  }, 500);
-
+                  console.log("✅ Batch assigned and registration completed.");
+                  // Remove any window.location.href redirects
                   setTimeout(() => {
                     console.log("🧼 Closing modal");
-                    handleClose();
-                  }, 1000);
+                    handleClose(); // Close the modal after a short delay
+                  }, 3000);
                 }
+
+                // const baseUrl = getBaseUrl();
+                // console.log("🔀 Redirecting to dashboard:", baseUrl);
+                // setTimeout(() => {
+                //   window.location.href = `${baseUrl}/student/dashboard`;
+                // }, 500);
+
+                // setTimeout(() => {
+                //   console.log("🧼 Closing modal");
+                //   handleClose();
+                // }, 1000);
+                // }
               } catch (err) {
                 const message = err?.response?.data?.message;
                 console.warn("⚠️ Batch assignment failed:", message);
 
                 if (message === "Student already assigned to this batch") {
                   setCookie("batchId", batchId);
-                  toast.success("Batch already assigned. Login successful!");
+                  // toast.success("Batch already assigned. Login successful!");
 
-                  const baseUrl = getBaseUrl();
-                  console.log("🔁 Redirecting (already assigned):", baseUrl);
+                  toast.success(
+                    "You are already enrolled in this course. Registration confirmed!"
+                  );
 
-                  setTimeout(() => {
-                    window.location.href = `${baseUrl}/student/dashboard`;
-                  }, 500);
-
+                  console.log(
+                    "ℹ️ Student already assigned. Registration confirmed."
+                  );
                   setTimeout(() => {
                     console.log("🧼 Closing modal (already assigned)");
-                    handleClose();
-                  }, 1000);
+                    handleClose(); // Close modal
+                  }, 3000);
+                  // }
+
+                  // const baseUrl = getBaseUrl();
+                  // console.log("🔁 Redirecting (already assigned):", baseUrl);
+
+                  // setTimeout(() => {
+                  //   window.location.href = `${baseUrl}/student/dashboard`;
+                  // }, 500);
+
+                  // setTimeout(() => {
+                  //   console.log("🧼 Closing modal (already assigned)");
+                  //   handleClose();
+                  // }, 1000);
                 } else {
                   toast.error(message || "Failed to assign batch");
                 }
@@ -991,7 +896,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full md:w-auto px-6 py-2 text-white font-semibold rounded-md transition-all duration-300 disabled:opacity-50 mx-auto"
+              className="w-full md:w-auto px-6 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-800 font-semibold rounded-md transition-all duration-300 disabled:opacity-50 mx-auto"
             >
               {isSubmitting ? "Verifying..." : "Verify OTP"}
             </Button>
@@ -1001,14 +906,14 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
           <div className="hidden md:flex justify-center items-center relative">
             <div className="relative w-60 h-60 flex justify-center items-center">
               {/* Pulse effect */}
-              <div className="absolute w-24 h-24 rounded-full bg-pink-400 opacity-30 animate-ping"></div>
-              <div className="absolute w-36 h-36 rounded-full bg-blue-400 opacity-20 animate-ping delay-200"></div>
+              <div className="absolute w-24 h-24 rounded-full bg-yellow-800 opacity-30 animate-ping"></div>
+              <div className="absolute w-36 h-36 rounded-full bg-blue-900 opacity-20 animate-ping delay-200"></div>
 
               {/* OTP verification image */}
               <img
-                src="https://ouch-prod-src-cdn.icons8.com/pz/illustration_preview_assets/1guJ-RyGRv69yOkD.png"
+                src="https://t4.ftcdn.net/jpg/15/15/55/91/360_F_1515559136_bJFlMvSG8toRN3wvW3MS1GoaCMXT9YVq.jpg"
                 alt="OTP verification"
-                className="w-50 h-50 object-contain drop-shadow-lg"
+                className="w-50 h-50 object-contain drop-shadow-lg rounded-full"
               />
             </div>
           </div>

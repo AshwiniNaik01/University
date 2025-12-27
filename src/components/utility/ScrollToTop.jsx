@@ -146,9 +146,9 @@ const ScrollToTop = () => {
         className="p-3 rounded-full bg-white text-gray-800 shadow-xl hover:scale-110 transition-all duration-300"
       >
         {isOpen ? (
-          <ChevronUp className="w-5 h-5 transition-transform duration-300" />
-        ) : (
           <ChevronDown className="w-5 h-5 transition-transform duration-300" />
+        ) : (
+          <ChevronUp className="w-5 h-5 transition-transform duration-300" />
         )}
       </button>
 

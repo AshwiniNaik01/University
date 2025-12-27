@@ -1,10 +1,9 @@
 // App.jsx
-import "./App.css";
-import { Suspense, lazy } from "react";
-import AppRouters from "./routes/AppRouter";
+import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import FullScreenLogoLoader from "./components/loaders/FullScreenLogoLoader";
+import "./App.css";
+import AppRouters from "./routes/AppRouter";
 
 function App() {
   return (

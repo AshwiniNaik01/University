@@ -3,7 +3,7 @@ import { api } from "../../apiUtils/instance";
 
 // Fetch Batches by id
 export const fetchBatches = async (courseId) => {
-  const batchesResponse = await api.get(`/batches/${courseId}`);
+  const batchesResponse = await api.get(`/batches/course/${courseId}`);
   return batchesResponse.data;
 };
 

@@ -120,30 +120,58 @@ const initialValues = {
 
 const SignupPage = () => {
   // Handles form submission logic
+  // const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  //   try {
+  //     const fullName = [values.firstName, values.middleName, values.lastName]
+  //       .filter(Boolean)
+  //       .join(" ");
+
+  //     const payload = {
+  //       fullName,
+  //       email: values.email,
+  //       mobileNo: values.mobileNo,
+  //       dob: values.dob,
+  //       // collegeName: values.collegeName,
+  //       // selectedProgram: values.selectedProgram,
+  //     };
+
+  //     const res = await registerCandidate(payload);
+  //     toast.success(res.message || "Registration successful!");
+  //     resetForm();
+  //   } catch (error) {
+  // const message =
+  //   error?.response?.data?.message || "Registration failed.";
+  // toast.error(message);
+
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
+
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    try {
-      const fullName = [values.firstName, values.middleName, values.lastName]
-        .filter(Boolean)
-        .join(" ");
+  try {
+    const fullName = [values.firstName, values.middleName, values.lastName]
+      .filter(Boolean)
+      .join(" ");
 
-      const payload = {
-        fullName,
-        email: values.email,
-        mobileNo: values.mobileNo,
-        dob: values.dob,
-        // collegeName: values.collegeName,
-        // selectedProgram: values.selectedProgram,
-      };
+    const payload = {
+      fullName,
+      email: values.email,
+      mobileNo: values.mobileNo,
+      dob: values.dob,
+    };
 
-      const res = await registerCandidate(payload);
-      toast.success(res.message || "Registration successful!");
-      resetForm();
-    } catch (error) {
-      toast.error(error.message || "Registration failed.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    const res = await registerCandidate(payload);
+
+    toast.success(res.message || "Registration successful!");
+    resetForm();
+  } catch (error) {
+    toast.error(error?.message || "Registration failed.");
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   return (
     <section className="py-10 bg-white">
@@ -152,7 +180,7 @@ const SignupPage = () => {
           {/* Left Panel */}
           <div className="md:col-span-1 space-y-6">
             <div className="flex gap-4 items-center justify-center sm:justify-start">
-              <UserPlus className="w-8 h-8 text-codedrift-pink" />
+              <UserPlus className="w-8 h-8 text-yellow-500" />
               <FileText className="w-8 h-8 text-codedrift-blue" />
               <CheckCircle2 className="w-8 h-8 text-codedrift-indigo" />
             </div>
@@ -163,10 +191,10 @@ const SignupPage = () => {
 
             <p className="text-gray-600 text-center sm:text-start text-sm md:text-base leading-relaxed">
               Register now with{" "}
-              <span className="text-codedrift-pink font-semibold">
-                Code Drift
+              <span className="text-codedrift-indigo font-semibold">
+               Sant Gadge Baba Amravati University
               </span>{" "}
-              and kickstart your journey in tech.
+              and kickstart your journey in technology.
             </p>
 
             <div className="pt-4 border-t border-gray-200">
@@ -351,7 +379,7 @@ const SignupPage = () => {
                     <Button
                       type="submit"
                       size="md"
-                      variant="pink"
+                      variant="indigo"
                       className="w-full shadow-md"
                       disabled={isSubmitting}
                     >

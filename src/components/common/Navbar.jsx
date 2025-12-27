@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react"; // ✅ For mobile menu
-import { codedriftLogoImage } from "../../access-assets/images";
+import { sgbauLogoImage } from "../../access-assets/images";
 import Image from "../utility/Image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "../utility/Button";
 import LoginFormModal from "../auth/LoginFormModal";
+import { LMS_BASE_URL } from "../../config";
 
 const links = [
   { name: "Home", to: "/" },
@@ -14,13 +15,14 @@ const links = [
   { name: "About", to: "/about" },
   { name: "Contact", to: "/contact" },
   // { name: "Register", to: "/auth/register" },
-  { name: "SkillUp Center", to: "/book" },
+  // { name: "SkillUp Center", to: "/book" },
   // { name: "Feedback", to: "/feedback" },
 ];
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const baseUrl = LMS_BASE_URL; // make sure LMS_BASE_URL is imported or defined
 
   // This is used for stopping scrolling of the background, when the sidebar is open
   useEffect(() => {
@@ -45,20 +47,25 @@ const Navbar = () => {
     <>
       <nav className="sticky top-0 z-[500] backdrop-blur-md bg-white/70 shadow-md border-b border-gray-200">
         {/* ✅ Animated Gradient Top Bar */}
-        <div className="h-1 w-full bg-gradient-to-r from-[#ee4f7e] via-[#4cb7e5] to-[#ee4f7e] animate-gradient-x"></div>
+        <div
+          className="h-1 w-full bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-500
+ animate-gradient-x"
+        ></div>
 
         <div className="container">
           <div className="flex justify-between py-3 items-center">
             {/* ✅ Brand Logo & Name */}
             <Link to={"/"} className="flex items-center gap-2">
               <Image
-                src={codedriftLogoImage}
+                src={sgbauLogoImage}
                 alt="Code Drift Logo"
                 className="size-12 md:size-10 rounded-full shadow"
               />
               <p className="hidden md:inline text-2xl font-extrabold">
-                <span className="text-codedrift-pink mr-2">Code</span>
-                <span className="text-codedrift-blue">Drift</span>
+                <span className="text-indigo-900 mr-2">
+                  Sant Gadge Baba Amravati University
+                </span>
+                {/* <span className="text-codedrift-blue">,Nashik</span> */}
               </p>
             </Link>
 
@@ -70,11 +77,13 @@ const Navbar = () => {
                   to={link.to}
                   className={({ isActive }) =>
                     `px-4 py-2 rounded-full text-sm font-medium transition-all duration-500 
+                                  
+
                                         ${
-                                          isActive
-                                            ? "text-white shadow-md bg-gradient-to-r from-[#ee4f7e] via-[#4cb7e5] to-[#ee4f7e] animate-gradient-x"
-                                            : "text-gray-600 hover:text-codedrift-indigo hover:bg-codedrift-blue/10"
-                                        }`
+  isActive
+    ? "text-white shadow-md bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-500 animate-gradient-x"
+    : "text-black hover:text-black hover:bg-blue-900/20"
+}`
                   }
                 >
                   {link.name}
@@ -82,19 +91,32 @@ const Navbar = () => {
               ))}
 
               <div className="flex items-center gap-6">
-                <Button
+                {/*<Button
                   onClick={handleOpenLoginModal}
                   variant="indigo"
                   size="md"
                   className="px-4 py-2"
                 >
                   Login
-                </Button>
+                </Button>*/}
+
+                {/* <Button
+                  onClick={() => {
+                    setTimeout(() => {
+                      window.location.href = `${baseUrl}/student-login`;
+                    }, 100);
+                  }}
+                  variant="indigo"
+                  size="md"
+                  className="px-8 py-2 w-fit"
+                >
+                  Login
+                </Button> */}
 
                 <Button
                   as="link"
                   to="/auth/register"
-                  variant="pink"
+                  variant="indigo"
                   size="md"
                   className="px-4 py-2"
                 >
@@ -181,14 +203,27 @@ const Navbar = () => {
                   </NavLink>
                 ))}
 
-                <Button
+                {/*} <Button
                   onClick={handleOpenLoginModal}
                   variant="indigo"
                   size="md"
                   className="px-8 py-2 w-fit"
                 >
                   Login
-                </Button>
+                </Button>*/}
+{/* 
+                <Button
+                  onClick={() => {
+                    setTimeout(() => {
+                      window.location.href = `${baseUrl}/student-login`;
+                    }, 100);
+                  }}
+                  variant="indigo"
+                  size="md"
+                  className="px-8 py-2 w-fit"
+                >
+                  Login
+                </Button> */}
 
                 <Button
                   as="link"

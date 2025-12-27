@@ -5,6 +5,7 @@ const COOKIE_EXPIRY_DAYS = 7; // Default expiry duration
 // ✅ Set individual cookies
 export const setCookie = (key, value, days = COOKIE_EXPIRY_DAYS) => {
   Cookies.set(key, value, { expires: days, domain: 'codedrift.co', path: "/" });
+    // Cookies.set(key, value, { expires: days });
 };
 
 // ✅ Get a cookie by key
