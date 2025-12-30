@@ -1,17 +1,16 @@
-import React from "react";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import {
-  UserPlus,
-  FileText,
+  Briefcase,
   CheckCircle2,
+  FileText,
   Goal,
   GraduationCap,
-  Briefcase,
+  UserPlus,
 } from "lucide-react";
-import { Button } from "../../components/utility/Button";
-import { registerCandidate } from "./studentRegisterApi";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Button } from "../../components/utility/Button";
+import { registerCandidate } from "./studentRegisterApi";
 
 // SignupPage: Signup or registration form
 
@@ -94,16 +93,6 @@ const signupSchema = Yup.object().shape({
         return inputDate < today; // must be before today
       }
     ),
-
-  // collegeName: Yup.string()
-  //   .trim()
-  //   .min(1, "College name must be at least 2 characters")
-  //   .max(100, "College name cannot exceed 100 characters")
-  //   .required("College name is required"),
-
-  // selectedProgram: Yup.string()
-  //   .trim()
-  //   .required("Program selection is required"),
 });
 
 // Initial values used by Formik form
@@ -115,63 +104,32 @@ const initialValues = {
   email: "",
   dob: "",
   // collegeName: "",
-  // selectedProgram: "Full Stack Web Development - 02 June 2025 (90 Days)",
 };
 
 const SignupPage = () => {
-  // Handles form submission logic
-  // const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-  //   try {
-  //     const fullName = [values.firstName, values.middleName, values.lastName]
-  //       .filter(Boolean)
-  //       .join(" ");
-
-  //     const payload = {
-  //       fullName,
-  //       email: values.email,
-  //       mobileNo: values.mobileNo,
-  //       dob: values.dob,
-  //       // collegeName: values.collegeName,
-  //       // selectedProgram: values.selectedProgram,
-  //     };
-
-  //     const res = await registerCandidate(payload);
-  //     toast.success(res.message || "Registration successful!");
-  //     resetForm();
-  //   } catch (error) {
-  // const message =
-  //   error?.response?.data?.message || "Registration failed.";
-  // toast.error(message);
-
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
-
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-  try {
-    const fullName = [values.firstName, values.middleName, values.lastName]
-      .filter(Boolean)
-      .join(" ");
+    try {
+      const fullName = [values.firstName, values.middleName, values.lastName]
+        .filter(Boolean)
+        .join(" ");
 
-    const payload = {
-      fullName,
-      email: values.email,
-      mobileNo: values.mobileNo,
-      dob: values.dob,
-    };
+      const payload = {
+        fullName,
+        email: values.email,
+        mobileNo: values.mobileNo,
+        dob: values.dob,
+      };
 
-    const res = await registerCandidate(payload);
+      const res = await registerCandidate(payload);
 
-    toast.success(res.message || "Registration successful!");
-    resetForm();
-  } catch (error) {
-    toast.error(error?.message || "Registration failed.");
-  } finally {
-    setSubmitting(false);
-  }
-};
-
+      toast.success(res.message || "Registration successful!");
+      resetForm();
+    } catch (error) {
+      toast.error(error?.message || "Registration failed.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <section className="py-10 bg-white">
@@ -192,7 +150,7 @@ const SignupPage = () => {
             <p className="text-gray-600 text-center sm:text-start text-sm md:text-base leading-relaxed">
               Register now with{" "}
               <span className="text-codedrift-indigo font-semibold">
-               Sant Gadge Baba Amravati University
+                Sant Gadge Baba Amravati University
               </span>{" "}
               and kickstart your journey in technology.
             </p>
@@ -324,55 +282,7 @@ const SignupPage = () => {
                         className="text-red-500 text-sm mt-1"
                       />
                     </div>
-                    {/* <div>
-                      <label
-                        className="block text-gray-700 text-sm mb-1"
-                        htmlFor="collegeName"
-                      >
-                        College Name <span className="text-red-500">*</span>
-                      </label>
-                      <Field
-                        id="collegeName"
-                        name="collegeName"
-                        type="text"
-                        placeholder="Enter college name"
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
-                      />
-                      <ErrorMessage
-                        name="collegeName"
-                        component="p"
-                        className="text-red-500 text-sm mt-1"
-                      />
-                    </div> */}
                   </div>
-
-                  {/* Program Selection */}
-                  {/* <div>
-                    <label
-                      className="block text-gray-700 text-sm mb-1"
-                      htmlFor="selectedProgram"
-                    >
-                      Select Program <span className="text-red-500">*</span>
-                    </label>
-                    <Field
-                      as="select"
-                      id="selectedProgram"
-                      name="selectedProgram"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-codedrift-pink outline-none"
-                    >
-                      <option>
-                        Full Stack Web Development - 02 June 2025 (90 Days)
-                      </option>
-                      <option>
-                        Full Stack Mobile Development - 02 June 2025 (90 Days)
-                      </option>
-                    </Field>
-                    <ErrorMessage
-                      name="selectedProgram"
-                      component="p"
-                      className="text-red-500 text-sm mt-1"
-                    />
-                  </div> */}
 
                   {/* Buttons */}
                   <div className="flex flex-col md:flex-row gap-4 pt-2">

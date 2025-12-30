@@ -1,15 +1,19 @@
 // React and external library imports
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 import * as Yup from "yup";
+import {
+  sendEmailOtp,
+  sendOtp,
+  verifyEmailOtp,
+  verifyOtp,
+} from "../../components/auth/loginApi";
 import { Button } from "../../components/utility/Button";
 import { Modal } from "../../components/utility/Modal";
-
-// Utility imports for cookies and API
-import { setCookie } from "../../apiUtils/cookieUtils";
-import { sendOtp, verifyOtp } from "../../components/auth/loginApi";
 import { LMS_BASE_URL } from "../../config";
 import { assignStudentToBatch, fetchBatches } from "./batches";
 import { checkEnrollmentByMobile } from "./enrollment";
@@ -51,6 +55,42 @@ const FormikInput = ({
   </div>
 );
 
+// Reusable component for password fields
+const FormikPasswordField = ({ label, name, required = false }) => {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div className="relative w-full flex flex-col gap-1">
+      <label className="block text-sm font-medium text-gray-700" htmlFor={name}>
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+
+      <Field
+        id={name}
+        name={name}
+        type={show ? "text" : "password"}
+        autoComplete="new-password"
+        className="mt-1 w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        required={required}
+      />
+
+      <button
+        type="button" // ✅ prevents form reset
+        onClick={() => setShow((prev) => !prev)}
+        className="absolute right-3 top-[38px] cursor-pointer text-gray-500"
+      >
+        {show ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+      </button>
+      {/* Error Message  */}
+      <ErrorMessage
+        name={name}
+        component="div"
+        className="text-red-500 text-xs mt-1"
+      />
+    </div>
+  );
+};
+
 // Form validation schemas using Yup
 const mobileSchema = Yup.object({
   mobileNo: Yup.string()
@@ -61,12 +101,32 @@ const mobileSchema = Yup.object({
 const fullFormSchema = Yup.object({
   fullName: Yup.string().required("Full name required"),
   email: Yup.string().email("Invalid email").required("Email required"),
+  isExistingUser: Yup.boolean(),
+
+  password: Yup.string().when("isExistingUser", {
+    is: false,
+    then: (schema) => schema.required("Password is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+
+  confirmPassword: Yup.string().when("isExistingUser", {
+    is: false,
+    then: (schema) =>
+      schema
+        .required("Confirm password is required")
+        .oneOf([Yup.ref("password")], "Passwords must match"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });
 
-const otpSchema = Yup.object({
-  otp: Yup.string()
-    .matches(/^[0-9]{6}$/, "OTP must be 6 digits")
-    .required("OTP required"),
+const dualOtpSchema = Yup.object({
+  mobileOtp: Yup.string()
+    .matches(/^[0-9]{6}$/, "Invalid mobile OTP")
+    .required("Mobile OTP is required"),
+
+  emailOtp: Yup.string()
+    .matches(/^[0-9]{6}$/, "Invalid email OTP")
+    .required("Email OTP is required"),
 });
 
 /**
@@ -77,8 +137,18 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
   const [stage, setStage] = useState("mobile"); // Track modal stage
   const [prefillData, setPrefillData] = useState(null); // Holds user info if available
   const [otpToastShown, setOtpToastShown] = useState(false); // Prevents duplicate OTP toasts
+  const [otpRefs, setOtpRefs] = useState({
+    mobile: null,
+    email: null,
+  });
+  const [otpSent, setOtpSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [otpType, setOtpType] = useState("mobile");
   const [availableBatches, setAvailableBatches] = useState([]);
   const [selectedBatchId, setSelectedBatchId] = useState(null);
+
+  // 🔐 HARD GUARD to stop repeated OTP sending
+  const otpSentRef = useRef(false);
 
   const steps = [
     { key: "mobile", label: "Mobile Number" },
@@ -95,7 +165,8 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
     if (!open) {
       setStage("mobile");
       setPrefillData(null);
-      setOtpToastShown(false);
+      setOtpRefs({ mobile: null, email: null });
+      setOtpSent(false); // 🔥 RESET LOCK
       setSelectedBatchId(null);
       setAvailableBatches([]);
     }
@@ -117,61 +188,68 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
 
   const getBaseUrl = () => LMS_BASE_URL;
 
-  /**
-   * Automatically triggers OTP sending when entering the 'otp' stage.
-   * Uses a local flag to prevent duplicate OTP toasts/API calls.
-   */
-  // useEffect(() => {
-  //   const sendOtpOnOtpStage = async () => {
-  //     if (stage === "otp" && prefillData?.mobileNo && !otpToastShown) {
-  //       try {
-  //         const response = await sendOtp(prefillData.mobileNo);
-  //         if (response.success && response.data.reference_id) {
-  //           setPrefillData((prev) => ({
-  //             ...prev,
-  //             reference_id: response.data.reference_id,
-  //           }));
-  //           toast.success("OTP sent to your mobile");
-  //           setOtpToastShown(true); // Flag to avoid duplicate toasts
-  //         } else {
-  //           toast.error(response.message || "Failed to send OTP");
-  //         }
-  //       } catch (error) {
-  //         toast.error(error.message || "Error sending OTP");
-  //       }
-  //     }
-  //   };
-
-  //   sendOtpOnOtpStage();
-  // }, [stage, prefillData?.mobileNo, otpToastShown]);
-
   useEffect(() => {
-    const sendOtpOnOtpStage = async () => {
-      if (stage === "otp" && prefillData?.mobileNo && !otpToastShown) {
-        try {
-          const response = await sendOtp({
-            mobileNo: prefillData.mobileNo,
-            email: prefillData.email, // ✅ send email
-          });
+    console.log("🔁 OTP effect triggered");
 
-          if (response.success && response.data?.reference_id) {
-            setPrefillData((prev) => ({
-              ...prev,
-              reference_id: response.data.reference_id,
-            }));
-            toast.success("OTP sent to your mobile and email");
-            setOtpToastShown(true); // prevent duplicate calls
-          } else {
-            toast.error(response.message || "Failed to send OTP");
-          }
-        } catch (error) {
-          toast.error(error.message || "Error sending OTP");
-        }
+    // Stop if not OTP stage, missing data, or already sent
+    if (
+      stage !== "otp" ||
+      !prefillData?.mobileNo ||
+      !prefillData?.email ||
+      otpSent
+    ) {
+      console.log("⛔ Skipping OTP send", {
+        stage,
+        mobile: prefillData?.mobileNo,
+        email: prefillData?.email,
+        otpSent,
+      });
+      return;
+    }
+
+    const sendOtps = async () => {
+      try {
+        console.log("📱 Sending mobile OTP:", prefillData.mobileNo);
+        const mobileRes = await sendOtp({ mobileNo: prefillData.mobileNo });
+
+        console.log("📧 Sending email OTP:", prefillData.email);
+        const emailRes = await sendEmailOtp({ email: prefillData.email });
+
+        // Extract reference_id correctly
+        setOtpRefs({
+          mobile: mobileRes?.data?.reference_id,
+          email: emailRes?.data?.reference_id,
+        });
+
+        setOtpSent(true); // lock to prevent auto-repeat
+        toast.success("OTP sent to mobile and email");
+
+        console.log("✅ OTP refs set:", {
+          mobile: mobileRes?.data?.reference_id,
+          email: emailRes?.data?.reference_id,
+        });
+      } catch (err) {
+        console.error("❌ OTP sending failed:", err);
+
+        const message =
+          err?.message ||
+          err?.response?.data?.message ||
+          "Failed to send OTP. Check network or backend.";
+
+        toast.error(message);
       }
     };
 
-    sendOtpOnOtpStage();
-  }, [stage, prefillData?.mobileNo, prefillData?.email, otpToastShown]);
+    sendOtps();
+  }, [stage, prefillData?.mobileNo, prefillData?.email, otpSent]);
+
+  const handleBack = () => {
+    const order = ["mobile", "prefill", "batch", "otp"];
+    const currentIndex = order.indexOf(stage);
+    if (currentIndex > 0) {
+      setStage(order[currentIndex - 1]);
+    }
+  };
 
   /**
    * Handle modal close - trigger unmounting and cleanup
@@ -189,6 +267,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
       initialValues={{ mobileNo: "" }}
       validationSchema={mobileSchema}
       onSubmit={async (values, { setSubmitting }) => {
+        setIsSubmitting(true);
         try {
           const res = await checkEnrollmentByMobile({
             mobileNo: values.mobileNo,
@@ -228,16 +307,14 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             setStage("prefill");
           }
         } finally {
-          setSubmitting(false);
+          setIsSubmitting(false);
         }
       }}
     >
       {({ isSubmitting }) => (
         <div className="flex justify-center items-center px-4">
-          {/* <div className="w-full max-w-4xl  overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-8 p-2 md:p-10"> */}
-
           {/* Form Section */}
-          <Form className="space-y-6 w-full">
+          <Form id="mobileForm" className="space-y-6 w-full">
             <h3 className="text-2xl font-bold text-gray-800 mb-4">
               Enter Your Mobile Number
             </h3>
@@ -247,20 +324,14 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
               enrollment.
             </p>
 
-            <FormikInput
-              label="Mobile Number"
-              name="mobileNo"
-              placeholder="e.g. 9876543210"
-              required
-            />
-
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full md:w-auto px-6 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-800  font-semibold rounded-md transition-all duration-300 disabled:opacity-50 mx-auto"
-            >
-              {isSubmitting ? "Checking..." : "Continue"}
-            </Button>
+            <div className="w-90">
+              <FormikInput
+                label="Mobile Number"
+                name="mobileNo"
+                placeholder="e.g. 9876543210"
+                required
+              />
+            </div>
           </Form>
 
           {/* Image Section */}
@@ -297,37 +368,38 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
         fullName: prefillData.fullName || "",
         mobileNo: prefillData.mobileNo,
         email: prefillData.email || "",
+        password: "",
+        confirmPassword: "",
+        isExistingUser: prefillData.isExistingUser,
       }}
       validationSchema={fullFormSchema}
       onSubmit={async (values, { setSubmitting }) => {
+        setIsSubmitting(true);
         try {
           const payload = {
             fullName: values.fullName,
             mobileNo: values.mobileNo,
             email: values.email,
+            password: values.password,
             enrolledCourses: [course?._id],
           };
 
           const res = await checkEnrollmentByMobile(payload);
 
           if (res.success) {
-            // Save returned user info and proceed to OTP stage
-            setPrefillData((prev) => ({
-              ...prev,
+            setPrefillData({
               ...res.data,
-              mobileNo: prev.mobileNo,
+
+              // ✅ force normalized fields
+              mobileNo: values.mobileNo,
+              email: res.data?.email || res.data?.student?.email,
+
               isExistingUser: true,
-            }));
+            });
 
             // Fetch batches and move to 'batch' stage
             const batchesResponse = await fetchBatches(course._id);
             console.log("🧪 fetchBatches response:", batchesResponse);
-
-            // if (batchesResponse.success && batchesResponse.data.length > 0) {
-            //   setAvailableBatches(batchesResponse.data);
-            //   console.log("Fetched batches:", batchesResponse.data);
-            //   setStage("batch");
-            // }
 
             if (batchesResponse.success && batchesResponse.data.length > 0) {
               const enrolledBatchIds =
@@ -358,11 +430,6 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
               setTimeout(() => handleClose(), 3000);
             }
           }
-
-          // setStage("otp");
-          // } else {
-          //   toast.error(res.message || "Enrollment failed");
-          // }
         } catch (err) {
           const message =
             err?.response?.data?.message ||
@@ -380,12 +447,12 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             setTimeout(() => handleClose(), 3000);
           }
         } finally {
-          setSubmitting(false);
+          setIsSubmitting(false);
         }
       }}
     >
       {({ isSubmitting }) => (
-        <Form className="space-y-6 px-2 py-4">
+        <Form id="prefillForm" className="space-y-6 px-2 py-4">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             {prefillData.fullName
               ? "Verify Your Details"
@@ -413,13 +480,22 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             <FormikInput label="Mobile Number" name="mobileNo" disabled />
           </div>
 
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="mx-auto px-6 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-800  font-medium rounded-md transition-all duration-300 disabled:opacity-50"
-          >
-            {isSubmitting ? "Registering..." : "Register & Send OTP"}
-          </Button>
+          <div>
+            {!prefillData.isExistingUser && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormikPasswordField
+                  label="Password"
+                  name="password"
+                  required
+                />
+                <FormikPasswordField
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  required
+                />
+              </div>
+            )}
+          </div>
         </Form>
       )}
     </Formik>
@@ -544,7 +620,7 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
                     </div>
 
                     {/* Inline Keyframes via <style> tag */}
-                    <style jsx>{`
+                    <style>{`
                       @keyframes flicker {
                         0%,
                         100% {
@@ -692,242 +768,15 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
             })}
           </div>
         )}
-
-        {/* Continue Button */}
-        <div className="text-center mt-10">
-          <button
-            disabled={!selectedBatchId}
-            onClick={() => setStage("otp")}
-            className={`px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform ${
-              selectedBatchId
-                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg hover:scale-105"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            {selectedBatchId
-              ? "Continue to OTP 🚀"
-              : "Select a Batch to Continue"}
-          </button>
-
-          {selectedBatchId && (
-            <p className="text-gray-500 mt-4 text-sm">
-              You've selected a batch! Let's move to the next step.
-            </p>
-          )}
-        </div>
       </div>
     );
   };
-
-  /**
-   * Step 3: OTP Verification Form
-   * Uses `verifyOtp` API, then sets auth cookies and redirects user to dashboard
-   */
-  const OTPForm = () => (
-    <Formik
-      initialValues={{ otp: "" }}
-      validationSchema={otpSchema}
-      onSubmit={async (values, { setSubmitting }) => {
-        console.log("🚀 Form submitted with values:", values);
-
-        try {
-          if (!prefillData?.reference_id) {
-            console.error("❌ Missing reference ID");
-            toast.error("Missing reference ID for OTP verification.");
-            setSubmitting(false);
-            return;
-          }
-
-          console.log("🔐 Verifying OTP...");
-          const verifyRes = await verifyOtp(
-            prefillData.reference_id,
-            values.otp
-          );
-          console.log("✅ OTP verification response:", verifyRes);
-
-          if (verifyRes.success && verifyRes.data) {
-            const { studentId, mobileNo, fullName, email, token } =
-              verifyRes.data;
-
-            console.log("🎓 Student info received:", verifyRes.data);
-
-            // Store user session info in cookies
-            setCookie("studentId", studentId);
-            setCookie("mobileNo", mobileNo);
-            setCookie("fullName", fullName);
-            setCookie("email", email);
-            setCookie("token", token);
-
-            toast.success("Login successful");
-            console.log("📦 Fetching batches for course:", course._id);
-            // handleClose();
-
-            // Step 2: Fetch batches
-            const batchesResponse = await fetchBatches(course._id);
-            console.log("📦 Batches response:", batchesResponse.data);
-
-            if (batchesResponse.success && batchesResponse.data.length > 0) {
-              const batchId = selectedBatchId;
-              console.log("🧪 Selected batchId:", batchId);
-
-              const assignPayload = {
-                batchId: batchId,
-                studentId: studentId,
-              };
-              console.log(
-                "📤 Sending batch assignment payload:",
-                assignPayload
-              );
-
-              try {
-                const assignResponse = await assignStudentToBatch(
-                  assignPayload
-                );
-
-                if (assignResponse.success) {
-                  setCookie("batchId", batchId);
-                  // toast.success(
-                  //   "Batch assigned successfully. Login successful!"
-                  // );
-
-                  toast.success(
-                    "You have successfully enrolled in the course and registration is complete!"
-                  );
-
-                  console.log("✅ Batch assigned and registration completed.");
-                  // Remove any window.location.href redirects
-                  setTimeout(() => {
-                    console.log("🧼 Closing modal");
-                    handleClose(); // Close the modal after a short delay
-                  }, 3000);
-                }
-
-                // const baseUrl = getBaseUrl();
-                // console.log("🔀 Redirecting to dashboard:", baseUrl);
-                // setTimeout(() => {
-                //   window.location.href = `${baseUrl}/student/dashboard`;
-                // }, 500);
-
-                // setTimeout(() => {
-                //   console.log("🧼 Closing modal");
-                //   handleClose();
-                // }, 1000);
-                // }
-              } catch (err) {
-                const message = err?.response?.data?.message;
-                console.warn("⚠️ Batch assignment failed:", message);
-
-                if (message === "Student already assigned to this batch") {
-                  setCookie("batchId", batchId);
-                  // toast.success("Batch already assigned. Login successful!");
-
-                  toast.success(
-                    "You are already enrolled in this course. Registration confirmed!"
-                  );
-
-                  console.log(
-                    "ℹ️ Student already assigned. Registration confirmed."
-                  );
-                  setTimeout(() => {
-                    console.log("🧼 Closing modal (already assigned)");
-                    handleClose(); // Close modal
-                  }, 3000);
-                  // }
-
-                  // const baseUrl = getBaseUrl();
-                  // console.log("🔁 Redirecting (already assigned):", baseUrl);
-
-                  // setTimeout(() => {
-                  //   window.location.href = `${baseUrl}/student/dashboard`;
-                  // }, 500);
-
-                  // setTimeout(() => {
-                  //   console.log("🧼 Closing modal (already assigned)");
-                  //   handleClose();
-                  // }, 1000);
-                } else {
-                  toast.error(message || "Failed to assign batch");
-                }
-              }
-            } else {
-              console.error("❌ No batches found for course.");
-              toast.error("No batches available for this course");
-            }
-          } else {
-            console.error("❌ OTP verification failed:", verifyRes.message);
-            toast.error(verifyRes.message || "Invalid OTP");
-          }
-        } catch (err) {
-          console.error("🔥 Exception in onSubmit:", err);
-          toast.error(
-            err?.response?.data?.message || "OTP verification failed"
-          );
-        } finally {
-          console.log("✅ Done submitting.");
-          setSubmitting(false);
-        }
-      }}
-    >
-      {({ isSubmitting }) => (
-        <div className="flex justify-center items-center px-4">
-          {/* <div className="w-full max-w-4xl  overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-10"> */}
-
-          {/* OTP Form Section */}
-          <Form className="space-y-6 w-full">
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">
-              OTP Verification
-            </h3>
-
-            <p className="text-sm text-gray-600 mb-3">
-              We've sent an OTP to{" "}
-              <span className="font-medium text-blue-600">
-                {prefillData.mobileNo}
-              </span>
-              . Please enter it below to verify your identity.
-            </p>
-
-            <FormikInput
-              label="OTP"
-              name="otp"
-              placeholder="Enter 6-digit OTP"
-              required
-            />
-
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full md:w-auto px-6 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-800 font-semibold rounded-md transition-all duration-300 disabled:opacity-50 mx-auto"
-            >
-              {isSubmitting ? "Verifying..." : "Verify OTP"}
-            </Button>
-          </Form>
-
-          {/* Image Section */}
-          <div className="hidden md:flex justify-center items-center relative">
-            <div className="relative w-60 h-60 flex justify-center items-center">
-              {/* Pulse effect */}
-              <div className="absolute w-24 h-24 rounded-full bg-yellow-800 opacity-30 animate-ping"></div>
-              <div className="absolute w-36 h-36 rounded-full bg-blue-900 opacity-20 animate-ping delay-200"></div>
-
-              {/* OTP verification image */}
-              <img
-                src="https://t4.ftcdn.net/jpg/15/15/55/91/360_F_1515559136_bJFlMvSG8toRN3wvW3MS1GoaCMXT9YVq.jpg"
-                alt="OTP verification"
-                className="w-50 h-50 object-contain drop-shadow-lg rounded-full"
-              />
-            </div>
-          </div>
-          {/* </div> */}
-        </div>
-      )}
-    </Formik>
-  );
 
   return (
     <Modal
       isOpen={open}
       onClose={handleClose}
-      variant="xl"
+      variant="full"
       scrollableBody
       closeOnEsc={false}
     >
@@ -978,14 +827,93 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
         {stage === "mobile" && <MobileForm />}
         {stage === "prefill" && prefillData && <PrefillForm />}
         {/* {stage === "batch" && availableBatches.length > 0 && <BatchSelectionForm />} */}
-        {stage === "batch" && <BatchSelectionForm />}
-        {stage === "otp" && prefillData && <OTPForm />}
+        {stage === "batch" && availableBatches.length > 0 && (
+          <BatchSelectionForm />
+        )}
+        {stage === "otp" && prefillData && (
+          <OTPForm
+            prefillData={prefillData}
+            otpRefs={otpRefs}
+            setOtpRefs={setOtpRefs}
+            selectedBatchId={selectedBatchId}
+            course={course}
+            handleClose={handleClose}
+            getBaseUrl={getBaseUrl}
+            setIsSubmitting={setIsSubmitting}
+          />
+        )}
       </Modal.Body>
 
-      <Modal.Footer>
-        <Button onClick={handleClose} variant="secondary">
-          Cancel
-        </Button>
+      <Modal.Footer className="relative border-t pt-4 flex items-center w-full">
+        {/* BACK BUTTON – pinned to left */}
+        {stage !== "mobile" && (
+          <Button
+            variant="secondary"
+            onClick={handleBack}
+            className="absolute left-34 flex items-center gap-2"
+            disabled={isSubmitting}
+          >
+            ⬅ Back
+          </Button>
+        )}
+
+        {/* RIGHT SIDE – ACTIONS */}
+        <div className="ml-auto flex gap-3">
+          <Button
+            variant="secondary"
+            onClick={handleClose}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+
+          {stage === "mobile" && (
+            <Button
+              form="mobileForm"
+              type="submit"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center gap-2 rounded-lg"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Processing..." : "Next"}
+            </Button>
+          )}
+
+          {stage === "prefill" && (
+            <Button
+              form="prefillForm"
+              type="submit"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center gap-2 rounded-lg"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Processing..." : "Next"}
+            </Button>
+          )}
+
+          {stage === "batch" && (
+            <Button
+              disabled={!selectedBatchId || isSubmitting}
+              onClick={() => setStage("otp")}
+              className={`flex items-center justify-center gap-2 rounded-lg ${
+                selectedBatchId
+                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              {isSubmitting ? "Processing..." : "Continue to OTP 🚀"}
+            </Button>
+          )}
+
+          {stage === "otp" && (
+            <Button
+              form="otpForm"
+              type="submit"
+              className="bg-gradient-to-r from-green-600 to-emerald-600 text-white flex items-center justify-center gap-2 rounded-lg"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Verifying..." : "Verify & Finish ✅"}
+            </Button>
+          )}
+        </div>
       </Modal.Footer>
 
       <ToastContainer
@@ -994,6 +922,192 @@ const EnrollFormModal = ({ open, setOpen, course }) => {
         hideProgressBar={false}
       />
     </Modal>
+  );
+};
+
+const OTPForm = ({
+  prefillData,
+  otpRefs,
+  setOtpRefs,
+  selectedBatchId,
+  course,
+  handleClose,
+  getBaseUrl,
+  setIsSubmitting,
+}) => {
+  return (
+    <Formik
+      initialValues={{
+        mobileOtp: "",
+        emailOtp: "",
+      }}
+      enableReinitialize={false} // ✅ DO NOT RESET
+      validationSchema={dualOtpSchema}
+      onSubmit={async (values) => {
+        setIsSubmitting(true);
+
+        try {
+          // 🔐 VERIFY MOBILE OTP
+          const mobileVerify = await verifyOtp(
+            otpRefs.mobile,
+            values.mobileOtp
+          );
+
+          // 🔐 VERIFY EMAIL OTP
+          const emailVerify = await verifyEmailOtp(
+            otpRefs.email,
+            values.emailOtp
+          );
+
+          if (!mobileVerify.success || !emailVerify.success) {
+            toast.error("Both OTPs must be verified");
+            return;
+          }
+
+          // 🎯 ASSIGN BATCH
+          const batchesResponse = await fetchBatches(course._id);
+
+          if (!batchesResponse.success) {
+            toast.error("No batches available");
+            return;
+          }
+
+          await assignStudentToBatch({
+            batchId: selectedBatchId,
+            studentId: prefillData.student._id,
+          });
+
+          toast.success("Enrollment completed successfully 🎉");
+
+          Swal.fire({
+            icon: "success",
+            title: "Enrollment Successful 🎉",
+            text: "Registration completed successfully.",
+            showCancelButton: true,
+            confirmButtonText: "Continue",
+            cancelButtonText: "Login to LMS",
+          }).then((result) => {
+            handleClose();
+            if (!result.isConfirmed) {
+              window.location.href = `${getBaseUrl()}/student-login`;
+            }
+          });
+        } catch (err) {
+          console.error(err);
+          toast.error("OTP verification failed");
+        } finally {
+          setIsSubmitting(false);
+        }
+      }}
+    >
+      {({ setFieldValue }) => (
+        <Form id="otpForm" className="w-full max-w-full mx-auto space-y-8">
+          {/* HEADER */}
+          <div className="text-center">
+            <h2 className="text-3xl font-extrabold text-gray-800 tracking-wide">
+              🔒 OTP Verification
+            </h2>
+            <p className="text-sm text-gray-500 mt-2">
+              Enter the OTPs sent to your mobile and email
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* 📱 MOBILE OTP */}
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+              <div className="flex items-center justify-between mb-3">
+                <label className="font-semibold text-gray-700 flex items-center gap-2">
+                  📱 Mobile OTP
+                </label>
+                <span className="text-xs text-gray-500">
+                  {prefillData.mobileNo}
+                </span>
+              </div>
+
+              <Field
+                name="mobileOtp"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 transition-all duration-200"
+                placeholder="Enter mobile OTP"
+              />
+
+              <ErrorMessage
+                name="mobileOtp"
+                component="div"
+                className="text-red-500 text-xs mt-2"
+              />
+
+              <button
+                type="button"
+                className="text-blue-600 mt-3 text-sm font-medium underline hover:text-blue-800 transition-colors"
+                onClick={async () => {
+                  try {
+                    const res = await sendOtp({
+                      mobileNo: prefillData.mobileNo,
+                    });
+                    setOtpRefs((prev) => ({
+                      ...prev,
+                      mobile: res.data.reference_id,
+                    }));
+                    setFieldValue("mobileOtp", "");
+                    toast.success("Mobile OTP resent");
+                  } catch {
+                    toast.error("Failed to resend mobile OTP");
+                  }
+                }}
+              >
+                Resend Mobile OTP
+              </button>
+            </div>
+
+            {/* 📧 EMAIL OTP */}
+            <div className="bg-gradient-to-br from-green-50 to-green-100 border rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+              <div className="flex items-center justify-between mb-3">
+                <label className="font-semibold text-gray-700 flex items-center gap-2">
+                  📧 Email OTP
+                </label>
+                <span className="text-xs text-gray-500">
+                  {prefillData.email}
+                </span>
+              </div>
+
+              <Field
+                name="emailOtp"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none placeholder-gray-400 transition-all duration-200"
+                placeholder="Enter email OTP"
+              />
+
+              <ErrorMessage
+                name="emailOtp"
+                component="div"
+                className="text-red-500 text-xs mt-2"
+              />
+
+              <button
+                type="button"
+                className="text-green-600 mt-3 text-sm font-medium underline hover:text-green-800 transition-colors"
+                onClick={async () => {
+                  try {
+                    const res = await sendEmailOtp({
+                      email: prefillData.email,
+                    });
+                    setOtpRefs((prev) => ({
+                      ...prev,
+                      email: res.data.reference_id,
+                    }));
+                    setFieldValue("emailOtp", "");
+                    toast.success("Email OTP resent");
+                  } catch {
+                    toast.error("Failed to resend email OTP");
+                  }
+                }}
+              >
+                Resend Email OTP
+              </button>
+            </div>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

@@ -1,14 +1,14 @@
+import { ArrowUp, ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
 import {
-  FaWhatsapp,
   FaFacebook,
   FaInstagram,
   FaLinkedin,
   FaPhone,
+  FaWhatsapp,
   FaYoutube,
 } from "react-icons/fa";
-import { ArrowUp, ChevronUp, ChevronDown } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 /**
  * ScrollToTop component:
@@ -128,18 +128,6 @@ const ScrollToTop = () => {
       </div>
 
       {/* Toggle Button - Always at Bottom */}
-      {/* <button
-        onClick={toggleIcons}
-        title={isOpen ? "Hide Social Icons" : "Show Social Icons"}
-        className="p-3 rounded-full bg-white text-gray-800 shadow-xl hover:scale-110 transition-all duration-300"
-      >
-        {isOpen ? (
-          <ChevronDown className="w-5 h-5 rotate-180 transition-transform duration-300" />
-        ) : (
-          <ChevronUp className="w-5 h-5 transition-transform duration-300" />
-        )}
-      </button> */}
-
       <button
         onClick={toggleIcons}
         title={isOpen ? "Hide Social Icons" : "Show Social Icons"}

@@ -1,7 +1,6 @@
-import React from "react";
 import { motion } from "framer-motion";
+import { Briefcase, Rocket, Sword } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Briefcase, Sword, Rocket } from "lucide-react"; // Lucide icons
 
 const MotionLink = motion(Link);
 

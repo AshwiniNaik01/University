@@ -1,11 +1,15 @@
 // FeaturedPrograms.jsx
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaHeartbeat, FaLaptop, FaMicroscope, FaArrowRight, FaCheckCircle } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaHeartbeat,
+  FaLaptop,
+  FaMicroscope
+} from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const MotionLink = motion(Link);
 const MotionDiv = motion.div;
-
 
 export default function FeaturedPrograms() {
   return (
@@ -13,12 +17,14 @@ export default function FeaturedPrograms() {
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
-            Featured <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            Featured{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               Academic Programs
             </span>
           </h2>
           <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            Explore our diverse range of undergraduate, postgraduate, and doctoral programs
+            Explore our diverse range of undergraduate, postgraduate, and
+            doctoral programs
           </p>
         </div>
 
@@ -28,42 +34,45 @@ export default function FeaturedPrograms() {
             description="MBBS, BDS, Nursing, Physiotherapy, Pharmacy with modern clinical training"
             icon={<FaHeartbeat />}
             color="red"
-            programs={["MBBS", "BDS", "B.Sc Nursing", "B.Pharm", "Physiotherapy"]}
+            programs={[
+              "MBBS",
+              "BDS",
+              "B.Sc Nursing",
+              "B.Pharm",
+              "Physiotherapy",
+            ]}
           />
           <ProgramCard
             title="Engineering & Technology"
             description="B.Tech, M.Tech in Computer Science, Mechanical, Civil, Electronics, and more"
             icon={<FaLaptop />}
             color="blue"
-            programs={["Computer Science", "Mechanical", "Civil", "Electronics", "AI & ML"]}
+            programs={[
+              "Computer Science",
+              "Mechanical",
+              "Civil",
+              "Electronics",
+              "AI & ML",
+            ]}
           />
           <ProgramCard
             title="Research Programs"
             description="Ph.D. and M.Phil in various disciplines with advanced research facilities"
             icon={<FaMicroscope />}
             color="purple"
-            programs={["Science", "Arts", "Commerce", "Education", "Social Sciences"]}
+            programs={[
+              "Science",
+              "Arts",
+              "Commerce",
+              "Education",
+              "Social Sciences",
+            ]}
           />
         </div>
-
-        {/* <div className="text-center mt-12">
-          <MotionLink
-            to="/programs"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-3 px-8 py-3 
-              bg-gradient-to-r from-blue-600 to-indigo-600 
-              text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all"
-          >
-            View All Programs <FaArrowRight />
-          </MotionLink>
-        </div> */}
       </div>
     </section>
   );
 }
-
-
 
 function ProgramCard({ title, description, icon, color, programs }) {
   const gradientMap = {
@@ -97,28 +106,18 @@ function ProgramCard({ title, description, icon, color, programs }) {
         className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${accentMap[color]}`}
       />
 
-      {/* Soft Hover Glow */}
-      {/* <div
-        className={`absolute inset-0 opacity-0 hover:opacity-100 transition 
-        bg-gradient-to-br ${accentMap[color]} blur-2xl`}
-      /> */}
-
       {/* Content */}
       <div className="relative z-10">
-        <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 
-          bg-white shadow-sm">
-          <div className={`text-2xl ${iconColor[color]}`}>
-            {icon}
-          </div>
+        <div
+          className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 
+          bg-white shadow-sm"
+        >
+          <div className={`text-2xl ${iconColor[color]}`}>{icon}</div>
         </div>
 
-        <h3 className="text-xl font-bold text-gray-800 mb-3">
-          {title}
-        </h3>
+        <h3 className="text-xl font-bold text-gray-800 mb-3">{title}</h3>
 
-        <p className="text-gray-600 mb-6">
-          {description}
-        </p>
+        <p className="text-gray-600 mb-6">{description}</p>
 
         <div className="space-y-2">
           {programs.map((program, idx) => (

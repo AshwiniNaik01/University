@@ -1,8 +1,7 @@
-import React from "react";
-import { Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
-import Image from "../utility/Image";
+import { Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
+import Image from "../utility/Image";
 
 /**
  * Mentor Component

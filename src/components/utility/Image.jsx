@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { noImageAvailableFallback } from "../../access-assets/fallbackImages";
 
 /**

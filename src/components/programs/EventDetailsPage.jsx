@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { api } from "../../apiUtils/instance";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { DIR } from "../../config";
 
 // Icons
 import {
-  FaClock,
-  FaMapMarkerAlt,
-  FaGlobe,
-  FaUsers,
-  FaCertificate,
-  FaExternalLinkAlt,
-  FaRegCopy,
-  FaRegClock,
-  FaUserTie,
-  FaCheckCircle,
-  FaUserFriends,
-  FaTags,
   FaCalendarAlt,
+  FaCertificate,
+  FaCheckCircle,
+  FaClock,
+  FaExternalLinkAlt,
+  FaGlobe,
+  FaMapMarkerAlt,
+  FaRegClock,
+  FaRegCopy,
+  FaTags,
+  FaUserFriends,
+  FaUsers,
+  FaUserTie,
 } from "react-icons/fa";
 import { getEventById } from "./events";
 

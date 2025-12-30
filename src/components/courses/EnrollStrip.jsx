@@ -19,23 +19,22 @@ const EnrollStrip = ({ course, handleEnrollCourse }) => {
             <p className="text-gray-800 text-sm sm:text-base flex items-center gap-0.5">
               <GraduationCap className="w-5 h-5 text-codedrift-indigo" />
               <span className="font-semibold">&nbsp;{course.name}</span>
-              {/* <span className="hidden sm:inline">–</span>
-              <span className="text-codedrift-pink">
-                ₹{course.price}
-              </span> */}
 
-            {course.fees && (
-  <>
-    <span className="hidden sm:inline">–</span>
-    <span className="text-codedrift-pink font-extrabold animate-pulse"> ₹{course.fees}</span>
-  </>
-)}
-
+              {course.fees && (
+                <>
+                  <span className="hidden sm:inline">–</span>
+                  <span className="text-codedrift-indigo font-extrabold animate-pulse">
+                    {" "}
+                    ₹{course.fees}
+                  </span>
+                </>
+              )}
             </p>
 
             {/* Right: Enroll Button */}
             <Button
               onClick={handleEnrollCourse}
+              className="bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-500 animate-gradient-x"
               // className="relative bg-codedrift-pink hover:bg-codedrift-indigo-dark text-white font-semibold text-sm sm:text-base px-6 py-1 rounded-full shadow-md transition-all group"
             >
               Enroll

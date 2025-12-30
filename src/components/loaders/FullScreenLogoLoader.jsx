@@ -1,6 +1,5 @@
-import React, { useLayoutEffect, useState } from "react";
-import Image from "../utility/Image"; // Your enhanced Image component
-import { codedriftLogoImage } from "../../access-assets/images";
+import { useLayoutEffect, useState } from "react";
+import { sgbauLogoImage } from "../../access-assets/images";
 
 const FullScreenLogoLoader = () => {
   const [hide, setHide] = useState(false);
@@ -16,7 +15,7 @@ const FullScreenLogoLoader = () => {
   return (
     <div className="fixed inset-0 z-[9999] bg-white flex items-center justify-center">
       <img
-        src={codedriftLogoImage}
+        src={sgbauLogoImage}
         // fallback="/fallback-image.png"
         className="logo-loader-animation"
       />

@@ -1,4 +1,3 @@
-
 import { api } from "../../apiUtils/instance";
 
 //  Registers a candidate using basic student details

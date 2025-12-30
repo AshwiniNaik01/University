@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
-import { Modal } from "../utility/Modal";
-import { codedriftLogoImage } from "../../access-assets/images";
-import { Button } from "../utility/Button";
-import Image from "../utility/Image";
-import { sendOtp, verifyOtp } from "./loginApi";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import * as Yup from "yup";
+import { codedriftLogoImage } from "../../access-assets/images";
 import { setCookie } from "../../apiUtils/cookieUtils";
 import { LMS_BASE_URL } from "../../config";
+import { Button } from "../utility/Button";
+import Image from "../utility/Image";
+import { Modal } from "../utility/Modal";
+import { sendOtp, verifyOtp } from "./loginApi";
 
 /**
  * LoginFormModal Component
@@ -16,7 +16,6 @@ import { LMS_BASE_URL } from "../../config";
  * Handles mobile-based OTP login with validation, API integration, and redirection.
  * Auth token and other session values are stored in cookies for session persistence.
  */
-
 const LoginFormModal = ({ open, setOpen }) => {
   const [referenceId, setReferenceId] = useState(null);
   const [mode, setMode] = useState("default");

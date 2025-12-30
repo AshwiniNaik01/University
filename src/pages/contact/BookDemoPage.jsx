@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Skeleton from "react-loading-skeleton";
+import { CalendarDays, GraduationCap, Hammer, Mic } from "lucide-react";
+import { useEffect, useState } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
-import { CalendarDays, Mic, Hammer, GraduationCap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { getSessionCategories } from "../../components/programs/events";
 
 // BookDemoPage:

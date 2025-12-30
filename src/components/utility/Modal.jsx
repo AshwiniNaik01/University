@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from "react";
 import { X } from "lucide-react";
+import React, { createContext, useContext } from "react";
 
 /**
  * Modal context to provide shared state like onClose and scrollableBody.
@@ -129,3 +129,4 @@ Modal.Footer = ({ children }) => {
 };
 
 export { Modal };
+

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import { Star } from "lucide-react";
+import { useState } from "react";
 
 const FeedbackPage = () => {
   // Store ratings for each question

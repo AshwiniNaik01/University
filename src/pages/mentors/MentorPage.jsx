@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
 import { Linkedin, Mail, Phone, Star } from "lucide-react";
-import Image from "../../components/utility/Image";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { getMentorById } from "../../components/home/mentorApi";
+import Image from "../../components/utility/Image";
 import { DIR } from "../../config";
 import { MentorSkeleton } from "./MentorSkeleton";
 
