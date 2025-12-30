@@ -1,9 +1,7 @@
-import React from "react";
 import { Link } from "react-router-dom";
-
-import Image from "../../components/utility/Image";
 import { codedriftLogoImage } from "../../access-assets/images";
 import { Button } from "../../components/utility/Button";
+import Image from "../../components/utility/Image";
 
 /**
  * ForgotPasswordPage Component

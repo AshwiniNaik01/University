@@ -1,30 +1,28 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 // Components & Pages
-import HomePage from "../pages/general/HomePage";
 import RootLayout from "../layouts/RootLayout";
+import SignupPage from "../pages/auth/SignupPage";
+import BookDemoPage from "../pages/contact/BookDemoPage";
+import BookListingPage from "../pages/contact/BookListingPage";
+import ContactPage from "../pages/contact/ContactPage";
+import FeedbackPage from "../pages/contact/FeedbackPage";
+import CoursePage from "../pages/courses/CoursePage";
 import CoursesPage from "../pages/courses/CoursesPage";
 import AboutPage from "../pages/general/AboutPage";
-import ContactPage from "../pages/contact/ContactPage";
-import BookDemoPage from "../pages/contact/BookDemoPage";
-import SignupPage from "../pages/auth/SignupPage";
-import FeedbackPage from "../pages/contact/FeedbackPage";
+import HomePage from "../pages/general/HomePage";
 import PrivacyPolicyPage from "../pages/policies/PrivacyPolicyPage";
 import RefundPolicyPage from "../pages/policies/RefundPolicyPage";
 import TermsConditionsPage from "../pages/policies/TermsConditionsPage";
-import CoursePage from "../pages/courses/CoursePage";
-import BookListingPage from "../pages/contact/BookListingPage";
 // import BookDetailsPage from '../pages/contact/BookDetailsPage';
-import MentorPage from "../pages/mentors/MentorPage";
-import PageNotFound from "../pages/errors/PageNotFound";
-import TestimonialsPage from "../pages/testimonials/TestimonialsPage";
-import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
-import MentorsPage from "../pages/mentors/MentorsPage";
 import EventDetailsPage from "../components/programs/EventDetailsPage";
+import InternshipDetailsPage from "../components/programs/InternshipDetailsPage";
 import WebinarDetailsPage from "../components/programs/WebinarDetailsPage";
 import WorkshopDetails from "../components/programs/WorkshopDetails";
-import InternshipDetailsPage from "../components/programs/InternshipDetailsPage";
+import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
+import MentorPage from "../pages/mentors/MentorPage";
+import MentorsPage from "../pages/mentors/MentorsPage";
+import TestimonialsPage from "../pages/testimonials/TestimonialsPage";
 // import EventDetailsPage from '../pages/contact/EventDetailsPage';
 // import WebinarDetailsPage from '../pages/contact/WebinarDetailsPage';
 

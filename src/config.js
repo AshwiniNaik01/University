@@ -11,7 +11,7 @@ export const LMS_BASE_URL = (() => {
     case "uat":
       return "https://uat-lms.codedrift.co";
     case "production":
-      return "https://lms.codedrift.co";
+      return "https://lms.amravatiuniversity.codedrift.co";
     default:
       return window.location.origin;
   }

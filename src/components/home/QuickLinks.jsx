@@ -1,7 +1,16 @@
 // QuickLinks.jsx
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaCalendarAlt, FaBook, FaUserGraduate, FaChalkboardTeacher, FaCertificate, FaClock, FaSearch, FaShieldAlt } from "react-icons/fa";
+import {
+  FaBook,
+  FaCalendarAlt,
+  FaCertificate,
+  FaChalkboardTeacher,
+  FaClock,
+  FaSearch,
+  FaShieldAlt,
+  FaUserGraduate,
+} from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const MotionLink = motion(Link);
 

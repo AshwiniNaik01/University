@@ -1,6 +1,6 @@
 // AcademicOutcomes.jsx
 import { motion } from "framer-motion";
-import { BookOpen, GraduationCap, Briefcase } from "lucide-react";
+import { BookOpen, Briefcase, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const MotionLink = motion(Link);

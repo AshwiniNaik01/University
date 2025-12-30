@@ -1,10 +1,9 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { Quote, Linkedin, Star } from "lucide-react";
-import { Link } from "react-router-dom";
-import Image from "../utility/Image";
-import { noUserFoundFallback } from "../../access-assets/fallbackImages";
+import { Quote, Star } from "lucide-react";
 import { FaLinkedinIn } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { noUserFoundFallback } from "../../access-assets/fallbackImages";
+import Image from "../utility/Image";
 
 const Testimonial = ({ testimonial }) => {
   return (

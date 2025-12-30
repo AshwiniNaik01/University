@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react"; // ✅ For mobile menu
+import { useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import { sgbauLogoImage } from "../../access-assets/images";
-import Image from "../utility/Image";
-import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import { Button } from "../utility/Button";
-import LoginFormModal from "../auth/LoginFormModal";
 import { LMS_BASE_URL } from "../../config";
+import LoginFormModal from "../auth/LoginFormModal";
+import { Button } from "../utility/Button";
+import Image from "../utility/Image";
 
 const links = [
   { name: "Home", to: "/" },
@@ -22,7 +21,7 @@ const links = [
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const baseUrl = LMS_BASE_URL; // make sure LMS_BASE_URL is imported or defined
+  const baseUrl = LMS_BASE_URL;
 
   // This is used for stopping scrolling of the background, when the sidebar is open
   useEffect(() => {
@@ -80,10 +79,10 @@ const Navbar = () => {
                                   
 
                                         ${
-  isActive
-    ? "text-white shadow-md bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-500 animate-gradient-x"
-    : "text-black hover:text-black hover:bg-blue-900/20"
-}`
+                                          isActive
+                                            ? "text-white shadow-md bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-500 animate-gradient-x"
+                                            : "text-black hover:text-black hover:bg-blue-900/20"
+                                        }`
                   }
                 >
                   {link.name}
@@ -91,6 +90,7 @@ const Navbar = () => {
               ))}
 
               <div className="flex items-center gap-6">
+                {/* for opening login modal */}
                 {/*<Button
                   onClick={handleOpenLoginModal}
                   variant="indigo"
@@ -100,6 +100,7 @@ const Navbar = () => {
                   Login
                 </Button>*/}
 
+                {/* for redirect to lms  */}
                 {/* <Button
                   onClick={() => {
                     setTimeout(() => {
@@ -129,7 +130,7 @@ const Navbar = () => {
             <div className="lg:hidden flex items-center gap-3">
               <NavLink
                 to="/courses"
-                className="px-4 py-2 rounded-full text-sm font-medium bg-codedrift-pink text-white hover:bg-codedrift-indigo-dark transition"
+                className="px-4 py-2 rounded-full text-sm font-medium bg-codedrift-indigo text-white hover:bg-codedrift-indigo-dark transition"
               >
                 Courses
               </NavLink>
@@ -177,11 +178,7 @@ const Navbar = () => {
 
               {/* 🖼️ Watermark Logo */}
               <div className="absolute inset-0 flex justify-center items-center opacity-10">
-                <img
-                  src={codedriftLogoImage}
-                  alt="Logo"
-                  className="w-32 h-32"
-                />
+                <img src={sgbauLogoImage} alt="Logo" className="w-32 h-32" />
               </div>
 
               {/* 📜 Mobile Menu Links */}
@@ -194,7 +191,7 @@ const Navbar = () => {
                     className={({ isActive }) =>
                       `block px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                         isActive
-                          ? "text-white bg-gradient-to-r from-[#ee4f7e] to-[#4cb7e5]"
+                          ? "text-white bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-500"
                           : "text-gray-700 hover:text-codedrift-indigo hover:bg-gray-100"
                       }`
                     }
@@ -203,7 +200,8 @@ const Navbar = () => {
                   </NavLink>
                 ))}
 
-                {/*} <Button
+                {/* for opening login popup in mobile view  */}
+                {/* <Button
                   onClick={handleOpenLoginModal}
                   variant="indigo"
                   size="md"
@@ -211,7 +209,9 @@ const Navbar = () => {
                 >
                   Login
                 </Button>*/}
-{/* 
+
+                {/* for navigating to lms in mobile view  */}
+                {/* 
                 <Button
                   onClick={() => {
                     setTimeout(() => {
@@ -228,7 +228,7 @@ const Navbar = () => {
                 <Button
                   as="link"
                   to="register"
-                  variant="blue"
+                  variant="indigo"
                   size="md"
                   className="px-8 py-2 w-fit"
                 >

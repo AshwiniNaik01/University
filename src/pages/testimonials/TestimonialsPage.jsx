@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button } from "../../components/utility/Button";
 import Testimonial from "../../components/common/Testimonial";
+import { Button } from "../../components/utility/Button";
 import { fetchTestimonials } from "./testimonials";
 
 /**

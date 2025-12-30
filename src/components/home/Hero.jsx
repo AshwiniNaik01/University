@@ -1,7 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { CheckCircle2, Code, Rocket, Terminal } from "lucide-react";
 import { Typewriter } from "react-simple-typewriter";
-import { Code, Terminal, Rocket, CheckCircle2 } from "lucide-react";
 import { Button } from "../utility/Button";
 
 const Hero = () => {

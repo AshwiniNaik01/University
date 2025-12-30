@@ -1,22 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { fetchWorkshopById } from "./events";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
-  FaCalendarAlt,
-  FaMapMarkerAlt,
-  FaUserGraduate,
-  FaTools,
-  FaClipboardList,
-  FaChalkboardTeacher,
-  FaCheckCircle,
-  FaEnvelope,
-  FaPhoneAlt,
-  FaBook,
-  FaGraduationCap,
   FaArrowLeft,
-  FaUserTie,
+  FaBook,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaClipboardList,
+  FaEnvelope,
+  FaGraduationCap,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaUserTie
 } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchWorkshopById } from "./events";
 
 // WorkshopDetails component fetches and displays information about a single workshop event.
 

@@ -44,7 +44,8 @@ const Button = ({
     pink: "bg-codedrift-pink text-white hover:bg-codedrift-indigo-dark",
     blue: "bg-codedrift-blue text-white hover:bg-codedrift-indigo-dark",
     indigo: "bg-codedrift-indigo text-white hover:bg-codedrift-indigo-dark",
-    yellow: "bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 text-white",
+    yellow:
+      "bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 text-white",
     outline:
       "border border-codedrift-indigo text-codedrift-indigo bg-white hover:bg-codedrift-indigo hover:text-white",
     ghost: "text-codedrift-indigo hover:underline",
@@ -89,3 +90,4 @@ const Button = ({
 };
 
 export { Button };
+

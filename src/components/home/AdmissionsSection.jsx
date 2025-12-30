@@ -1,7 +1,7 @@
 // AdmissionsSection.jsx
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaArrowRight } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const MotionLink = motion(Link);
 
@@ -14,7 +14,8 @@ export default function AdmissionsSection() {
             Admissions <span className="text-yellow-300">2025</span> Open
           </h2>
           <p className="text-blue-200 text-lg max-w-3xl mx-auto">
-            Start your academic journey at SGBAU. Applications now open for all programs
+            Start your academic journey at SGBAU. Applications now open for all
+            programs
           </p>
         </div>
 
@@ -56,9 +57,9 @@ export default function AdmissionsSection() {
 
 function AdmissionCard({ title, deadline, exams, color }) {
   const colorMap = {
-    yellow: 'bg-gradient-to-br from-yellow-400 to-yellow-500',
-    emerald: 'bg-gradient-to-br from-emerald-400 to-emerald-500',
-    purple: 'bg-gradient-to-br from-purple-400 to-purple-500'
+    yellow: "bg-gradient-to-br from-yellow-400 to-yellow-500",
+    emerald: "bg-gradient-to-br from-emerald-400 to-emerald-500",
+    purple: "bg-gradient-to-br from-purple-400 to-purple-500",
   };
 
   return (
@@ -80,7 +81,9 @@ function AdmissionCard({ title, deadline, exams, color }) {
         </div>
       </div>
       <div className="mt-6 pt-6 border-t border-white/20">
-        <div className={`inline-block px-4 py-2 rounded-full text-sm font-bold ${colorMap[color]} text-white`}>
+        <div
+          className={`inline-block px-4 py-2 rounded-full text-sm font-bold ${colorMap[color]} text-white`}
+        >
           Apply Now
         </div>
       </div>

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { getAllMentors } from "../../components/home/mentorApi";
 import Mentor from "../../components/mentors/Mentor";
 import { Button } from "../../components/utility/Button";
-import { getAllMentors } from "../../components/home/mentorApi";
 import { DIR } from "../../config";
 
 /**

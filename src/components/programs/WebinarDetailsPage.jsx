@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchWebinarById } from "./events";
 import { DIR } from "../../config";
+import { fetchWebinarById } from "./events";
 
 /**
  * WebinarDetailsPage Component
@@ -148,32 +148,6 @@ const WebinarDetailsPage = () => {
             {webinar.description}
           </p>
         </div>
-
-        {/* Countdown / Join Button */}
-        {/* {webinar.status !== "completed" && (
-      <div className="text-center mb-12">
-        {webinar.status === "upcoming" ? (
-          <div className="inline-flex items-center bg-gray-700/50 border border-gray-600/30 px-6 py-3 rounded-full">
-            <svg className="w-5 h-5 mr-2 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <span className="font-medium">
-              Starts in: <span className="text-amber-300 font-bold">{formatCountdown(remaining)}</span>
-            </span>
-          </div>
-        ) : (
-          <button className="relative overflow-hidden group px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 rounded-full font-bold transition-all duration-300 shadow-lg hover:shadow-emerald-500/30">
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-              </svg>
-              Join Webinar Now
-            </span>
-            <span className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          </button>
-        )}
-      </div>
-    )} */}
 
         {webinar.status !== "completed" && (
           <div className="text-center mb-12">

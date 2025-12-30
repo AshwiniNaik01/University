@@ -1,17 +1,15 @@
-import React from "react";
-import { Facebook, Twitter, Linkedin, Instagram, Youtube } from "lucide-react";
-import { Link } from "react-router-dom";
-import Image from "../utility/Image";
-import { codedriftLogoImage, sgbauLogoImage } from "../../access-assets/images";
 import {
   FaFacebook,
-  FaYoutube,
-  FaLinkedinIn,
   FaInstagram,
-  FaWhatsapp,
-  FaPhone,
+  FaLinkedinIn,
   FaMapMarkerAlt,
+  FaPhone,
+  FaWhatsapp,
+  FaYoutube,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { sgbauLogoImage } from "../../access-assets/images";
+import Image from "../utility/Image";
 
 const Footer = () => {
   return (
@@ -62,40 +60,54 @@ const Footer = () => {
           </div>
 
           {/* Courses & Services */}
-        {/* Academic Programs */}
-<div>
-  <h3 className="text-xl font-semibold text-gray-800 mb-4 tracking-wide">
-    Academic Programs
-  </h3>
-  <ul className="space-y-2 text-gray-600 text-sm">
-    <li>
-      <Link to="/courses" className="hover:text-codedrift-indigo transition-all">
-        Medical Programs
-      </Link>
-    </li>
-    <li>
-      <Link to="/courses" className="hover:text-codedrift-indigo transition-all">
-        Engineering & Technology
-      </Link>
-    </li>
-    <li>
-      <Link to="/courses" className="hover:text-codedrift-indigo transition-all">
-        Arts & Science
-      </Link>
-    </li>
-    <li>
-      <Link to="/courses" className="hover:text-codedrift-indigo transition-all">
-        Management Studies
-      </Link>
-    </li>
-    <li>
-      <Link to="/courses" className="hover:text-codedrift-indigo transition-all">
-        Research (Ph.D.)
-      </Link>
-    </li>
-  </ul>
-</div>
-
+          {/* Academic Programs */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4 tracking-wide">
+              Academic Programs
+            </h3>
+            <ul className="space-y-2 text-gray-600 text-sm">
+              <li>
+                <Link
+                  to="/courses"
+                  className="hover:text-codedrift-indigo transition-all"
+                >
+                  Medical Programs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/courses"
+                  className="hover:text-codedrift-indigo transition-all"
+                >
+                  Engineering & Technology
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/courses"
+                  className="hover:text-codedrift-indigo transition-all"
+                >
+                  Arts & Science
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/courses"
+                  className="hover:text-codedrift-indigo transition-all"
+                >
+                  Management Studies
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/courses"
+                  className="hover:text-codedrift-indigo transition-all"
+                >
+                  Research (Ph.D.)
+                </Link>
+              </li>
+            </ul>
+          </div>
 
           {/* Policies */}
           <div>
@@ -138,68 +150,38 @@ const Footer = () => {
               className="w-32 mb-4"
             />
             <p className="text-gray-600 text-sm leading-relaxed max-w-xs text-center md:text-left">
-              <strong className="text-gray-800 font-medium">Sant Gadge Baba Amravati University</strong>
-              <br />
-             A premier institution dedicated to academic excellence, research advancement, and holistic student development.
+              <strong className="text-gray-800 font-medium">
+                Sant Gadge Baba Amravati University
+              </strong>
+              <br />A premier institution dedicated to academic excellence,
+              research advancement, and holistic student development.
             </p>
           </div>
         </div>
 
         {/* Address Section outside grid */}
-        {/* <div className="max-w-full bg-opacity-70 backdrop-blur-md flex flex-col items-center md:items-start text-gray-600 text-base space-y-4">
-          <h4 className="text-md font-bold text-codedrift-pink mb-2 border-b-2 border-codedrift-pink w-full max-w-xs text-center md:text-left">
+        <div className="max-w-full bg-opacity-70 backdrop-blur-md flex flex-col items-center md:items-start text-gray-600 text-base space-y-4">
+          <h4 className="text-md font-bold text-codedrift-indigo mb-2 border-b-2 border-codedrift-indigo w-full max-w-xs text-center md:text-left">
             Our Location
           </h4>
+
           <p className="font-semibold text-md text-center md:text-left">
-            Office No 10, Ramrajya 1, Near Bhonsala Military School, College
-            Road, Nashik - 422005
+            Sant Gadge Baba Amravati University, <br />
+            Camp Area, Amravati, Maharashtra – 444602
           </p>
+
+          {/* Google Map Embed */}
           <a
-            href="https://maps.app.goo.gl/r6KxMDfapqhGRbwn9"
+            href="https://maps.app.goo.gl/eR8J2EyxpUarXvBN8"
             target="_blank"
             rel="noopener noreferrer"
             title="Open in Google Maps"
-            className="flex items-center gap-3 text-white bg-codedrift-pink hover:bg-codedrift-blue transition-colors duration-300 font-semibold rounded-md px-4 py-2 shadow-md hover:shadow-lg"
+            className="flex items-center gap-3 text-white bg-codedrift-indigo hover:bg-indigo-700 transition-colors duration-300 font-semibold rounded-md px-4 py-2 shadow-md hover:shadow-lg"
           >
             <FaMapMarkerAlt size={22} className="animate-pulse" />
             <span>View on Google Maps</span>
           </a>
-        </div> */}
-<div className="max-w-full bg-opacity-70 backdrop-blur-md flex flex-col items-center md:items-start text-gray-600 text-base space-y-4">
-  <h4 className="text-md font-bold text-codedrift-indigo mb-2 border-b-2 border-codedrift-indigo w-full max-w-xs text-center md:text-left">
-    Our Location
-  </h4>
-
-  <p className="font-semibold text-md text-center md:text-left">
-    Sant Gadge Baba Amravati University, <br />
-    Camp Area, Amravati, Maharashtra – 444602
-  </p>
-
-  {/* Google Map Embed */}
-  {/* <div className="w-full max-w-md h-[220px] rounded-md overflow-hidden border border-gray-300 shadow-sm">
-    <iframe
-      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d29811.09763993472!2d77.804813!3d20.93696!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd6a477f4c8ee7f%3A0x373b8b1119db0445!2sSant%20Gadge%20Baba%20Amravati%20University!5e0!3m2!1sen!2sin!4v1766746794814!5m2!1sen!2sin"
-      className="w-full h-full border-0"
-      allowFullScreen
-      loading="lazy"
-      referrerPolicy="no-referrer-when-downgrade"
-      title="Sant Gadge Baba Amravati University Map"
-    />
-  </div> */}
-
-  <a
-    href="https://maps.app.goo.gl/eR8J2EyxpUarXvBN8"
-    target="_blank"
-    rel="noopener noreferrer"
-    title="Open in Google Maps"
-    className="flex items-center gap-3 text-white bg-codedrift-indigo hover:bg-indigo-700 transition-colors duration-300 font-semibold rounded-md px-4 py-2 shadow-md hover:shadow-lg"
-  >
-    <FaMapMarkerAlt size={22} className="animate-pulse" />
-    <span>View on Google Maps</span>
-  </a>
-</div>
-          
-
+        </div>
 
         {/* Divider */}
         <div className="my-10 border-t border-gray-300"></div>
@@ -263,8 +245,10 @@ const Footer = () => {
           {/* Copyright */}
           <p className="text-gray-500">
             © {new Date().getFullYear()}{" "}
-            <span className="font-medium text-gray-700">Sant Gadge Baba Amravati University</span>. All
-            rights reserved.
+            <span className="font-medium text-gray-700">
+              Sant Gadge Baba Amravati University
+            </span>
+            . All rights reserved.
           </p>
         </div>
       </div>

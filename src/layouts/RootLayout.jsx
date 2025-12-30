@@ -1,8 +1,7 @@
-import React, { useState, useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Footer from "../components/common/Footer";
 import Navbar from "../components/common/Navbar";
-import FullScreenLogoLoader from "../components/loaders/FullScreenLogoLoader";
 import ScrollToTop from "../components/utility/ScrollToTop";
 
 const RootLayout = () => {
